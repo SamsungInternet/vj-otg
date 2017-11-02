@@ -1,0 +1,73 @@
+/* Contents
+1. reset - because yeh bite me
+2. base
+3. thumbnails
+4. form controls (effects)
+*/
+
+h1 {
+  color: fuchsia;
+}
+
+#loading-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display:flex;
+  align-items: center;
+  justify-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.25);
+}
+
+#loading-screen h1 {
+  display: inline-block;
+  text-align: center;
+}
+
+#canvas {
+  width: 640px; height: 480px;
+}
+
+/*1.*/
+html, body,
+div, section, canvas,
+h1, ul, li,
+form, label, input, button {
+  margin:0px; padding:0px; border:0;
+  font-size:100%; vertical-align:baseline;
+  
+}
+ul, li {list-style:none;}
+
+/*generic style classes*/
+.icon {
+  /*put an icon here*/
+}
+
+
+/*display layout via grid*/
+#vjotg {
+  display:grid;
+  grid-template-columns: auto;
+  grid-template-rows: 3fr 5fr 1fr;
+  grid-template-areas: "video" "card" "nav";
+}
+
+.screen {backgound-color:black;}
+.screen-preview {grid-area:'video';}
+
+.card-switcher {}
+.card {grid-area:'card';}
+
+.card-nav {grid-area: 'nav';}
+.card-nav .icon {}
+
+/*thumbnail list*/
+.sel-list {}
+
+.sel-list__thumb {}
+
+

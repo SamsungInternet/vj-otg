@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello!</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="vendor/three.js/three.min.js"></script>
+	<script src="vendor/three.js/Detector.js"></script>
+	<script src="https://cdn.rawgit.com/webcomponents/webcomponentsjs/edf84e6e/webcomponents-sd-ce.js"></script>
+	<script src="/html-element-with-refs.js"></script>
+    <script src="/visuals.js" defer></script>
+    <script src="/visuals-filters.js" defer></script>
+  </head>
+  <body><div class="wrapper">
+    
+    <div id="vjotg">
+    
+      <!-- Where visuals.js does it's rendering -->
+      <vj-otg-visuals>
+        <vj-otg-assets>
+          <video id="minnie" src="./assets/minnie-512.webm" width="512" height="512" autoplay="true" loop="true" controls="true"></video>
+        </vj-otg-assets> 
+        
+        <!-- One can change attributes dynamically but do not remove/reorder/add or shader should recompile -->
+        <vj-otg-filter type="source" value="#minnie" listen-on="43"></vj-otg-filter>
+        <vj-otg-filter type="beat-uniform"></vj-otg-filter>
+        <vj-otg-filter type="time-uniform"></vj-otg-filter>
+        <vj-otg-filter type="texture"></vj-otg-filter>
+        <vj-otg-filter type="splitx" size="0.05" main="splitXTexture2D(map, newUV, [size] * beat)"></vj-otg-filter>
+        <vj-otg-filter type="gradient" start="120,0.5,0.5" stop="180,1,0.8" direction="3" main="hslGradient(newUV, int(mod(time * 24.0, 8.0)) + 1, [start], [stop])"></vj-otg-filter>
+      </vj-otg-visuals>
+
+      <div class="card-switcher">
+
+        <section class="card sel-list" data-content="media">
+          <ul>
+            <li class="sel-list__thumb" data-asset="clipnamehere">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-asset="clipnamehere">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-asset="clipnamehere">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-asset="clipnamehere">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb--emt" data-asset="empty"></li>
+            <li class="sel-list__thumb--emt" data-asset="empty"></li>
+          </ul>
+        </section>
+
+        <section class="card sel-list" data-content="effects">
+          <ul>
+            <li class="sel-list__thumb" data-effect="glitch">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-effect="old-film">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-effect="noise">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-effect="colorise">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-effect="desaturate">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-effect="hue-rotate">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-effect="blur">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-effect="invert">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-effect="zoom">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-effect="rotate">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-effect="symmetry">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-effect="kalidescope">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-effect="tile">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-effect="pointilase">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-effect="high-pass">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-effect="anythingbiquad">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-effect="convolver">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-effect="wave-shaper">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-effect="delay">
+              <img src="" alt="" />
+            </li>
+            <li class="sel-list__thumb" data-effect="oscillator">
+              <img src="" alt="" />
+            </li>
+          </ul>
+        </section>
+
+        <section class="card" data-content="control">
+
+          <section class="control">
+
+            <form>
+
+              <div class="control__group">
+                <label class="control__label" for="dialEx">Dial example</label>
+                <input class="control__input--dial" id="dialEx" type="range" min="0" max="127" step="1" />
+              </div>
+
+              <div class="control__group">
+                <label class="control__label" for="sliderEx">Slider example</label>
+                <input class="control__input--slider" id="sliderEx" type="range" min="0" max="127" step="1" />
+              </div>
+
+              <label for="padEx">Pad example</label>
+              <button class="pad" id="padEx">Pad</button>
+
+              <label for="toggleEx">Toggle example</label>
+              <input class="toggle" id="toggleEx" type="check" />
+
+            </form>
+
+          </section>
+
+        </section>
+
+        <nav class="nav-card">
+          <button class="icon" data-show="media">Media</button>
+          <button class="icon" data-show="effects">Effects</button>
+          <button class="icon" data-show="control">Control</button>
+        </nav>
+
+      </div>
+    </div>    
+  </div></body>
+</html>
