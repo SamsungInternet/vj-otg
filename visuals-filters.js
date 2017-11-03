@@ -1,7 +1,7 @@
 let filterCount = 0;
 
-function parseVector3(str) {
-	return new THREE.Vector3(...str.split(',').map(n => Number(n.trim())));
+function parseVector3(v3, str) {
+	v3.set(...str.split(',').map(n => Number(n.trim())));
 }
 
 const groupTemplate = document.createElement('template');
@@ -77,6 +77,37 @@ class VJOTGFilter extends HTMLElementWithRefs {
 				uniforms: `uniform sampler2D ${this.glAttributes.name};`
 			}
 		}
+		
+		if (
+			this.glAttributes.type === 'distort:wave',
+			this.glAttributes.speed &&
+			this.glAttributes.amplitude && 
+			this.glAttributes.frequency
+		) {
+			const uniformName = `${this.name}_wave`;
+			const wave = this.parentNode.uniforms[uniformName] || { type: 'v3', value: new THREE.Vector3() };
+			this.parentNode.uniforms[uniformName] = wave;
+			wave.value.set(this.glAttributes.frequency, this.glAttributes.amplitude, this.glAttributes.speed);
+			this.shaderChunks = {
+				uniforms: `uniform vec3 ${uniformName};`,
+				main: `newUV = newUV + vec2(sin((vUv.y * ${uniformName}.x + 10.0 * time * 2.0 * PI * ${uniformName}.z))*${uniformName}.y, 0.0);`
+			}
+		}
+
+		if (
+			this.glAttributes.type === 'distort:zoom',
+			this.glAttributes.factor &&
+			this.glAttributes.position
+		) {
+			const uniformName = `${this.name}_zoom`;
+			const zoom = this.parentNode.uniforms[uniformName] || { type: 'v3', value: new THREE.Vector3() };
+			this.parentNode.uniforms[uniformName] = zoom;
+			parseVector3(zoom.value, this.glAttributes.position + ',' + this.glAttributes.factor);
+			this.shaderChunks = {
+				uniforms: `uniform vec3 ${uniformName};`,
+				main: `newUV = (newUV / ${uniformName}.z) + vec2(0.5, 0.5) * ${uniformName}.z - ${uniformName}.xy;`
+			}
+		}
 
 
 		if (
@@ -102,16 +133,16 @@ class VJOTGFilter extends HTMLElementWithRefs {
 		) {
 			
 			const directionU = this.parentNode.uniforms[`${this.name}_gradientDirection`] || { type: 'i'};
-			const startU = this.parentNode.uniforms[`${this.name}_gradientStart`] || { type: 'v3' };
-			const stopU = this.parentNode.uniforms[`${this.name}_gradientStop`] || { type: 'v3' };
+			const startU = this.parentNode.uniforms[`${this.name}_gradientStart`] || { type: 'v3', value: new THREE.Vector3() };
+			const stopU = this.parentNode.uniforms[`${this.name}_gradientStop`] || { type: 'v3', value: new THREE.Vector3() };
 
 			this.parentNode.uniforms[`${this.name}_gradientDirection`] = directionU;
 			this.parentNode.uniforms[`${this.name}_gradientStart`] = startU;
 			this.parentNode.uniforms[`${this.name}_gradientStop`] = stopU;
 
 			directionU.value = this.glAttributes.direction;
-			startU.value = parseVector3(this.glAttributes.start);
-			stopU.value = parseVector3(this.glAttributes.stop);
+			parseVector3(startU.value, this.glAttributes.start);
+			parseVector3(stopU.value, this.glAttributes.stop);
 
 			let main;
 			if (customMain) {
@@ -223,7 +254,12 @@ class VJOTGFilter extends HTMLElementWithRefs {
 		'direction',
 		'size',
 		'name',
-		'source'
+		'source',
+		'position',
+		'factor',
+		'frequency',
+		'amplitude',
+		'speed'
 	]; }
 	attributeChangedCallback(attr, oldValue, newValue) {
 		this.glAttributes[attr] = newValue;

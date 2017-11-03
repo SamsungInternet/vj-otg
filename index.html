@@ -32,7 +32,8 @@
 		<vj-otg-filter type="time-uniform"></vj-otg-filter>
 		
 		<vj-otg-group name="hamsterGroup">
-			<vj-otg-filter type="main">newUV = vUv + vec2(sin((vUv.y + time * PI)*8.0)*0.01, 0.0);</vj-otg-filter>
+			<vj-otg-filter type="distort:wave" frequency="4.0" amplitude="0.1" speed="0.5"></vj-otg-filter>
+			<vj-otg-filter type="distort:zoom" factor="1.2" position="0.5, 0.5"></vj-otg-filter>
 			<vj-otg-filter type="texture" source="hamster"></vj-otg-filter>
 		</vj-otg-group>
 
@@ -44,8 +45,7 @@
 			<vj-otg-filter type="gradient" start="120,0.5,0.5" stop="180,1,0.8" direction="3"></vj-otg-filter>
 		</vj-otg-group>
 
-
-		<vj-otg-filter type="generic-uniform-float" name="mixUniform" value="0.1"></vj-otg-filter>
+		<vj-otg-filter type="generic-uniform-float" name="mixUniform" value="0.9"></vj-otg-filter>
 		<vj-otg-filter type="main">[layer] = mix(videoGroup, hamsterGroup, mixUniform);</vj-otg-filter>
 		
       </vj-otg-visuals>
