@@ -22,18 +22,18 @@
         <vj-otg-assets>
           <video id="minnie" src="./assets/minnie-512.webm" width="512" height="512" autoplay="true" loop="true" controls="true"></video>
           <img id="shera" src="./assets/shera.jpg" />
+          <img id="hamster" src="./assets/hamster.jpg" />
         </vj-otg-assets> 
         
         <!-- One can change attributes dynamically but do not remove/reorder/add or shader should recompile -->
         <vj-otg-filter type="source" value="#minnie" name="map"></vj-otg-filter>
-        <vj-otg-filter type="source" value="#shera" name="shera"></vj-otg-filter>
+        <vj-otg-filter type="source" value="#hamster" name="hamster"></vj-otg-filter>
         <vj-otg-filter type="beat-uniform"></vj-otg-filter>
 		<vj-otg-filter type="time-uniform"></vj-otg-filter>
 		
-		<vj-otg-filter type="main">
-			newUV = vUv + vec2(sin((vUv.y + time * PI)*8.0)*0.01, 0.0);
-		</vj-otg-filter>
-        <vj-otg-filter type="texture" source="shera"></vj-otg-filter>
+		<vj-otg-filter type="main">newUV = vUv + vec2(sin((vUv.y + time * PI)*8.0)*0.01, 0.0);</vj-otg-filter>
+
+        <vj-otg-filter type="texture" source="hamster"></vj-otg-filter>
         <vj-otg-filter type="splitx" size="0.05">
 			[layer] *= splitXTexture2D(map, newUV, [size] * beat);
 		</vj-otg-filter>
