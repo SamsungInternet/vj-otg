@@ -4,6 +4,25 @@ function parseVector3(str) {
 	return new THREE.Vector3(...str.split(',').map(n => Number(n.trim())));
 }
 
+const groupTemplate = document.createElement('template');
+groupTemplate.innerHTML = '<slot></slot>';
+
+class VJOTGGroup extends HTMLElementWithRefs {
+	constructor () {
+		super();
+		this.attachShadow({mode: 'open'});
+		this.shadowRoot.appendChild(groupTemplate.content.cloneNode(true));
+		this.uniforms = this.parentNode.uniforms;
+	}
+	static get observedAttributes() { return [ 'name' ]; }
+	attributeChangedCallback(attr, oldValue, newValue) {
+		this.glLayerName = newValue;
+		this.shaderChunks = {
+			main: `vec4 ${this.glLayerName} = vec4(1.0, 1.0, 1.0, 1.0);`
+		};
+	}
+}
+
 class VJOTGFilter extends HTMLElementWithRefs {
 	constructor () {
 		super();
@@ -213,5 +232,6 @@ class VJOTGFilter extends HTMLElementWithRefs {
 }
 
 window.addEventListener('DOMContentLoaded', function () {
+	customElements.define('vj-otg-group', VJOTGGroup);
 	customElements.define('vj-otg-filter', VJOTGFilter);
 });

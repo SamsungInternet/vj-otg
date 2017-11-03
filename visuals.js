@@ -87,7 +87,7 @@ class VJOTGVisuals extends HTMLElementWithRefs {
 
 	generateShader() {
 
-		var chunks = [].filter.call(this.children, el => el.tagName === 'VJ-OTG-FILTER')
+		var chunks = Array.from(this.querySelectorAll('VJ-OTG-FILTER, VJ-OTG-GROUP'))
 			.map(el => el.shaderChunks)
 			.filter(chunk => !!chunk);
 

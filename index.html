@@ -27,17 +27,27 @@
         
         <!-- One can change attributes dynamically but do not remove/reorder/add or shader should recompile -->
         <vj-otg-filter type="source" value="#minnie" name="map"></vj-otg-filter>
-        <vj-otg-filter type="source" value="#hamster" name="hamster"></vj-otg-filter>
+		<vj-otg-filter type="source" value="#hamster" name="hamster"></vj-otg-filter>
         <vj-otg-filter type="beat-uniform"></vj-otg-filter>
 		<vj-otg-filter type="time-uniform"></vj-otg-filter>
 		
-		<vj-otg-filter type="main">newUV = vUv + vec2(sin((vUv.y + time * PI)*8.0)*0.01, 0.0);</vj-otg-filter>
+		<vj-otg-group name="hamsterGroup">
+			<vj-otg-filter type="main">newUV = vUv + vec2(sin((vUv.y + time * PI)*8.0)*0.01, 0.0);</vj-otg-filter>
+			<vj-otg-filter type="texture" source="hamster"></vj-otg-filter>
+		</vj-otg-group>
 
-        <vj-otg-filter type="texture" source="hamster"></vj-otg-filter>
-        <vj-otg-filter type="splitx" size="0.05">
-			[layer] *= splitXTexture2D(map, newUV, [size] * beat);
-		</vj-otg-filter>
-        <vj-otg-filter type="gradient" start="120,0.5,0.5" stop="180,1,0.8" direction="3"></vj-otg-filter>
+		<vj-otg-group name="videoGroup">
+			<vj-otg-filter type="main">newUV = vUv;</vj-otg-filter>
+			<vj-otg-filter type="splitx" size="0.05">
+				[layer] *= splitXTexture2D(map, newUV, [size] * beat);
+			</vj-otg-filter>
+			<vj-otg-filter type="gradient" start="120,0.5,0.5" stop="180,1,0.8" direction="3"></vj-otg-filter>
+		</vj-otg-group>
+
+
+		<vj-otg-filter type="generic-uniform-float" name="mixUniform" value="0.1"></vj-otg-filter>
+		<vj-otg-filter type="main">[layer] = mix(videoGroup, hamsterGroup, mixUniform);</vj-otg-filter>
+		
       </vj-otg-visuals>
 
       <div class="card-switcher">
