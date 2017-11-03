@@ -34,6 +34,9 @@ class VJOTGVisuals extends HTMLElementWithRefs {
 		renderer.setSize( 480, 320 );
 		this.shadowRoot.appendChild(renderer.domElement);
 
+		renderer.domElement.style.width = 'auto';
+		renderer.domElement.style.height = 'auto';
+
 		//            WEBGL
 		// ---------------------------
 

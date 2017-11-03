@@ -9,9 +9,13 @@
     <script src="vendor/three.js/three.min.js"></script>
 	<script src="vendor/three.js/Detector.js"></script>
 	<script src="https://cdn.rawgit.com/webcomponents/webcomponentsjs/edf84e6e/webcomponents-sd-ce.js"></script>
-	<script src="/html-element-with-refs.js"></script>
-    <script src="/visuals.js" defer></script>
-    <script src="/visuals-filters.js" defer></script>
+	<script src="/components/html-element-with-refs.js"></script>
+    <script src="/components/visuals.js" defer></script>
+    <script src="/components/visuals-filters.js" defer></script>
+    <script src="/components/midi-cc.js" defer></script>
+    <script src="/components/midi-pad.js" defer></script>
+    <script src="/components/midi-toggle.js" defer></script>
+    <script src="/main.js" defer></script>
   </head>
   <body><div class="wrapper">
     
@@ -47,132 +51,119 @@
 		<vj-otg-filter type="generic-uniform-float" name="mixUniform" value="0.9"></vj-otg-filter>
 		<vj-otg-filter type="main">
 			float perlinNoise = clamp(snoise(vec3(newUV * 5.0, time * 0.3)), 0.0, 1.0);
-			[layer] = mix(videoGroup, hamsterGroup, perlinNoise);
+			[layer] = mix(videoGroup, hamsterGroup, mixUniform);
 		</vj-otg-filter>
 		
       </vj-otg-visuals>
 
       <div class="card-switcher">
+      
+      <section class="card sel-list sel-list--large" data-content="media">
+        <ul>
+          <li class="sel-list__thumb" data-asset="clipnamehere">
+            <img src="https://placeimg.com/640/480/animals?t=1509706000630" alt="" />
+          </li>
+          <li class="sel-list__thumb" data-asset="clipnamehere">
+            <img src="https://placeimg.com/640/480/animals?t=1509706013764" alt="" />
+          </li>
+          <li class="sel-list__thumb" data-asset="clipnamehere">
+            <img src="https://placeimg.com/640/480/animals?t=1509706030379" alt="" />
+          </li>
+          <li class="sel-list__thumb" data-asset="clipnamehere">
+            <img src="https://placeimg.com/640/480/animals?t=1509706049629" alt="" />
+          </li>
+        </ul>
+      </section>
+      
+      <section class="card sel-list" data-content="effects">
+        <ul>
+          <li class="sel-list__thumb" data-effect="glitch">
+            <img src="http://via.placeholder.com/230x170" alt="" />
+          </li>
+          <li class="sel-list__thumb" data-effect="old-film">
+            <img src="http://via.placeholder.com/230x170" alt="" />
+          </li>
+          <li class="sel-list__thumb" data-effect="noise">
+            <img src="http://via.placeholder.com/230x170" alt="" />
+          </li>
+          <li class="sel-list__thumb" data-effect="colorise">
+            <img src="http://via.placeholder.com/230x170" alt="" />
+          </li>
+          <li class="sel-list__thumb" data-effect="desaturate">
+            <img src="http://via.placeholder.com/230x170" alt="" />
+          </li>
+          <li class="sel-list__thumb" data-effect="hue-rotate">
+            <img src="http://via.placeholder.com/230x170" alt="" />
+          </li>
+          <li class="sel-list__thumb" data-effect="blur">
+            <img src="http://via.placeholder.com/230x170" alt="" />
+          </li>
+          <li class="sel-list__thumb" data-effect="invert">
+            <img src="http://via.placeholder.com/230x170" alt="" />
+          </li>
+          <li class="sel-list__thumb" data-effect="zoom">
+            <img src="http://via.placeholder.com/230x170" alt="" />
+          </li>
+          
+        </ul>
+      </section>
+      
+      <section class="card card--show" data-content="control">
+      
+        <section class="control">
 
-        <section class="card sel-list" data-content="media">
-          <ul>
-            <li class="sel-list__thumb" data-asset="clipnamehere">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-asset="clipnamehere">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-asset="clipnamehere">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-asset="clipnamehere">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb--emt" data-asset="empty"></li>
-            <li class="sel-list__thumb--emt" data-asset="empty"></li>
-          </ul>
+          <midi-cc channel="144" value="64">Bass</midi-cc>
+
+          <midi-pad channel="144" note="63">Pad</midi-pad>
+
+          <midi-toggle channel="144" note="59" state="off">Toggle</midi-toggle>
+          
         </section>
+      
+      </section>
+      
+    </div>
 
-        <section class="card sel-list" data-content="effects">
-          <ul>
-            <li class="sel-list__thumb" data-effect="glitch">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-effect="old-film">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-effect="noise">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-effect="colorise">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-effect="desaturate">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-effect="hue-rotate">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-effect="blur">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-effect="invert">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-effect="zoom">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-effect="rotate">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-effect="symmetry">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-effect="kalidescope">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-effect="tile">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-effect="pointilase">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-effect="high-pass">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-effect="anythingbiquad">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-effect="convolver">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-effect="wave-shaper">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-effect="delay">
-              <img src="" alt="" />
-            </li>
-            <li class="sel-list__thumb" data-effect="oscillator">
-              <img src="" alt="" />
-            </li>
-          </ul>
-        </section>
+    <nav class="card__nav">
+      <button class="btn__icon--active" data-show="media">Media</button>
+      <button class="btn__icon" data-show="effects">Effects</button>
+      <button class="btn__icon" data-show="control">Control</button>
+    </nav>
 
-        <section class="card" data-content="control">
-
-          <section class="control">
-
-            <form>
-
-              <div class="control__group">
-                <label class="control__label" for="dialEx">Dial example</label>
-                <input class="control__input--dial" id="dialEx" type="range" min="0" max="127" step="1" />
-              </div>
-
-              <div class="control__group">
-                <label class="control__label" for="sliderEx">Slider example</label>
-                <input class="control__input--slider" id="sliderEx" type="range" min="0" max="127" step="1" />
-              </div>
-
-              <label for="padEx">Pad example</label>
-              <button class="pad" id="padEx">Pad</button>
-
-              <label for="toggleEx">Toggle example</label>
-              <input class="toggle" id="toggleEx" type="check" />
-
-            </form>
-
-          </section>
-
-        </section>
-
-        <nav class="nav-card">
-          <button class="icon" data-show="media">Media</button>
-          <button class="icon" data-show="effects">Effects</button>
-          <button class="icon" data-show="control">Control</button>
-        </nav>
-
-      </div>
     </div>    
-  </div></body>
+  </div>
+
+<script type="text/javascript">
+  
+// simple show hide of cards~~~~~~~~~~~~~~~~
+  const nav = document.querySelector('.card__nav'),
+    cards = document.querySelectorAll('.card');
+
+  nav.addEventListener("click", function(e) {
+
+    for (let i=0; i<cards.length; i++) {
+      if (e.target.dataset.show === cards[i].dataset.content) {
+        showHideEl(cards[i], 'block', true);
+      } else {
+        showHideEl(cards[i], 'block', false);
+      }
+    }
+
+    // to do - also add classes to nav items
+
+  }, false);
+
+
+  function showHideEl(element, displayType, show=true) {
+    if (show) {
+      element.style.display = displayType;
+    } else {
+      element.style.display = 'none';
+    }
+  }
+
+</script>
+
+
+</body>
 </html>
