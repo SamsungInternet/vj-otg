@@ -91,10 +91,8 @@ class VJOTGVisuals extends HTMLElementWithRefs {
 			.map(el => el.shaderChunks)
 			.filter(chunk => !!chunk);
 
-		console.log(chunks);
-
 		var uniforms = chunks.map(a => a.uniforms).filter(chunk => !!chunk).join('\n');
-		var main = chunks.map(a => a.main).filter(chunk => !!chunk).join(' *\n');
+		var main = chunks.map(a => a.main).filter(chunk => !!chunk).join('\n');
 
 		const fragmentShader = `
 			#define USE_MAP true
@@ -118,11 +116,12 @@ class VJOTGVisuals extends HTMLElementWithRefs {
 				// Change this to skew or warp the texture
 				vec2 newUV = vUv + vec2(0.0, 0.0);
 
-				gl_FragColor = ` + main + `;
+				gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+				` + main + `
 			}
 		`;
 
-		console.log(fragmentShader);
+		// console.log(fragmentShader);
 		
 		return  new THREE.ShaderMaterial( {
 			uniforms: this.uniforms,
