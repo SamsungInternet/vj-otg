@@ -148,6 +148,14 @@ class VJOTGFilter extends HTMLElementWithRefs {
 		}
 
 		if (
+			this.glAttributes.type === 'main'
+		) {
+			this.shaderChunks = {
+				main: customMain.replace('[layer]', layerName)
+			};
+		}
+
+		if (
 			this.glAttributes.type === 'splitx' &&
 			this.glAttributes.size
 		) {
