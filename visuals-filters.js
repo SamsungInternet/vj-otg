@@ -18,7 +18,9 @@ class VJOTGGroup extends HTMLElementWithRefs {
 	attributeChangedCallback(attr, oldValue, newValue) {
 		this.glLayerName = newValue;
 		this.shaderChunks = {
-			main: `vec4 ${this.glLayerName} = vec4(1.0, 1.0, 1.0, 1.0);`
+
+			// Give this layer a Vector to write the effects to and reset the UV
+			main: `vec4 ${this.glLayerName} = vec4(1.0, 1.0, 1.0, 1.0); newUV = vUv;`
 		};
 	}
 }
@@ -90,7 +92,7 @@ class VJOTGFilter extends HTMLElementWithRefs {
 			wave.value.set(this.glAttributes.frequency, this.glAttributes.amplitude, this.glAttributes.speed);
 			this.shaderChunks = {
 				uniforms: `uniform vec3 ${uniformName};`,
-				main: `newUV = newUV + vec2(sin((vUv.y * ${uniformName}.x + 10.0 * time * 2.0 * PI * ${uniformName}.z))*${uniformName}.y, 0.0);`
+				main: `newUV = newUV + vec2(sin((vUv.y * ${uniformName}.x + time * 2.0 * PI * ${uniformName}.z))*${uniformName}.y, 0.0);`
 			}
 		}
 
@@ -126,7 +128,7 @@ class VJOTGFilter extends HTMLElementWithRefs {
 		}
 
 		if (
-			this.glAttributes.type === 'gradient' &&
+			this.glAttributes.type === 'hsl-gradient' &&
 			this.glAttributes.start &&
 			this.glAttributes.stop &&
 			this.glAttributes.direction
@@ -204,8 +206,9 @@ class VJOTGFilter extends HTMLElementWithRefs {
 			this.shaderChunks = {
 				uniforms: 'uniform float time;'
 			}
+			const now = Date.now();
 			this.rafFn = function () {
-				timeUniform.value = (Date.now() / 10000) % 1;
+				timeUniform.value = (Date.now() - now) / 1000;
 			}
 		}
 
