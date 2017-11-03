@@ -121,7 +121,7 @@ class VJOTGVisuals extends HTMLElementWithRefs {
 			}
 		`;
 
-		// console.log(fragmentShader);
+		console.log(fragmentShader);
 		
 		return  new THREE.ShaderMaterial( {
 			uniforms: this.uniforms,

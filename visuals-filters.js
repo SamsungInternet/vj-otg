@@ -25,32 +25,44 @@ class VJOTGFilter extends HTMLElementWithRefs {
 		if (!layerName) return;
 
 		if (
-			this.glAttributes.type === 'source-video' &&
-			this.glAttributes.value
+			this.glAttributes.type === 'source' &&
+			this.glAttributes.value &&
+			this.glAttributes.name
 		) {
-			const video = this.parentNode.querySelector(this.glAttributes.value);
-			window.addEventListener('click', () => video.play(), {
-				once: true
-			});
-			const texture = new THREE.VideoTexture( video );
+			const source = this.parentNode.querySelector(this.glAttributes.value);
+			let texture;
+			if (source.tagName === 'VIDEO') {
+				window.addEventListener('click', () => source.play(), {
+					once: true
+				});
+				texture = new THREE.VideoTexture( source );
+			}
+			if (source.tagName === 'IMG') {
+				texture = new THREE.Texture( source );
+				source.addEventListener('load', 
+					() => texture.needsUpdate = true,
+					{ once: true }
+				);
+			}
 			texture.minFilter = THREE.LinearFilter;
 			texture.magFilter = THREE.LinearFilter;
 			texture.wrapS = THREE.RepeatWrapping;
 			texture.wrapT = THREE.RepeatWrapping;
 			texture.format = THREE.RGBFormat;
 
-			const uniform = this.parentNode.uniforms.map || { type: 't' };
+			const uniform = this.parentNode.uniforms[this.glAttributes.name] || { type: 't' };
 			uniform.value = texture;
-			this.parentNode.uniforms.map = uniform;
+			this.parentNode.uniforms[this.glAttributes.name] = uniform;
 
 			this.shaderChunks = {
-				uniforms: 'uniform sampler2D map;'
+				uniforms: `uniform sampler2D ${this.glAttributes.name};`
 			}
 		}
 
 
 		if (
-			this.glAttributes.type === 'texture'
+			this.glAttributes.type === 'texture',
+			this.glAttributes.source
 		) {
 			if (customMain) {
 				this.shaderChunks = {
@@ -58,7 +70,7 @@ class VJOTGFilter extends HTMLElementWithRefs {
 				}
 			} else {
 				this.shaderChunks = {
-					main: `${layerName} *= texture2D(map, newUV);`
+					main: `${layerName} *= texture2D(${this.glAttributes.source}, newUV);`
 				}
 			}
 		}
@@ -191,7 +203,8 @@ class VJOTGFilter extends HTMLElementWithRefs {
 		'stop',
 		'direction',
 		'size',
-		'name'
+		'name',
+		'source'
 	]; }
 	attributeChangedCallback(attr, oldValue, newValue) {
 		this.glAttributes[attr] = newValue;
