@@ -51,7 +51,7 @@
 		<vj-otg-filter type="generic-uniform-float" name="mixUniform" value="0.9"></vj-otg-filter>
 		<vj-otg-filter type="main">
 			float perlinNoise = clamp(snoise(vec3(newUV * 5.0, time * 0.3)), 0.0, 1.0);
-			[layer] = mix(videoGroup, hamsterGroup, beat);
+			[layer] = mix(videoGroup, hamsterGroup, mixUniform);
 		</vj-otg-filter>
 		
       </vj-otg-visuals>
