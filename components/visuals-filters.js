@@ -25,6 +25,21 @@ class VJOTGGroup extends HTMLElementWithRefs {
 	}
 }
 
+
+const assetsTemplate = document.createElement('template');
+assetsTemplate.innerHTML = '<div style="display:none;"><slot></slot></div>';
+
+class VJOTGAssets extends HTMLElementWithRefs {
+	constructor () {
+		super();
+		this.attachShadow({mode: 'open'});
+		this.shadowRoot.appendChild(assetsTemplate.content.cloneNode(true));
+	}
+	static get observedAttributes() { return []; }
+	attributeChangedCallback(attr, oldValue, newValue) {}
+}
+
+
 class VJOTGFilter extends HTMLElementWithRefs {
 	constructor () {
 		super();
@@ -271,6 +286,7 @@ class VJOTGFilter extends HTMLElementWithRefs {
 }
 
 window.addEventListener('DOMContentLoaded', function () {
+	customElements.define('vj-otg-assets', VJOTGAssets);
 	customElements.define('vj-otg-group', VJOTGGroup);
 	customElements.define('vj-otg-filter', VJOTGFilter);
 });

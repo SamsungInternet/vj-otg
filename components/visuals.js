@@ -11,6 +11,7 @@ vjOTGVisuals.innerHTML = `
 		display: none;
 	}
 	</style>
+	<slot></slot>
 `;
 
 class VJOTGVisuals extends HTMLElementWithRefs {
