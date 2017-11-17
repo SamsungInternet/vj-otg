@@ -104,6 +104,7 @@ class VJOTGVisuals extends HTMLElementWithRefs {
 			// Constants for Maths
 			const float PI = 3.1415926535897932384626433832795;
 			const float deg2rad = PI/180.0;
+			const vec2 centerCoord = vec2(0.5, 0.5);
 			const vec3 normaliseHSL = vec3(1.0/360.0, 1.0, 1.0);
 			const vec3 noopVec3 = vec3(1.0, 1.0, 1.0);
 			const vec4 noopVec4 = vec4(1.0, 1.0, 1.0, 1.0);

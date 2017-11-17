@@ -40,7 +40,8 @@
 		<vj-otg-group name="hamsterGroup">
 			<vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="0.02" speed="0.5"></vj-otg-distort>
 			<vj-otg-distort type="zoom" factor="1.2" position="0.5, 0.5"></vj-otg-distort>
-			<vj-otg-distort type="rotate" angle="[time* 15.0]"></vj-otg-distort>
+			<vj-otg-filter type="main">float distanceFromCenter = length(centerCoord - newUV);</vj-otg-filter>
+			<vj-otg-distort type="rotate" angle="[distanceFromCenter * 100.0 * time]"></vj-otg-distort>
 			<vj-otg-filter type="texture" source="hamster"></vj-otg-filter>
 		</vj-otg-group>
 

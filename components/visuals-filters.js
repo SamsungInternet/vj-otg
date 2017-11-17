@@ -295,7 +295,7 @@ class VJOTGDistort extends VJOTGFilter {
 
 			this.shaderChunks = {
 				uniforms: parsed.angle.isLiteral ? '' : `uniform float ${parsed.angle.name};`,
-				main: `newUV = rotate2D(newUV, vec2(0.5, 0.5), ${parsed.angle.name} * deg2rad);`
+				main: `newUV = rotate2D(newUV, centerCoord, ${parsed.angle.name} * deg2rad);`
 			}
 		}
 	}
