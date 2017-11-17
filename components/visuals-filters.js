@@ -39,7 +39,6 @@ class VJOTGAssets extends HTMLElementWithRefs {
 	attributeChangedCallback(attr, oldValue, newValue) {}
 }
 
-
 class VJOTGFilter extends HTMLElementWithRefs {
 	constructor () {
 		super();
@@ -55,77 +54,11 @@ class VJOTGFilter extends HTMLElementWithRefs {
 			'gl_FragColor' :
 			this.parentNode.glLayerName; // Otherwise work on the parent layer.
 
+		// If it has custom main script...
 		const customMain = this.innerHTML.trim() || false;
 
 		// If not in a valid parent then return
 		if (!layerName) return;
-
-		if (
-			this.glAttributes.type === 'source' &&
-			this.glAttributes.value &&
-			this.glAttributes.name
-		) {
-			const source = this.parentNode.querySelector(this.glAttributes.value);
-			let texture;
-			if (source.tagName === 'VIDEO') {
-				window.addEventListener('click', () => source.play(), {
-					once: true
-				});
-				texture = new THREE.VideoTexture( source );
-			}
-			if (source.tagName === 'IMG') {
-				texture = new THREE.Texture( source );
-				source.addEventListener('load', 
-					() => texture.needsUpdate = true,
-					{ once: true }
-				);
-			}
-			texture.minFilter = THREE.LinearFilter;
-			texture.magFilter = THREE.LinearFilter;
-			texture.wrapS = THREE.RepeatWrapping;
-			texture.wrapT = THREE.RepeatWrapping;
-			texture.format = THREE.RGBFormat;
-
-			const uniform = this.parentNode.uniforms[this.glAttributes.name] || { type: 't' };
-			uniform.value = texture;
-			this.parentNode.uniforms[this.glAttributes.name] = uniform;
-
-			this.shaderChunks = {
-				uniforms: `uniform sampler2D ${this.glAttributes.name};`
-			}
-		}
-		
-		if (
-			this.glAttributes.type === 'distort:wave',
-			this.glAttributes.speed &&
-			this.glAttributes.amplitude && 
-			this.glAttributes.frequency
-		) {
-			const uniformName = `${this.name}_wave`;
-			const wave = this.parentNode.uniforms[uniformName] || { type: 'v3', value: new THREE.Vector3() };
-			this.parentNode.uniforms[uniformName] = wave;
-			wave.value.set(this.glAttributes.frequency, this.glAttributes.amplitude, this.glAttributes.speed);
-			this.shaderChunks = {
-				uniforms: `uniform vec3 ${uniformName};`,
-				main: `newUV = newUV + vec2(sin((vUv.y * ${uniformName}.x + time * 2.0 * PI * ${uniformName}.z))*${uniformName}.y, 0.0);`
-			}
-		}
-
-		if (
-			this.glAttributes.type === 'distort:zoom',
-			this.glAttributes.factor &&
-			this.glAttributes.position
-		) {
-			const uniformName = `${this.name}_zoom`;
-			const zoom = this.parentNode.uniforms[uniformName] || { type: 'v3', value: new THREE.Vector3() };
-			this.parentNode.uniforms[uniformName] = zoom;
-			parseVector3(zoom.value, this.glAttributes.position + ',' + this.glAttributes.factor);
-			this.shaderChunks = {
-				uniforms: `uniform vec3 ${uniformName};`,
-				main: `newUV = (newUV / ${uniformName}.z) + vec2(0.5, 0.5) * ${uniformName}.z - ${uniformName}.xy;`
-			}
-		}
-
 
 		if (
 			this.glAttributes.type === 'texture',
@@ -183,51 +116,6 @@ class VJOTGFilter extends HTMLElementWithRefs {
 		}
 
 		if (
-			this.glAttributes.type === 'generic-uniform-float' && 
-			this.glAttributes.name && 
-			this.glAttributes.value
-		) {
-
-			// Fetch an existing uniform to update or create a new one
-			const uniform = this.parentNode.uniforms[this.glAttributes.name] || { type: 'f' };
-			uniform.value = this.glAttributes.value;
-
-			this.parentNode.uniforms[this.glAttributes.name] = uniform;			
-			this.shaderChunks = {
-				uniforms: `uniform float ${this.glAttributes.name};`
-			}
-		}
-
-		if ( this.glAttributes.type === 'beat-uniform' ) {
-
-
-			// Fetch an existing uniform to update or create a new one
-			const beatUniform = this.parentNode.uniforms.beat || { type: 'f', value: 0 };
-			this.parentNode.uniforms.beat = beatUniform;
-			this.triggerBeat = function () {
-				beatUniform.value = 1.0;
-			}
-			this.shaderChunks = {
-				uniforms: 'uniform float beat;'
-			}
-			this.rafFn = function () {
-				beatUniform.value *= 0.9;
-			}
-		}
-		
-		if ( this.glAttributes.type === 'time-uniform' ) {
-			const timeUniform = this.parentNode.uniforms.time || { type: 'f', value: 0 };
-			this.parentNode.uniforms.time = timeUniform;
-			this.shaderChunks = {
-				uniforms: 'uniform float time;'
-			}
-			const now = Date.now();
-			this.rafFn = function () {
-				timeUniform.value = (Date.now() - now) / 1000;
-			}
-		}
-
-		if (
 			this.glAttributes.type === 'main'
 		) {
 			this.shaderChunks = {
@@ -272,12 +160,7 @@ class VJOTGFilter extends HTMLElementWithRefs {
 		'direction',
 		'size',
 		'name',
-		'source',
-		'position',
-		'factor',
-		'frequency',
-		'amplitude',
-		'speed'
+		'source'
 	]; }
 	attributeChangedCallback(attr, oldValue, newValue) {
 		this.glAttributes[attr] = newValue;
@@ -285,8 +168,252 @@ class VJOTGFilter extends HTMLElementWithRefs {
 	}
 }
 
+const translate = ['r', 'g', 'b', 'a'];
+function objectToUniforms(prefix, obj, options) {
+	options = options || {};
+	let i = -1;
+	const out = {};
+	const keys = Object.keys(obj).filter(k => k !== 'type');
+	keys.forEach(function (key) {
+		const oldValue = obj[key];
+		const temp = oldValue.match(/^\[(.*)\]$/);
+		const isLiteral = !!temp;
+		let value;
+		let name;
+		i++;
+		if (isLiteral) {
+			return out[key] = {
+				value: 0,
+				name: '(' + temp[1] + ')',
+				isLiteral: true
+			}
+		} else {
+			if (options.vector) {
+				return out[key] = {
+					name: prefix + '.' + translate[i],
+					value: Number(oldValue)
+				}
+			} else {
+				return out[key] = {
+					name: prefix + '_' + key,
+					value: Number(oldValue)
+				}
+			}
+		}
+	});
+
+	// Set the options.vector to the calculated values
+	if (options.vector) {
+		options.vector.set(...keys.map(k => out[k].value));
+	}
+	return out;
+}
+
+class VJOTGDistort extends VJOTGFilter {
+	constructor () {
+		super ();
+	}
+	static get observedAttributes () {
+		return [
+			'type',
+			'position',
+			'factor',
+			'frequency',
+			'amplitude',
+			'speed',
+			't',
+			'angle'
+		];
+	}
+	update () {
+		
+		// If this is in the top layer then work on the Fragment directly
+		const layerName = this.parentNode.tagName === 'VJ-OTG-VISUALS' ?
+			'gl_FragColor' :
+			this.parentNode.glLayerName; // Otherwise work on the parent layer.
+			
+		if (
+			this.glAttributes.type === 'wave' &&
+			this.glAttributes.speed &&
+			this.glAttributes.amplitude && 
+			this.glAttributes.frequency && 
+			this.glAttributes.t
+		) {
+			const uniformName = `${this.name}_wave`;
+			const wave = this.parentNode.uniforms[uniformName] || { type: 'v4', value: new THREE.Vector4() };
+			this.parentNode.uniforms[uniformName] = wave;
+			const parsed = objectToUniforms(
+				uniformName,
+				this.glAttributes,
+				{ vector: wave.value }
+			);
+			this.shaderChunks = {
+				uniforms: `uniform vec3 ${uniformName};`,
+				main: `newUV = newUV + vec2(sin((vUv.y * ${parsed.frequency.name} + ${parsed.t.name} * ${parsed.speed.name}) * PI) * ${parsed.amplitude.name}, 0.0);`
+			}
+		}
+			
+		if (
+			this.glAttributes.type === 'zoom' &&
+			this.glAttributes.position &&
+			this.glAttributes.factor
+		) {
+			const uniformName = `${this.name}_zoom`;
+			const zoom = this.parentNode.uniforms[uniformName] || { type: 'v4', value: new THREE.Vector4() };
+			this.parentNode.uniforms[uniformName] = zoom;
+			
+			const position = this.glAttributes.position.split(',').map(String.trim);
+			delete this.glAttributes.position;
+			this.glAttributes.positionX = position[0];
+			this.glAttributes.positionY = position[1];
+
+			const parsed = objectToUniforms(
+				uniformName,
+				this.glAttributes,
+				{ vector: zoom.value }
+			);
+
+			this.shaderChunks = {
+				uniforms: `uniform vec3 ${uniformName};`,
+				main: `newUV = (newUV / ${parsed.factor.name}) - (vec2(0.5, 0.5) / ${parsed.factor.name}) + vec2(${parsed.positionX.name},${parsed.positionY.name});`
+			}
+		}
+
+		if (
+			this.glAttributes.type === 'rotate' &&
+			this.glAttributes.angle
+		) {
+			const uniformName = `${this.name}_rotate`;
+			const parsed = objectToUniforms(
+				uniformName,
+				this.glAttributes
+			);
+	
+			const angleUniform = this.parentNode.uniforms[parsed.angle.name] || { type: 'f' };
+			this.parentNode.uniforms[parsed.angle.name] = angleUniform;
+			angleUniform.value = parsed.angle.value;
+
+			this.shaderChunks = {
+				uniforms: parsed.angle.isLiteral ? '' : `uniform float ${parsed.angle.name};`,
+				main: `newUV = rotate2D(newUV, vec2(0.5, 0.5), ${parsed.angle.name} * deg2rad);`
+			}
+		}
+	}
+}
+
+class VJOTGUniform extends VJOTGFilter {
+	constructor() {
+		super();
+	}
+	static get observedAttributes() {
+		return ['name', 'type', 'value'];
+	}
+	update() {
+
+		if (
+			this.glAttributes.type === 'generic-float' && 
+			this.glAttributes.name && 
+			this.glAttributes.value
+		) {
+
+			// Fetch an existing uniform to update or create a new one
+			const uniform = this.parentNode.uniforms[this.glAttributes.name] || { type: 'f' };
+			uniform.value = this.glAttributes.value;
+
+			this.parentNode.uniforms[this.glAttributes.name] = uniform;			
+			this.shaderChunks = {
+				uniforms: `uniform float ${this.glAttributes.name};`
+			}
+		}
+
+		if ( this.glAttributes.type === 'beat' ) {
+
+			// Fetch an existing uniform to update or create a new one
+			const beatUniform = this.parentNode.uniforms.beat || { type: 'f', value: 0 };
+			this.parentNode.uniforms.beat = beatUniform;
+			this.triggerBeat = function () {
+				beatUniform.value = 1.0;
+			}
+			this.shaderChunks = {
+				uniforms: 'uniform float beat;'
+			}
+			this.rafFn = function () {
+				beatUniform.value *= 0.9;
+			}
+		}
+		
+		if ( this.glAttributes.type === 'time' ) {
+			const timeUniform = this.parentNode.uniforms.time || { type: 'f', value: 0 };
+			this.parentNode.uniforms.time = timeUniform;
+			this.shaderChunks = {
+				uniforms: 'uniform float time;'
+			}
+			const now = Date.now();
+			this.rafFn = function () {
+				timeUniform.value = (Date.now() - now) / 1000;
+			}
+		}
+	}
+}
+
+class VJOTGSource extends VJOTGFilter {
+	constructor () {
+		super();
+	}
+	static get observedAttributes() { return [
+		'type', 'src', 'name'
+	]};
+	update () {
+
+		// If this is in the top layer then work on the Fragment directly
+		const layerName = this.parentNode.tagName === 'VJ-OTG-VISUALS' ?
+			'gl_FragColor' :
+			this.parentNode.glLayerName; // Otherwise work on the parent layer.
+
+		if (
+			this.glAttributes.type === 'texture' &&
+			this.glAttributes.src &&
+			this.glAttributes.name
+		) {
+			const source = this.parentNode.querySelector(this.glAttributes.src);
+			let texture;
+			if (source.tagName === 'VIDEO') {
+				window.addEventListener('click', () => source.play(), {
+					once: true
+				});
+				texture = new THREE.VideoTexture( source );
+			}
+			if (source.tagName === 'IMG') {
+				texture = new THREE.Texture( source );
+				source.addEventListener('load', 
+					() => texture.needsUpdate = true,
+					{ once: true }
+				);
+			}
+			texture.minFilter = THREE.LinearFilter;
+			texture.magFilter = THREE.LinearFilter;
+			texture.wrapS = THREE.RepeatWrapping;
+			texture.wrapT = THREE.RepeatWrapping;
+			texture.format = THREE.RGBFormat;
+
+			const uniform = this.parentNode.uniforms[this.glAttributes.name] || { type: 't' };
+			uniform.value = texture;
+			this.parentNode.uniforms[this.glAttributes.name] = uniform;
+
+			this.shaderChunks = {
+				uniforms: `uniform sampler2D ${this.glAttributes.name};`,
+				main: `${layerName} *= texture2D(${this.glAttributes.name}, newUV);`
+			}
+		}
+	}
+}
+
+
 window.addEventListener('DOMContentLoaded', function () {
 	customElements.define('vj-otg-assets', VJOTGAssets);
+	customElements.define('vj-otg-uniform', VJOTGUniform);
 	customElements.define('vj-otg-group', VJOTGGroup);
 	customElements.define('vj-otg-filter', VJOTGFilter);
+	customElements.define('vj-otg-source', VJOTGSource);
+	customElements.define('vj-otg-distort', VJOTGDistort);
 });

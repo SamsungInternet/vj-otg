@@ -81,7 +81,7 @@ class VJOTGVisuals extends HTMLElementWithRefs {
 		const material = this.mesh.material;
 
 		for (const el of this.children) {
-			if (el.tagName === 'VJ-OTG-FILTER' && el.rafFn) el.rafFn();
+			if (el.tagName === 'VJ-OTG-UNIFORM' && el.rafFn) el.rafFn();
 		}
 
 		material.needsUpdate = true;
@@ -90,12 +90,12 @@ class VJOTGVisuals extends HTMLElementWithRefs {
 
 	generateShader() {
 
-		var chunks = Array.from(this.querySelectorAll('VJ-OTG-FILTER, VJ-OTG-GROUP'))
+		var chunks = Array.from(this.querySelectorAll('VJ-OTG-FILTER, VJ-OTG-GROUP ,VJ-OTG-DISTORT, VJ-OTG-SOURCE, VJ-OTG-UNIFORM'))
 			.map(el => el.shaderChunks)
 			.filter(chunk => !!chunk);
 
 		var uniforms = chunks.map(a => a.uniforms).filter(chunk => !!chunk).join('\n');
-		var main = chunks.map(a => a.main).filter(chunk => !!chunk).join('\n');
+		var main = chunks.map(a => a.main).filter(chunk => !!chunk).join('\n\n			');
 
 		const fragmentShader = `
 			#define USE_MAP true
@@ -103,6 +103,7 @@ class VJOTGVisuals extends HTMLElementWithRefs {
 			
 			// Constants for Maths
 			const float PI = 3.1415926535897932384626433832795;
+			const float deg2rad = PI/180.0;
 			const vec3 normaliseHSL = vec3(1.0/360.0, 1.0, 1.0);
 			const vec3 noopVec3 = vec3(1.0, 1.0, 1.0);
 			const vec4 noopVec4 = vec4(1.0, 1.0, 1.0, 1.0);
@@ -113,6 +114,7 @@ class VJOTGVisuals extends HTMLElementWithRefs {
 			shaderChunks.noise +
 			shaderChunks.gradient + 
 			shaderChunks.splitXTexture2D +
+			shaderChunks.rotate +
 		`
 			void main() {
 				
@@ -124,7 +126,7 @@ class VJOTGVisuals extends HTMLElementWithRefs {
 			}
 		`;
 
-		console.log(fragmentShader);
+		console.log(fragmentShader.split('\n').map((l,i) => i + 101 + ': ' + l).join('\n'));
 		
 		return  new THREE.ShaderMaterial( {
 			uniforms: this.uniforms,
@@ -225,6 +227,15 @@ vec3 hsl2rgb(vec3 hsl) {
 
 vec3 hsl2rgb(float h, float s, float l) {
     return hsl2rgb(vec3(h, s, l));
+}
+`;
+
+shaderChunks.rotate = `
+vec2 rotate2D(vec2 v, vec2 o, float a) {
+	float s = sin(a);
+	float c = cos(a);
+	mat2 m = mat2(c, -s, s, c);
+	return m * (v - o) + o;
 }
 `;
 

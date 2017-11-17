@@ -30,14 +30,17 @@
         </vj-otg-assets> 
         
         <!-- One can change attributes dynamically but do not remove/reorder/add or shader should recompile -->
-        <vj-otg-filter type="source" value="#minnie" name="map"></vj-otg-filter>
-		<vj-otg-filter type="source" value="#hamster" name="hamster"></vj-otg-filter>
-        <vj-otg-filter type="beat-uniform"></vj-otg-filter>
-		<vj-otg-filter type="time-uniform"></vj-otg-filter>
+        <vj-otg-source type="texture" src="#minnie" name="map"></vj-otg-source>
+		<vj-otg-source type="texture" src="#hamster" name="hamster"></vj-otg-source>
+
+        <vj-otg-uniform type="beat"></vj-otg-uniform>
+		<vj-otg-uniform type="time"></vj-otg-uniform>
+		<vj-otg-uniform type="generic-float" name="mixUniform" value="0.9"></vj-otg-uniform>
 		
 		<vj-otg-group name="hamsterGroup">
-			<vj-otg-filter type="distort:wave" frequency="4.0" amplitude="0.1" speed="0.5"></vj-otg-filter>
-			<vj-otg-filter type="distort:zoom" factor="1.2" position="0.5, 0.5"></vj-otg-filter>
+			<vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="0.02" speed="0.5"></vj-otg-distort>
+			<vj-otg-distort type="zoom" factor="1.2" position="0.5, 0.5"></vj-otg-distort>
+			<vj-otg-distort type="rotate" angle="[time* 15.0]"></vj-otg-distort>
 			<vj-otg-filter type="texture" source="hamster"></vj-otg-filter>
 		</vj-otg-group>
 
@@ -48,9 +51,8 @@
 			<vj-otg-filter type="hsl-gradient" start="120,0.5,0.5" stop="180,1,0.8" direction="3"></vj-otg-filter>
 		</vj-otg-group>
 
-		<vj-otg-filter type="generic-uniform-float" name="mixUniform" value="0.9"></vj-otg-filter>
 		<vj-otg-filter type="main">
-			float perlinNoise = clamp(snoise(vec3(newUV * 5.0, time * 0.3)), 0.0, 1.0);
+			float perlinNoise = clamp(snoise(vec3(newUV * 5.0, mixUniform)), 0.0, 1.0);
 			[layer] = mix(videoGroup, hamsterGroup, mixUniform);
 		</vj-otg-filter>
 		
