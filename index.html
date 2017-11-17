@@ -41,7 +41,7 @@
 			<vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="0.02" speed="0.5"></vj-otg-distort>
 			<vj-otg-distort type="zoom" factor="1.2" position="0.5, 0.5"></vj-otg-distort>
 			<vj-otg-filter type="main">float distanceFromCenter = length(centerCoord - newUV);</vj-otg-filter>
-			<vj-otg-distort type="rotate" angle="[distanceFromCenter * 100.0 * time]"></vj-otg-distort>
+			<vj-otg-distort type="rotate" angle="[sqrt(distanceFromCenter) * 1000.0 * (1.0 - mixUniform) + mixUniform * 500.0 + 220.0]"></vj-otg-distort>
 			<vj-otg-filter type="texture" source="hamster"></vj-otg-filter>
 		</vj-otg-group>
 
@@ -54,7 +54,7 @@
 
 		<vj-otg-filter type="main">
 			float perlinNoise = clamp(snoise(vec3(newUV * 5.0, mixUniform)), 0.0, 1.0);
-			[layer] = mix(videoGroup, hamsterGroup, mixUniform);
+			[layer] = mix(videoGroup, hamsterGroup, mixUniform * mixUniform);
 		</vj-otg-filter>
 		
       </vj-otg-visuals>
