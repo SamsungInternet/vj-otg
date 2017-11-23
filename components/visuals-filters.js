@@ -7,7 +7,7 @@ function parseVector3(v3, str) {
 const groupTemplate = document.createElement('template');
 groupTemplate.innerHTML = '<slot></slot>';
 
-class VJOTGGroup extends HTMLElementWithRefs {
+class VJOTGGroup extends HTMLElementPlus {
 	constructor() {
 		super();
 		this.attachShadow({ mode: 'open' });
@@ -26,30 +26,31 @@ class VJOTGGroup extends HTMLElementWithRefs {
 	}
 }
 
+/**
+ * Just hides the contents.
+ */
 const assetsTemplate = document.createElement('template');
 assetsTemplate.innerHTML = '<div style="display:none;"><slot></slot></div>';
-
-class VJOTGAssets extends HTMLElementWithRefs {
+class VJOTGAssets extends HTMLElementPlus {
 	constructor() {
 		super();
 		this.attachShadow({ mode: 'open' });
 		this.shadowRoot.appendChild(assetsTemplate.content.cloneNode(true));
 	}
-	static get observedAttributes() {
-		return [];
-	}
-	attributeChangedCallback(attr, oldValue, newValue) {}
 }
 
-class VJOTGFilter extends HTMLElementWithRefs {
+/**
+ * Element for pieces of logic which transform the current Color (vec4)
+ */
+class VJOTGFilter extends HTMLElementPlus {
 	constructor() {
 		super();
 		this.name = 'filter_id_' + filterCount++;
 		this.attachShadow({ mode: 'open' });
-		this.glAttributes = {};
+		this.shadowRoot.appendChild(assetsTemplate.content.cloneNode(true));
 	}
 
-	update() {
+	allAttributesChangedCallback(glAttributes) {
 		// If this is in the top layer then work on the Fragment directly
 		const layerName =
 			this.parentNode.tagName === 'VJ-OTG-VISUALS'
@@ -62,23 +63,23 @@ class VJOTGFilter extends HTMLElementWithRefs {
 		// If not in a valid parent then return
 		if (!layerName) return;
 
-		if ((this.glAttributes.type === 'texture', this.glAttributes.source)) {
+		if ((glAttributes.type === 'texture', glAttributes.source)) {
 			if (customMain) {
 				this.shaderChunks = {
 					main: customMain.replace('[layer]', layerName)
 				};
 			} else {
 				this.shaderChunks = {
-					main: `${layerName} *= texture2D(${this.glAttributes.source}, newUV);`
+					main: `${layerName} *= texture2D(${glAttributes.source}, newUV);`
 				};
 			}
 		}
 
 		if (
-			this.glAttributes.type === 'hsl-gradient' &&
-			this.glAttributes.start &&
-			this.glAttributes.stop &&
-			this.glAttributes.direction
+			glAttributes.type === 'hsl-gradient' &&
+			glAttributes.start &&
+			glAttributes.stop &&
+			glAttributes.direction
 		) {
 			const directionU = this.parentNode.uniforms[
 				`${this.name}_gradientDirection`
@@ -96,9 +97,9 @@ class VJOTGFilter extends HTMLElementWithRefs {
 			this.parentNode.uniforms[`${this.name}_gradientStart`] = startU;
 			this.parentNode.uniforms[`${this.name}_gradientStop`] = stopU;
 
-			directionU.value = this.glAttributes.direction;
-			parseVector3(startU.value, this.glAttributes.start);
-			parseVector3(stopU.value, this.glAttributes.stop);
+			directionU.value = glAttributes.direction;
+			parseVector3(startU.value, glAttributes.start);
+			parseVector3(stopU.value, glAttributes.stop);
 
 			let main;
 			if (customMain) {
@@ -125,21 +126,21 @@ class VJOTGFilter extends HTMLElementWithRefs {
 			};
 		}
 
-		if (this.glAttributes.type === 'main') {
+		if (glAttributes.type === 'main') {
 			this.shaderChunks = {
 				main: customMain.replace('[layer]', layerName)
 			};
 		}
 
-		if (this.glAttributes.type === 'splitx' && this.glAttributes.size) {
+		if (glAttributes.type === 'splitx' && glAttributes.size) {
 			const uniformName = `${this.name}_beatFuzzDistance`;
 
-			this.glAttributes.size = Number(this.glAttributes.size);
+			glAttributes.size = Number(glAttributes.size);
 
 			const beatFuzzSizeUniform = this.parentNode.uniforms[uniformName] || {
 				type: 'f'
 			};
-			beatFuzzSizeUniform.value = this.glAttributes.size;
+			beatFuzzSizeUniform.value = glAttributes.size;
 			this.parentNode.uniforms[uniformName] = beatFuzzSizeUniform;
 
 			let main;
@@ -170,10 +171,6 @@ class VJOTGFilter extends HTMLElementWithRefs {
 			'source'
 		];
 	}
-	attributeChangedCallback(attr, oldValue, newValue) {
-		this.glAttributes[attr] = newValue;
-		this.update();
-	}
 }
 
 const translate = ['r', 'g', 'b', 'a'];
@@ -184,6 +181,9 @@ function objectToUniforms(prefix, obj, options) {
 	const keys = Object.keys(obj).filter(k => k !== 'type');
 	keys.forEach(function(key) {
 		const oldValue = obj[key];
+
+		// We don't care about anything not defined.
+		if (!oldValue) return;
 		const temp = oldValue.match(/^\[(.*)\]$/);
 		const isLiteral = !!temp;
 		let value;
@@ -212,14 +212,15 @@ function objectToUniforms(prefix, obj, options) {
 
 	// Set the options.vector to the calculated values
 	if (options.vector) {
-		options.vector.set(...keys.map(k => out[k].value));
+		options.vector.set(...Object.keys(out).map(k => out[k].value));
 	}
 	return out;
 }
 
-class VJOTGDistort extends VJOTGFilter {
+class VJOTGDistort extends HTMLElementPlus {
 	constructor() {
 		super();
+		this.name = 'distort_id_' + filterCount++;
 	}
 	static get observedAttributes() {
 		return [
@@ -233,7 +234,7 @@ class VJOTGDistort extends VJOTGFilter {
 			'angle'
 		];
 	}
-	update() {
+	allAttributesChangedCallback(glAttributes) {
 		// If this is in the top layer then work on the Fragment directly
 		const layerName =
 			this.parentNode.tagName === 'VJ-OTG-VISUALS'
@@ -241,11 +242,11 @@ class VJOTGDistort extends VJOTGFilter {
 				: this.parentNode.glLayerName; // Otherwise work on the parent layer.
 
 		if (
-			this.glAttributes.type === 'wave' &&
-			this.glAttributes.speed &&
-			this.glAttributes.amplitude &&
-			this.glAttributes.frequency &&
-			this.glAttributes.t
+			glAttributes.type === 'wave' &&
+			glAttributes.speed &&
+			glAttributes.amplitude &&
+			glAttributes.frequency &&
+			glAttributes.t
 		) {
 			const uniformName = `${this.name}_wave`;
 			const wave = this.parentNode.uniforms[uniformName] || {
@@ -253,7 +254,7 @@ class VJOTGDistort extends VJOTGFilter {
 				value: new THREE.Vector4()
 			};
 			this.parentNode.uniforms[uniformName] = wave;
-			const parsed = objectToUniforms(uniformName, this.glAttributes, {
+			const parsed = objectToUniforms(uniformName, glAttributes, {
 				vector: wave.value
 			});
 			this.shaderChunks = {
@@ -265,9 +266,9 @@ class VJOTGDistort extends VJOTGFilter {
 		}
 
 		if (
-			this.glAttributes.type === 'zoom' &&
-			this.glAttributes.position &&
-			this.glAttributes.factor
+			glAttributes.type === 'zoom' &&
+			glAttributes.position &&
+			glAttributes.factor
 		) {
 			const uniformName = `${this.name}_zoom`;
 			const zoom = this.parentNode.uniforms[uniformName] || {
@@ -276,12 +277,12 @@ class VJOTGDistort extends VJOTGFilter {
 			};
 			this.parentNode.uniforms[uniformName] = zoom;
 
-			const position = this.glAttributes.position.split(',').map(String.trim);
-			delete this.glAttributes.position;
-			this.glAttributes.positionX = position[0];
-			this.glAttributes.positionY = position[1];
+			const position = glAttributes.position.split(',').map(String.trim);
+			delete glAttributes.position;
+			glAttributes.positionX = position[0];
+			glAttributes.positionY = position[1];
 
-			const parsed = objectToUniforms(uniformName, this.glAttributes, {
+			const parsed = objectToUniforms(uniformName, glAttributes, {
 				vector: zoom.value
 			});
 
@@ -293,9 +294,9 @@ class VJOTGDistort extends VJOTGFilter {
 			};
 		}
 
-		if (this.glAttributes.type === 'rotate' && this.glAttributes.angle) {
+		if (glAttributes.type === 'rotate' && glAttributes.angle) {
 			const uniformName = `${this.name}_rotate`;
-			const parsed = objectToUniforms(uniformName, this.glAttributes);
+			const parsed = objectToUniforms(uniformName, glAttributes);
 
 			const angleUniform = this.parentNode.uniforms[parsed.angle.name] || {
 				type: 'f'
@@ -315,32 +316,33 @@ class VJOTGDistort extends VJOTGFilter {
 	}
 }
 
-class VJOTGUniform extends VJOTGFilter {
+class VJOTGUniform extends HTMLElementPlus {
 	constructor() {
 		super();
+		this.name = 'uniform_id_' + filterCount++;
 	}
 	static get observedAttributes() {
 		return ['name', 'type', 'value'];
 	}
-	update() {
+	allAttributesChangedCallback(glAttributes) {
 		if (
-			this.glAttributes.type === 'generic-float' &&
-			this.glAttributes.name &&
-			this.glAttributes.value
+			glAttributes.type === 'generic-float' &&
+			glAttributes.name &&
+			glAttributes.value
 		) {
 			// Fetch an existing uniform to update or create a new one
-			const uniform = this.parentNode.uniforms[this.glAttributes.name] || {
+			const uniform = this.parentNode.uniforms[glAttributes.name] || {
 				type: 'f'
 			};
-			uniform.value = this.glAttributes.value;
+			uniform.value = glAttributes.value;
 
-			this.parentNode.uniforms[this.glAttributes.name] = uniform;
+			this.parentNode.uniforms[glAttributes.name] = uniform;
 			this.shaderChunks = {
-				uniforms: `uniform float ${this.glAttributes.name};`
+				uniforms: `uniform float ${glAttributes.name};`
 			};
 		}
 
-		if (this.glAttributes.type === 'beat') {
+		if (glAttributes.type === 'beat') {
 			// Fetch an existing uniform to update or create a new one
 			const beatUniform = this.parentNode.uniforms.beat || {
 				type: 'f',
@@ -358,7 +360,7 @@ class VJOTGUniform extends VJOTGFilter {
 			};
 		}
 
-		if (this.glAttributes.type === 'time') {
+		if (glAttributes.type === 'time') {
 			const timeUniform = this.parentNode.uniforms.time || {
 				type: 'f',
 				value: 0
@@ -375,14 +377,15 @@ class VJOTGUniform extends VJOTGFilter {
 	}
 }
 
-class VJOTGSource extends VJOTGFilter {
+class VJOTGSource extends HTMLElementPlus {
 	constructor() {
 		super();
+		this.name = 'uniform_id_' + filterCount++;
 	}
 	static get observedAttributes() {
 		return ['type', 'src', 'name'];
 	}
-	update() {
+	allAttributesChangedCallback(glAttributes) {
 		// If this is in the top layer then work on the Fragment directly
 		const layerName =
 			this.parentNode.tagName === 'VJ-OTG-VISUALS'
@@ -390,11 +393,11 @@ class VJOTGSource extends VJOTGFilter {
 				: this.parentNode.glLayerName; // Otherwise work on the parent layer.
 
 		if (
-			this.glAttributes.type === 'texture' &&
-			this.glAttributes.src &&
-			this.glAttributes.name
+			glAttributes.type === 'texture' &&
+			glAttributes.src &&
+			glAttributes.name
 		) {
-			const source = this.parentNode.querySelector(this.glAttributes.src);
+			const source = this.parentNode.querySelector(glAttributes.src);
 			let texture;
 			if (source.tagName === 'VIDEO') {
 				window.addEventListener('click', () => source.play(), {
@@ -414,15 +417,15 @@ class VJOTGSource extends VJOTGFilter {
 			texture.wrapT = THREE.RepeatWrapping;
 			texture.format = THREE.RGBFormat;
 
-			const uniform = this.parentNode.uniforms[this.glAttributes.name] || {
+			const uniform = this.parentNode.uniforms[glAttributes.name] || {
 				type: 't'
 			};
 			uniform.value = texture;
-			this.parentNode.uniforms[this.glAttributes.name] = uniform;
+			this.parentNode.uniforms[glAttributes.name] = uniform;
 
 			this.shaderChunks = {
-				uniforms: `uniform sampler2D ${this.glAttributes.name};`,
-				main: `${layerName} *= texture2D(${this.glAttributes.name}, newUV);`
+				uniforms: `uniform sampler2D ${glAttributes.name};`,
+				main: `${layerName} *= texture2D(${glAttributes.name}, newUV);`
 			};
 		}
 	}
