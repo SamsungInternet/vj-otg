@@ -15,7 +15,7 @@ vjOTGVisuals.innerHTML = `
 	<slot></slot>
 `;
 
-class VJOTGVisuals extends HTMLElementWithRefs {
+class VJOTGVisuals extends HTMLElementPlus {
 	constructor() {
 		super();
 
