@@ -1,4 +1,5 @@
-let filterCount = 0;
+'use strict';
+/* global HTMLElementPlus, THREE */
 
 function parseVector3(v3, str) {
 	v3.set(...str.split(',').map(n => Number(n.trim())));
@@ -45,7 +46,8 @@ class VJOTGAssets extends HTMLElementPlus {
 class VJOTGFilter extends HTMLElementPlus {
 	constructor() {
 		super();
-		this.name = 'filter_id_' + filterCount++;
+		this.constructor.filterCount = this.constructor.filterCount || 0;
+		this.name = 'filter_id_' + this.constructor.filterCount++;
 		this.attachShadow({ mode: 'open' });
 		this.shadowRoot.appendChild(assetsTemplate.content.cloneNode(true));
 	}
@@ -186,8 +188,6 @@ function objectToUniforms(prefix, obj, options) {
 		if (!oldValue) return;
 		const temp = oldValue.match(/^\[(.*)\]$/);
 		const isLiteral = !!temp;
-		let value;
-		let name;
 		i++;
 		if (isLiteral) {
 			return (out[key] = {
@@ -220,7 +220,8 @@ function objectToUniforms(prefix, obj, options) {
 class VJOTGDistort extends HTMLElementPlus {
 	constructor() {
 		super();
-		this.name = 'distort_id_' + filterCount++;
+		this.constructor.filterCount = this.constructor.filterCount || 0;
+		this.name = 'distort_id_' + this.constructor.filterCount++;
 	}
 	static get observedAttributes() {
 		return [
@@ -235,12 +236,6 @@ class VJOTGDistort extends HTMLElementPlus {
 		];
 	}
 	allAttributesChangedCallback(glAttributes) {
-		// If this is in the top layer then work on the Fragment directly
-		const layerName =
-			this.parentNode.tagName === 'VJ-OTG-VISUALS'
-				? 'gl_FragColor'
-				: this.parentNode.glLayerName; // Otherwise work on the parent layer.
-
 		if (
 			glAttributes.type === 'wave' &&
 			glAttributes.speed &&
@@ -319,7 +314,8 @@ class VJOTGDistort extends HTMLElementPlus {
 class VJOTGUniform extends HTMLElementPlus {
 	constructor() {
 		super();
-		this.name = 'uniform_id_' + filterCount++;
+		this.constructor.filterCount = this.constructor.filterCount || 0;
+		this.name = 'uniform_id_' + this.constructor.filterCount++;
 	}
 	static get observedAttributes() {
 		return ['name', 'type', 'value'];
@@ -380,7 +376,8 @@ class VJOTGUniform extends HTMLElementPlus {
 class VJOTGSource extends HTMLElementPlus {
 	constructor() {
 		super();
-		this.name = 'uniform_id_' + filterCount++;
+		this.constructor.filterCount = this.constructor.filterCount || 0;
+		this.name = 'uniform_id_' + this.constructor.filterCount++;
 	}
 	static get observedAttributes() {
 		return ['type', 'src', 'name'];

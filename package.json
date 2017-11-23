@@ -1,0 +1,50 @@
+{
+	"name": "vj-otg",
+	"version": "1.0.0",
+	"description": "Video DJ on the Go!!!",
+	"main": "",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/SamsungInternet/vj-otg.git"
+	},
+	"author": "",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/SamsungInternet/vj-otg/issues"
+	},
+	"eslintConfig": {
+		"env": {
+			"browser": true,
+			"es6": true
+		},
+		"rules": {
+			"no-unused-vars": 2,
+			"no-undef": 2,
+			"eqeqeq": 2,
+			"no-underscore-dangle": 0,
+			"guard-for-in": 2,
+			"no-extend-native": 2,
+			"wrap-iife": 2,
+			"new-cap": 2,
+			"no-caller": 2,
+			"quotes": [1, "single"],
+			"indent": ["error", "tab"],
+			"no-loop-func": 2,
+			"no-irregular-whitespace": 2,
+			"no-multi-spaces": 2,
+			"one-var": [2, "never"],
+			"no-var": 1,
+			"strict": [1, "global"]
+		},
+		"root": true
+	},
+	"homepage": "https://github.com/SamsungInternet/vj-otg#readme",
+	"prettier": {
+		"useTabs": true,
+		"singleQuote": true,
+		"bracketSpacing": true
+	}
+}
