@@ -1,11 +1,9 @@
-/* global THREE, Detector*/
-var stats, scene, renderer, composer;
-var camera, cameraControls;
-var w = 480,
-	h = 320;
+'use strict';
+/* global THREE, Detector, HTMLElementPlus */
+const w = 480;
+const h = 320;
 
 const vjOTGVisuals = document.createElement('template');
-
 vjOTGVisuals.innerHTML = `
 	<style>
 	vj-otg-assets {
@@ -15,24 +13,26 @@ vjOTGVisuals.innerHTML = `
 	<slot></slot>
 `;
 
+const glslFunctionSet = new Set();
+
 class VJOTGVisuals extends HTMLElementPlus {
 	constructor() {
 		super();
+		this.uniforms = {};
 
 		this.tabIndex = 0;
 		this.attachShadow({ mode: 'open' });
 		this.shadowRoot.appendChild(vjOTGVisuals.content.cloneNode(true));
 
-		if (Detector.webgl) {
-			renderer = new THREE.WebGLRenderer({
-				antialias: false,
-				preserveDrawingBuffer: false
-			});
-			renderer.setClearColor(0xbbbbbb);
-		} else {
+		if (!Detector.webgl) {
 			Detector.addGetWebGLMessage();
 			return true;
 		}
+		const renderer = new THREE.WebGLRenderer({
+			antialias: false,
+			preserveDrawingBuffer: false
+		});
+		renderer.setClearColor(0xbbbbbb);
 		renderer.setSize(480, 320);
 		this.shadowRoot.appendChild(renderer.domElement);
 
@@ -43,12 +43,12 @@ class VJOTGVisuals extends HTMLElementPlus {
 		// ---------------------------
 
 		// create a scene
-		scene = new THREE.Scene();
+		const scene = new THREE.Scene();
 
 		// put a camera in the scene
-		var cameraH = 3;
-		var cameraW = cameraH / h * w;
-		camera = new THREE.OrthographicCamera(
+		const cameraH = 3;
+		const cameraW = cameraH / h * w;
+		const camera = new THREE.OrthographicCamera(
 			-cameraW / 2,
 			+cameraW / 2,
 			cameraH / 2,
@@ -59,15 +59,13 @@ class VJOTGVisuals extends HTMLElementPlus {
 		camera.position.set(0, 0, 5);
 		scene.add(camera);
 
-		var light = new THREE.AmbientLight(Math.random() * 0xffffff);
+		const light = new THREE.AmbientLight(Math.random() * 0xffffff);
 		scene.add(light);
 
-		var geometry = new THREE.PlaneGeometry(cameraW, cameraH);
-
-		this.uniforms = {};
+		const geometry = new THREE.PlaneGeometry(cameraW, cameraH);
 
 		this.dirty = true;
-		var material = new THREE.MeshBasicMaterial();
+		const material = new THREE.MeshBasicMaterial();
 		this.mesh = new THREE.Mesh(geometry, material);
 		scene.add(this.mesh);
 
@@ -75,6 +73,9 @@ class VJOTGVisuals extends HTMLElementPlus {
 		this.i = 0;
 
 		this.__animate = this.__animate.bind(this);
+		this.__renderer = renderer;
+		this.__scene = scene;
+		this.__camera = camera;
 		requestAnimationFrame(this.__animate);
 	}
 
@@ -97,19 +98,23 @@ class VJOTGVisuals extends HTMLElementPlus {
 	}
 
 	generateShader() {
-		var chunks = Array.from(
+
+		const chunks = Array.from(
 			this.querySelectorAll(
 				'VJ-OTG-FILTER, VJ-OTG-GROUP ,VJ-OTG-DISTORT, VJ-OTG-SOURCE, VJ-OTG-UNIFORM'
 			)
 		)
-			.map(el => el.shaderChunks)
+			.map(el => {
+				if (el.constructor.glslFunction) glslFunctionSet.add(el.constructor.glslFunction());
+				return el.shaderChunks
+			})
 			.filter(chunk => !!chunk);
 
-		var uniforms = chunks
+		const uniforms = chunks
 			.map(a => a.uniforms)
 			.filter(chunk => !!chunk)
 			.join('\n');
-		var main = chunks
+		const main = chunks
 			.map(a => a.main)
 			.filter(chunk => !!chunk)
 			.join('\n\n			');
@@ -131,10 +136,8 @@ class VJOTGVisuals extends HTMLElementPlus {
 		` +
 			uniforms +
 			shaderChunks.hsl +
+			Array.from(glslFunctionSet).join('\n\n') +
 			shaderChunks.noise +
-			shaderChunks.gradient +
-			shaderChunks.splitXTexture2D +
-			shaderChunks.rotate +
 			`
 			void main() {
 				
@@ -170,43 +173,13 @@ class VJOTGVisuals extends HTMLElementPlus {
 
 	// render the scene
 	__render() {
-		// variable which is increase by Math.PI every seconds - usefull for animation
-		var PIseconds = Date.now() * Math.PI;
-
-		// actually render the scene
-		renderer.render(scene, camera);
+		this.__renderer.render(this.__scene, this.__camera);
 	}
 }
 
-window.addEventListener('DOMContentLoaded', function() {
-	customElements.define('vj-otg-visuals', VJOTGVisuals);
-});
+customElements.define('vj-otg-visuals', VJOTGVisuals);
 
 const shaderChunks = {};
-
-shaderChunks.splitXTexture2D = `
-vec4 splitXTexture2D(sampler2D map, vec2 coord, float distance) {
-	vec4 mapTexel1 = texture2D( map, vec2(coord.x + distance, coord.y));
-	vec4 mapTexel2 = texture2D( map, vec2(coord.x -distance, coord.y));
-	return (mapTexel1 + mapTexel2) / 2.0;
-}`;
-
-shaderChunks.gradient = `
-vec4 hslGradient(vec2 coord, int gradientDirection, vec3 gradientStart, vec3 gradientStop) {
-	vec4 gradient = noopVec4; // 1,1,1,1
-	if (gradientDirection != 0) {
-		float gradientMixFactor = 1.0-coord.y;
-		if (gradientDirection == 2) gradientMixFactor = length(coord - vec2(1.0, 1.0));
-		if (gradientDirection == 3) gradientMixFactor = 1.0-coord.x;
-		if (gradientDirection == 4) gradientMixFactor = length(coord - vec2(1.0, 0.0));
-		if (gradientDirection == 5) gradientMixFactor = coord.y;
-		if (gradientDirection == 6) gradientMixFactor = length(coord - vec2(0.0, 0.0));
-		if (gradientDirection == 7) gradientMixFactor = coord.x;
-		if (gradientDirection == 8) gradientMixFactor = length(coord - vec2(0.0, 1.0));
-		gradient = vec4(hsl2rgb(mix(gradientStart, gradientStop, gradientMixFactor) * normaliseHSL), 1.0);
-	}
-	return gradient;
-}`;
 
 shaderChunks.hsl = `
 // From https://github.com/Jam3/glsl-hsl2rgb/blob/master/index.glsl
@@ -253,15 +226,6 @@ vec3 hsl2rgb(vec3 hsl) {
 
 vec3 hsl2rgb(float h, float s, float l) {
     return hsl2rgb(vec3(h, s, l));
-}
-`;
-
-shaderChunks.rotate = `
-vec2 rotate2D(vec2 v, vec2 o, float a) {
-	float s = sin(a);
-	float c = cos(a);
-	mat2 m = mat2(c, -s, s, c);
-	return m * (v - o) + o;
 }
 `;
 
