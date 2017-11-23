@@ -1,7 +1,8 @@
 /* global THREE, Detector*/
 var stats, scene, renderer, composer;
 var camera, cameraControls;
-var w=480, h=320;
+var w = 480,
+	h = 320;
 
 const vjOTGVisuals = document.createElement('template');
 
@@ -19,20 +20,20 @@ class VJOTGVisuals extends HTMLElementWithRefs {
 		super();
 
 		this.tabIndex = 0;
-		this.attachShadow({mode: 'open'});
+		this.attachShadow({ mode: 'open' });
 		this.shadowRoot.appendChild(vjOTGVisuals.content.cloneNode(true));
 
-		if( Detector.webgl ){
+		if (Detector.webgl) {
 			renderer = new THREE.WebGLRenderer({
 				antialias: false,
 				preserveDrawingBuffer: false
 			});
-			renderer.setClearColor( 0xbbbbbb );
-		}else{
+			renderer.setClearColor(0xbbbbbb);
+		} else {
 			Detector.addGetWebGLMessage();
 			return true;
 		}
-		renderer.setSize( 480, 320 );
+		renderer.setSize(480, 320);
 		this.shadowRoot.appendChild(renderer.domElement);
 
 		renderer.domElement.style.width = 'auto';
@@ -45,33 +46,40 @@ class VJOTGVisuals extends HTMLElementWithRefs {
 		scene = new THREE.Scene();
 
 		// put a camera in the scene
-		var cameraH	= 3;
-		var cameraW	= cameraH / h * w;
-		camera	= new THREE.OrthographicCamera( -cameraW/2, +cameraW/2, cameraH/2, -cameraH/2, -10000, 10000 );
+		var cameraH = 3;
+		var cameraW = cameraH / h * w;
+		camera = new THREE.OrthographicCamera(
+			-cameraW / 2,
+			+cameraW / 2,
+			cameraH / 2,
+			-cameraH / 2,
+			-10000,
+			10000
+		);
 		camera.position.set(0, 0, 5);
 		scene.add(camera);
 
-		var light	= new THREE.AmbientLight( Math.random() * 0xffffff );
-		scene.add( light );
+		var light = new THREE.AmbientLight(Math.random() * 0xffffff);
+		scene.add(light);
 
-		var geometry = new THREE.PlaneGeometry( cameraW, cameraH );
+		var geometry = new THREE.PlaneGeometry(cameraW, cameraH);
 
 		this.uniforms = {};
 
 		this.dirty = true;
 		var material = new THREE.MeshBasicMaterial();
-		this.mesh = new THREE.Mesh( geometry, material); 
-		scene.add( this.mesh );
+		this.mesh = new THREE.Mesh(geometry, material);
+		scene.add(this.mesh);
 
 		// animation loop
-		this.i=0;
+		this.i = 0;
 
 		this.__animate = this.__animate.bind(this);
 		requestAnimationFrame(this.__animate);
 	}
 
 	__animate() {
-		requestAnimationFrame( this.__animate );
+		requestAnimationFrame(this.__animate);
 
 		if (this.dirty) {
 			this.mesh.material = this.generateShader();
@@ -89,15 +97,25 @@ class VJOTGVisuals extends HTMLElementWithRefs {
 	}
 
 	generateShader() {
-
-		var chunks = Array.from(this.querySelectorAll('VJ-OTG-FILTER, VJ-OTG-GROUP ,VJ-OTG-DISTORT, VJ-OTG-SOURCE, VJ-OTG-UNIFORM'))
+		var chunks = Array.from(
+			this.querySelectorAll(
+				'VJ-OTG-FILTER, VJ-OTG-GROUP ,VJ-OTG-DISTORT, VJ-OTG-SOURCE, VJ-OTG-UNIFORM'
+			)
+		)
 			.map(el => el.shaderChunks)
 			.filter(chunk => !!chunk);
 
-		var uniforms = chunks.map(a => a.uniforms).filter(chunk => !!chunk).join('\n');
-		var main = chunks.map(a => a.main).filter(chunk => !!chunk).join('\n\n			');
+		var uniforms = chunks
+			.map(a => a.uniforms)
+			.filter(chunk => !!chunk)
+			.join('\n');
+		var main = chunks
+			.map(a => a.main)
+			.filter(chunk => !!chunk)
+			.join('\n\n			');
 
-		const fragmentShader = `
+		const fragmentShader =
+			`
 			#define USE_MAP true
 			varying vec2 vUv;
 			
@@ -110,26 +128,34 @@ class VJOTGVisuals extends HTMLElementWithRefs {
 			const vec4 noopVec4 = vec4(1.0, 1.0, 1.0, 1.0);
 
 			// Uniforms
-		` + uniforms +
+		` +
+			uniforms +
 			shaderChunks.hsl +
 			shaderChunks.noise +
-			shaderChunks.gradient + 
+			shaderChunks.gradient +
 			shaderChunks.splitXTexture2D +
 			shaderChunks.rotate +
-		`
+			`
 			void main() {
 				
 				// Change this to skew or warp the texture
 				vec2 newUV = vUv + vec2(0.0, 0.0);
 
 				gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-				` + main + `
+				` +
+			main +
+			`
 			}
 		`;
 
-		console.log(fragmentShader.split('\n').map((l,i) => i + 101 + ': ' + l).join('\n'));
-		
-		return  new THREE.ShaderMaterial( {
+		console.log(
+			fragmentShader
+				.split('\n')
+				.map((l, i) => i + 101 + ': ' + l)
+				.join('\n')
+		);
+
+		return new THREE.ShaderMaterial({
 			uniforms: this.uniforms,
 			vertexShader: `
 				varying vec2 vUv;
@@ -144,16 +170,15 @@ class VJOTGVisuals extends HTMLElementWithRefs {
 
 	// render the scene
 	__render() {
-
 		// variable which is increase by Math.PI every seconds - usefull for animation
 		var PIseconds = Date.now() * Math.PI;
 
 		// actually render the scene
-		renderer.render( scene, camera );
+		renderer.render(scene, camera);
 	}
 }
 
-window.addEventListener('DOMContentLoaded', function () {
+window.addEventListener('DOMContentLoaded', function() {
 	customElements.define('vj-otg-visuals', VJOTGVisuals);
 });
 
