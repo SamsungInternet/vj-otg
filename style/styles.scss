@@ -1,13 +1,31 @@
 /* Contents
+0. vars
 1. reset - because yeh bite me
 2. base
 3. thumbnails
 4. form controls (effects)
 */
 
+// 0 vars
+@font-face {
+  font-family: 'Titillium';
+  src: url('TitilliumWeb-Light.ttf');
+}
+$font: 'Titillium', Arial, sans-serif;
+$purple:hsla(272, 94%, 70%, 1.0);
+$blue:hsla(194, 89%, 56%, 1.0);
+$green:hsla(150, 92%, 54%, 1.0);
+$offWhite:hsla(210, 25%, 98%, 1.0);
+$black:hsla(0, 0%, 35%, 1.0);
+
+@mixin gradient($degVal) {
+  background-image: linear-gradient(#{$degVal}deg, $purple, $blue, $green);
+}
+
 h1 {
   color: fuchsia;
 }
+
 
 #loading-screen {
   position: absolute;

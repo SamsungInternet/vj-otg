@@ -220,7 +220,6 @@ function getStreamData() {
     .then(source => {
       source.connect(analyserNode);
       console.log('got stream');
-    
     });
 }
 getStreamData();
