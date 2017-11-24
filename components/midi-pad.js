@@ -29,11 +29,10 @@ padTemplate.innerHTML = `
   .midi-control__label {
     display: block;
     margin-bottom:0.5em;
-    font-size: 1.1em;
   }
   .midi-control__button--pad {
     display: block;
-    width: 20vh; height: 20vh;
+    width: 20vmin; height: 20vmin;
     margin: 0px auto;
     position: relative;
     cursor: pointer;

@@ -24,19 +24,18 @@ const containerTemplate = document.createElement('template');
 containerTemplate.innerHTML = `
   <style>
   .midi-control__group {
-    padding:1.1em 5%;
+    padding:2vm;
   }
   .midi-control__label {
-    display: block;
-    margin-bottom:0.5em;
-    font-size: 1.1em;
+    display: inline-block;
+    width: 30%;
   }
   .midi-control__input--slider,
   .midi-control__input--slider::-webkit-slider-thumblider-runnable-track {
-    display: block;
+    display: inline-block;
     margin: 0px auto;
     position: relative;
-    height: 24px; width: 100%;
+    height: 24px; width: 68%;
     cursor: pointer;
     background-color: black;
     background-image:linear-gradient(90deg, black, fuchsia);

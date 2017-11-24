@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="style/styles.css">
     <script src="vendor/three.js/three.min.js"></script>
 	<script src="vendor/three.js/Detector.js"></script>
 	<script src="https://cdn.rawgit.com/webcomponents/webcomponentsjs/edf84e6e/webcomponents-sd-ce.js"></script>
@@ -65,96 +65,112 @@
       </vj-otg-visuals>
     </div><!--screen-->
 
-    <div class="card-switcher">
-      
-      <section class="card sel-list sel-list--large" data-content="media">
-        <ul>
-          <li class="sel-list__thumb" data-asset="clipnamehere">
-            <img src="https://placeimg.com/640/480/animals?t=1509706000630" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-asset="clipnamehere">
-            <img src="https://placeimg.com/640/480/animals?t=1509706013764" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-asset="clipnamehere">
-            <img src="https://placeimg.com/640/480/animals?t=1509706030379" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-asset="clipnamehere">
-            <img src="https://placeimg.com/640/480/animals?t=1509706049629" alt="" />
-          </li>
-        </ul>
-      </section>
-      
-      <section class="card sel-list" data-content="effects">
-        <ul>
-          <li class="sel-list__thumb" data-effect="glitch">
-            <img src="http://via.placeholder.com/230x170" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-effect="old-film">
-            <img src="http://via.placeholder.com/230x170" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-effect="noise">
-            <img src="http://via.placeholder.com/230x170" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-effect="colorise">
-            <img src="http://via.placeholder.com/230x170" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-effect="desaturate">
-            <img src="http://via.placeholder.com/230x170" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-effect="hue-rotate">
-            <img src="http://via.placeholder.com/230x170" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-effect="blur">
-            <img src="http://via.placeholder.com/230x170" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-effect="invert">
-            <img src="http://via.placeholder.com/230x170" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-effect="zoom">
-            <img src="http://via.placeholder.com/230x170" alt="" />
-          </li>
-          
-        </ul>
-      </section>
-      
-      <section class="card card--show" data-content="control">
-      
-        <section class="control">
-
-          <midi-cc channel="144" value="64">Bass</midi-cc>
-
-          <midi-pad channel="144" note="63">Pad</midi-pad>
-
-          <midi-toggle channel="144" note="59" state="off">Toggle</midi-toggle>
-          
-        </section>
-      
-      </section>
-      
-    </div>
-
-    <nav class="card__nav">
-      <button class="btn__icon--active" data-show="media">Media</button>
-      <button class="btn__icon" data-show="effects">Effects</button>
-      <button class="btn__icon" data-show="control">Control</button>
+    <nav class="media__select">
+      <ul>
+        <li class="thumb thumb__master" data-media="master">
+          <span>M</span>
+        </li>
+        <li class="thumb" data-media="minie">
+          <img src="./assets/" alt="Thumbnail of Minnie video clip" />
+        </li>
+        <li class="thumb" data-media="hamster">
+          <img src="./assets/hamster.jpg" alt="" />
+        </li>
+        <li class="thumb thumb--active" data-media="shera">
+          <img class="thumb" src="./assets/shera.jpg" alt="" />
+        </li>
+      </ul>
     </nav>
 
-    </div>    
-  </div>
+    <section class="media__fx" data-fxfor="master">
+
+      <section class="fx--opacity">
+        <h3>Opacity</h3>
+        <midi-cc channel="144" value="64">Mix Amount</midi-cc>
+        <midi-toggle channel="144" note="59" state="off">On/Off</midi-toggle>
+        <midi-pad channel="144" note="63">Flash</midi-pad>
+      </section>
+
+      <section class="fx--noise">
+        <h3>Noise</h3>
+        <midi-cc channel="144" value="64">Size</midi-cc>
+        <midi-cc channel="144" value="64">Amount</midi-cc>
+      </section>
+
+    </section>
+
+    <section class="media__fx" data-fxfor="hamster">
+    
+      <section class="fx--opacity">
+        <h3>Opacity</h3>
+        <midi-cc channel="144" value="64">Mix Amount</midi-cc>
+        <midi-toggle channel="144" note="59" state="off">On/Off</midi-toggle>
+        <midi-pad channel="144" note="63">Flash</midi-pad>
+      </section>
+    
+      <section class="fx--wave">
+        <h3>Wave</h3>
+        <midi-cc channel="144" value="64">Frequency</midi-cc>
+        <midi-cc channel="144" value="64">Amplitude</midi-cc>
+        <midi-cc channel="144" value="64">Speed</midi-cc>
+      </section>
+    
+      <section class="fx--zoom">
+        <h3>Zoom</h3>
+        <midi-cc channel="144" value="64">Amount</midi-cc>
+        <midi-cc channel="144" value="64">X Pos</midi-cc>
+        <midi-cc channel="144" value="64">Y Pos</midi-cc>
+      </section>
+    
+      <section class="fx--rotate">
+        <h3>Rotate</h3>
+        <midi-cc channel="144" value="64">Degrees</midi-cc>
+      </section>
+    
+    </section>
+
+    <section class="media__fx" data-fxfor="minnie">
+
+      <section class="fx--opacity">
+        <h3>Opacity</h3>
+        <midi-cc channel="144" value="64">Mix Amount</midi-cc>
+        <midi-toggle channel="144" note="59" state="off">On/Off</midi-toggle>
+        <midi-pad channel="144" note="63">Flash</midi-pad>
+      </section>
+
+      <section class="fx--hsl">
+        <h3>Colour</h3>
+        <midi-cc channel="144" value="64">Rotate</midi-cc>
+      </section>
+
+      <section class="fx--split">
+        <h3>Split Screen</h3>
+        <midi-toggle channel="144" note="59" state="off">Split</midi-toggle>
+      </section>
+
+    </section>
+
+    <!-- <midi-cc channel="144" value="64">Bass</midi-cc>
+    
+    <midi-pad channel="144" note="63">Pad</midi-pad>
+    
+    <midi-toggle channel="144" note="59" state="off">Toggle</midi-toggle> -->
+      
+  </div><!--wrapper-->
 
 <script type="text/javascript">
   
 // simple show hide of cards~~~~~~~~~~~~~~~~
-  const nav = document.querySelector('.card__nav'),
-    cards = document.querySelectorAll('.card');
+  const nav = document.querySelector('.media__select'),
+    fxSets = document.querySelectorAll('.media__fx');
 
   nav.addEventListener("click", function(e) {
 
-    for (let i=0; i<cards.length; i++) {
-      if (e.target.dataset.show === cards[i].dataset.content) {
-        showHideEl(cards[i], 'block', true);
+    for (let i=0; i<fxSets.length; i++) {
+      if (e.target.dataset.media === fxSets[i].dataset.fxfor) {
+        showHideEl(fxSets[i], 'block', true);
       } else {
-        showHideEl(cards[i], 'block', false);
+        showHideEl(fxSets[i], 'block', false);
       }
     }
 
