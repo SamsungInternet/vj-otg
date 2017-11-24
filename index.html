@@ -1,186 +1,188 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Hello!</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <link rel="stylesheet" href="/style/styles.css">
-    <script src="vendor/three.js/three.min.js"></script>
+
+<head>
+	<title>Hello!</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="stylesheet" href="/style/styles.css">
+	<script src="vendor/three.js/three.min.js"></script>
 	<script src="vendor/three.js/Detector.js"></script>
 	<script src="https://cdn.rawgit.com/webcomponents/webcomponentsjs/edf84e6e/webcomponents-sd-ce.js"></script>
 	<script src="/components/html-element-with-refs.js"></script>
 	<script src="/components/html-element-plus.js"></script>
 
-    <script src="/components/visuals/visuals.js" defer></script>
-    <script src="/components/visuals/group.js" defer></script>
-    <script src="/components/visuals/asset.js" defer></script>
-    <script src="/components/visuals/distort.js" defer></script>
-    <script src="/components/visuals/filter.js" defer></script>
-    <script src="/components/visuals/source.js" defer></script>
-    <script src="/components/visuals/uniforms.js" defer></script>
+	<script src="/components/visuals/visuals.js" defer></script>
+	<script src="/components/visuals/group.js" defer></script>
+	<script src="/components/visuals/asset.js" defer></script>
+	<script src="/components/visuals/distort.js" defer></script>
+	<script src="/components/visuals/filter.js" defer></script>
+	<script src="/components/visuals/source.js" defer></script>
+	<script src="/components/visuals/uniforms.js" defer></script>
 
-    <script src="/components/midi-cc.js" defer></script>
-    <script src="/components/midi-pad.js" defer></script>
-    <script src="/components/midi-toggle.js" defer></script>
-    <script src="/main.js" defer></script>
-  </head>
-  <body><div class="wrapper" id="vjotg">
+	<script src="/components/midi-cc.js" defer></script>
+	<script src="/components/midi-pad.js" defer></script>
+	<script src="/components/midi-toggle.js" defer></script>
+	<script src="/main.js" defer></script>
+</head>
 
-    <header>
-      <h1>VJ On.The.Go</h1>
-    </header>
+<body>
+	<div class="wrapper" id="vjotg">
 
-      <!-- Where visuals.js does it's rendering -->
-    <div id="screen">
-      <vj-otg-visuals>
-        <vj-otg-assets>
-          <video id="minnie" src="./assets/minnie-512.webm" width="512" height="512" autoplay="true" loop="true" controls="true"></video>
-          <img id="shera" src="./assets/shera.jpg" />
-          <img id="hamster" src="./assets/hamster.jpg" />
-        </vj-otg-assets> 
-        
-        <!-- One can change attributes dynamically but do not remove/reorder/add or shader should recompile -->
-        <vj-otg-source type="texture" src="#minnie" name="minnie" index="1"></vj-otg-source>
-		<vj-otg-source type="texture" src="#hamster" name="hamster" index="2"></vj-otg-source>
-		<vj-otg-source type="texture" src="#shera" name="shera" index="3"></vj-otg-source>
+		<header>
+			<h1>VJ On.The.Go</h1>
+		</header>
 
-        <vj-otg-uniform type="beat"></vj-otg-uniform>
-		    <vj-otg-uniform type="time"></vj-otg-uniform>
-		    <vj-otg-uniform type="generic-float" name="mixUniform" value="0.9"></vj-otg-uniform>
-		
-		    <vj-otg-group name="hamsterGroup">
-          <vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="0.02" speed="0.5"></vj-otg-distort>
-          <vj-otg-distort type="zoom" factor="1.2" position="0.5, 0.5"></vj-otg-distort>
-          <vj-otg-filter type="main">float distanceFromCenter = length(centerCoord - newUV);</vj-otg-filter>
-          <vj-otg-distort type="rotate" angle="[sqrt(distanceFromCenter) * 1000.0 * (1.0 - mixUniform) + mixUniform * 500.0 + 220.0]"></vj-otg-distort>
-          <vj-otg-filter type="from-source" source="3"></vj-otg-filter>
-		    </vj-otg-group>
+		<!-- Where visuals.js does it's rendering -->
+		<div id="screen">
+			<vj-otg-visuals>
+				<vj-otg-assets>
+					<video id="minnie" src="./assets/minnie-512.webm" width="512" height="512" autoplay="true" loop="true" controls="true"></video>
+					<img id="shera" src="./assets/shera.jpg" />
+					<img id="hamster" src="./assets/hamster.jpg" />
+				</vj-otg-assets>
 
-        <vj-otg-group name="videoGroup">
-          <vj-otg-filter type="splitx" size="0.05">
-            [layer] *= splitXTexture2D(minnie, newUV, [size] * beat);
-          </vj-otg-filter>
-          <vj-otg-filter type="hsl-gradient" start="120,0.5,0.5" stop="180,1,0.8" direction="3"></vj-otg-filter>
-        </vj-otg-group>
+				<!-- One can change attributes dynamically but do not remove/reorder/add or shader should recompile -->
+				<vj-otg-source type="texture" src="#minnie" name="minnie" index="1"></vj-otg-source>
+				<vj-otg-source type="texture" src="#hamster" name="hamster" index="2"></vj-otg-source>
+				<vj-otg-source type="texture" src="#shera" name="shera" index="3"></vj-otg-source>
 
-        <vj-otg-filter type="main">
-          float perlinNoise = clamp(snoise(vec3(newUV * 5.0, mixUniform)), 0.0, 1.0);
-          [layer] = mix(videoGroup, hamsterGroup, mixUniform * mixUniform);
-        </vj-otg-filter>
-		
-      </vj-otg-visuals>
-    </div><!--screen-->
+				<vj-otg-uniform type="beat"></vj-otg-uniform>
+				<vj-otg-uniform type="time"></vj-otg-uniform>
+				<vj-otg-uniform type="generic-float" name="mixUniform" value="0.9"></vj-otg-uniform>
 
-    <div class="card-switcher">
-      
-      <section class="card sel-list sel-list--large" data-content="media">
-        <ul>
-          <li class="sel-list__thumb" data-asset="clipnamehere">
-            <img src="https://placeimg.com/640/480/animals?t=1509706000630" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-asset="clipnamehere">
-            <img src="https://placeimg.com/640/480/animals?t=1509706013764" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-asset="clipnamehere">
-            <img src="https://placeimg.com/640/480/animals?t=1509706030379" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-asset="clipnamehere">
-            <img src="https://placeimg.com/640/480/animals?t=1509706049629" alt="" />
-          </li>
-        </ul>
-      </section>
-      
-      <section class="card sel-list" data-content="effects">
-        <ul>
-          <li class="sel-list__thumb" data-effect="glitch">
-            <img src="http://via.placeholder.com/230x170" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-effect="old-film">
-            <img src="http://via.placeholder.com/230x170" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-effect="noise">
-            <img src="http://via.placeholder.com/230x170" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-effect="colorise">
-            <img src="http://via.placeholder.com/230x170" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-effect="desaturate">
-            <img src="http://via.placeholder.com/230x170" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-effect="hue-rotate">
-            <img src="http://via.placeholder.com/230x170" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-effect="blur">
-            <img src="http://via.placeholder.com/230x170" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-effect="invert">
-            <img src="http://via.placeholder.com/230x170" alt="" />
-          </li>
-          <li class="sel-list__thumb" data-effect="zoom">
-            <img src="http://via.placeholder.com/230x170" alt="" />
-          </li>
-          
-        </ul>
-      </section>
-      
-      <section class="card card--show" data-content="control">
-      
-        <section class="control">
+				<vj-otg-group name="hamsterGroup">
+					<vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="0.02" speed="0.5"></vj-otg-distort>
+					<vj-otg-distort type="zoom" factor="1.2" position="0.5, 0.5"></vj-otg-distort>
+					<vj-otg-filter type="main">float distanceFromCenter = length(centerCoord - newUV);</vj-otg-filter>
+					<vj-otg-distort type="rotate" angle="[sqrt(distanceFromCenter) * 1000.0 * (1.0 - mixUniform) + mixUniform * 500.0 + 220.0]"></vj-otg-distort>
+					<vj-otg-filter type="from-source" source="3"></vj-otg-filter>
+				</vj-otg-group>
 
-          <midi-cc channel="144" value="64">Bass</midi-cc>
+				<vj-otg-group name="videoGroup">
+					<vj-otg-filter type="splitx" size="[beat * 0.05]"></vj-otg-filter>
+					<vj-otg-filter type="hsl-gradient" start="120,0.5,0.5" stop="180,1,0.8" direction="3"></vj-otg-filter>
+				</vj-otg-group>
 
-          <midi-pad channel="144" note="63">Pad</midi-pad>
+				<vj-otg-filter type="main">
+					float perlinNoise = clamp(snoise(vec3(newUV * 5.0, mixUniform)), 0.0, 1.0); [layer] = mix(videoGroup, hamsterGroup, mixUniform * mixUniform);
+				</vj-otg-filter>
 
-          <midi-toggle channel="144" note="59" state="off">Toggle</midi-toggle>
-          
-        </section>
-      
-      </section>
-      
-    </div>
+			</vj-otg-visuals>
+		</div>
+		<!--screen-->
 
-    <nav class="card__nav">
-      <button class="btn__icon--active" data-show="media">Media</button>
-      <button class="btn__icon" data-show="effects">Effects</button>
-      <button class="btn__icon" data-show="control">Control</button>
-    </nav>
+		<div class="card-switcher">
 
-    </div>    
-  </div>
+			<section class="card sel-list sel-list--large" data-content="media">
+				<ul>
+					<li class="sel-list__thumb" data-asset="clipnamehere">
+						<img src="https://placeimg.com/640/480/animals?t=1509706000630" alt="" />
+					</li>
+					<li class="sel-list__thumb" data-asset="clipnamehere">
+						<img src="https://placeimg.com/640/480/animals?t=1509706013764" alt="" />
+					</li>
+					<li class="sel-list__thumb" data-asset="clipnamehere">
+						<img src="https://placeimg.com/640/480/animals?t=1509706030379" alt="" />
+					</li>
+					<li class="sel-list__thumb" data-asset="clipnamehere">
+						<img src="https://placeimg.com/640/480/animals?t=1509706049629" alt="" />
+					</li>
+				</ul>
+			</section>
 
-<script type="text/javascript">
-  
-// simple show hide of cards~~~~~~~~~~~~~~~~
-  const nav = document.querySelector('.card__nav'),
-    cards = document.querySelectorAll('.card');
+			<section class="card sel-list" data-content="effects">
+				<ul>
+					<li class="sel-list__thumb" data-effect="glitch">
+						<img src="http://via.placeholder.com/230x170" alt="" />
+					</li>
+					<li class="sel-list__thumb" data-effect="old-film">
+						<img src="http://via.placeholder.com/230x170" alt="" />
+					</li>
+					<li class="sel-list__thumb" data-effect="noise">
+						<img src="http://via.placeholder.com/230x170" alt="" />
+					</li>
+					<li class="sel-list__thumb" data-effect="colorise">
+						<img src="http://via.placeholder.com/230x170" alt="" />
+					</li>
+					<li class="sel-list__thumb" data-effect="desaturate">
+						<img src="http://via.placeholder.com/230x170" alt="" />
+					</li>
+					<li class="sel-list__thumb" data-effect="hue-rotate">
+						<img src="http://via.placeholder.com/230x170" alt="" />
+					</li>
+					<li class="sel-list__thumb" data-effect="blur">
+						<img src="http://via.placeholder.com/230x170" alt="" />
+					</li>
+					<li class="sel-list__thumb" data-effect="invert">
+						<img src="http://via.placeholder.com/230x170" alt="" />
+					</li>
+					<li class="sel-list__thumb" data-effect="zoom">
+						<img src="http://via.placeholder.com/230x170" alt="" />
+					</li>
 
-  nav.addEventListener("click", function(e) {
+				</ul>
+			</section>
 
-    for (let i=0; i<cards.length; i++) {
-      if (e.target.dataset.show === cards[i].dataset.content) {
-        showHideEl(cards[i], 'block', true);
-      } else {
-        showHideEl(cards[i], 'block', false);
-      }
-    }
+			<section class="card card--show" data-content="control">
 
-    // to do - also add classes to nav items
+				<section class="control">
 
-  }, false);
+					<midi-cc channel="144" value="64">Bass</midi-cc>
+
+					<midi-pad channel="144" note="63">Pad</midi-pad>
+
+					<midi-toggle channel="144" note="59" state="off">Toggle</midi-toggle>
+
+				</section>
+
+			</section>
+
+		</div>
+
+		<nav class="card__nav">
+			<button class="btn__icon--active" data-show="media">Media</button>
+			<button class="btn__icon" data-show="effects">Effects</button>
+			<button class="btn__icon" data-show="control">Control</button>
+		</nav>
+
+	</div>
+	</div>
+
+	<script type="text/javascript">
+
+		// simple show hide of cards~~~~~~~~~~~~~~~~
+		const nav = document.querySelector('.card__nav'),
+			cards = document.querySelectorAll('.card');
+
+		nav.addEventListener("click", function (e) {
+
+			for (let i = 0; i < cards.length; i++) {
+				if (e.target.dataset.show === cards[i].dataset.content) {
+					showHideEl(cards[i], 'block', true);
+				} else {
+					showHideEl(cards[i], 'block', false);
+				}
+			}
+
+			// to do - also add classes to nav items
+
+		}, false);
 
 
-  function showHideEl(element, displayType, show=true) {
-    if (show) {
-      element.style.display = displayType;
-    } else {
-      element.style.display = 'none';
-    }
-  }
+		function showHideEl(element, displayType, show = true) {
+			if (show) {
+				element.style.display = displayType;
+			} else {
+				element.style.display = 'none';
+			}
+		}
 
-</script>
+	</script>
 
 
 </body>
+
 </html>
