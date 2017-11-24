@@ -102,8 +102,6 @@ class VJOTGFilter extends HTMLElementPlus {
 
 	allAttributesChangedCallback(glAttributes) {
 
-		console.log(glAttributes);
-
 		// If this is in the top layer then work on the Fragment directly
 		const layerName =
 			this.parentNode.tagName === 'VJ-OTG-VISUALS'
