@@ -136,7 +136,9 @@ class VJOTGDistort extends HTMLElementPlus {
 			const angleUniform = this.parentNode.uniforms[parsed.angle.name] || {
 				type: 'f'
 			};
-			this.parentNode.uniforms[parsed.angle.name] = angleUniform;
+			if (!parsed.angle.isLiteral) {
+				this.parentNode.uniforms[parsed.angle.name] = angleUniform;
+			}
 			angleUniform.value = parsed.angle.value;
 
 			this.shaderChunks = {

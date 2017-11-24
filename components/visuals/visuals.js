@@ -105,11 +105,23 @@ class VJOTGVisuals extends HTMLElementPlus {
 			)
 		)
 			.map(el => {
-				if (el.constructor.glslFunction) glslFunctionSet.add(el.constructor.glslFunction());
+				if (el.constructor.glslFunction) {
+					glslFunctionSet.add(el.constructor.glslFunction());
+				}
 				return el.shaderChunks
 			})
 			.filter(chunk => !!chunk);
 
+		const source = chunks
+			.map(a => a.source)
+			.filter(chunk => !!chunk)
+			.join('\n\t');
+
+		const sourceFn = `
+vec4 getSource(int i, vec2 uv) {
+	${source}
+}
+		`;
 		const uniforms = chunks
 			.map(a => a.uniforms)
 			.filter(chunk => !!chunk)
@@ -135,6 +147,7 @@ class VJOTGVisuals extends HTMLElementPlus {
 			// Uniforms
 		` +
 			uniforms +
+			sourceFn +
 			shaderChunks.hsl +
 			Array.from(glslFunctionSet).join('\n\n') +
 			shaderChunks.noise +

@@ -42,8 +42,9 @@
         </vj-otg-assets> 
         
         <!-- One can change attributes dynamically but do not remove/reorder/add or shader should recompile -->
-        <vj-otg-source type="texture" src="#minnie" name="map"></vj-otg-source>
-		    <vj-otg-source type="texture" src="#hamster" name="hamster"></vj-otg-source>
+        <vj-otg-source type="texture" src="#minnie" name="minnie" index="1"></vj-otg-source>
+		<vj-otg-source type="texture" src="#hamster" name="hamster" index="2"></vj-otg-source>
+		<vj-otg-source type="texture" src="#shera" name="shera" index="3"></vj-otg-source>
 
         <vj-otg-uniform type="beat"></vj-otg-uniform>
 		    <vj-otg-uniform type="time"></vj-otg-uniform>
@@ -54,12 +55,12 @@
           <vj-otg-distort type="zoom" factor="1.2" position="0.5, 0.5"></vj-otg-distort>
           <vj-otg-filter type="main">float distanceFromCenter = length(centerCoord - newUV);</vj-otg-filter>
           <vj-otg-distort type="rotate" angle="[sqrt(distanceFromCenter) * 1000.0 * (1.0 - mixUniform) + mixUniform * 500.0 + 220.0]"></vj-otg-distort>
-          <vj-otg-filter type="texture" source="hamster"></vj-otg-filter>
+          <vj-otg-filter type="from-source" source="3"></vj-otg-filter>
 		    </vj-otg-group>
 
         <vj-otg-group name="videoGroup">
           <vj-otg-filter type="splitx" size="0.05">
-            [layer] *= splitXTexture2D(map, newUV, [size] * beat);
+            [layer] *= splitXTexture2D(minnie, newUV, [size] * beat);
           </vj-otg-filter>
           <vj-otg-filter type="hsl-gradient" start="120,0.5,0.5" stop="180,1,0.8" direction="3"></vj-otg-filter>
         </vj-otg-group>

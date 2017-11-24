@@ -13,18 +13,14 @@ class VJOTGSource extends HTMLElementPlus {
 		this.name = 'uniform_id_' + this.constructor.filterCount++;
 	}
 	static get observedAttributes() {
-		return ['type', 'src', 'name'];
+		return ['type', 'src', 'index', 'name'];
 	}
 	allAttributesChangedCallback(glAttributes) {
-		// If this is in the top layer then work on the Fragment directly
-		const layerName =
-			this.parentNode.tagName === 'VJ-OTG-VISUALS'
-				? 'gl_FragColor'
-				: this.parentNode.glLayerName; // Otherwise work on the parent layer.
 
 		if (
 			glAttributes.type === 'texture' &&
 			glAttributes.src &&
+			glAttributes.index &&
 			glAttributes.name
 		) {
 			const source = this.parentNode.querySelector(glAttributes.src);
@@ -55,7 +51,7 @@ class VJOTGSource extends HTMLElementPlus {
 
 			this.shaderChunks = {
 				uniforms: `uniform sampler2D ${glAttributes.name};`,
-				main: `${layerName} *= texture2D(${glAttributes.name}, newUV);`
+				source: `if (i == ${glAttributes.index}) return texture2D(${glAttributes.name}, uv);`
 			};
 		}
 	}

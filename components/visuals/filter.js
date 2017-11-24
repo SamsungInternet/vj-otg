@@ -57,24 +57,19 @@ class VJOTGFilter extends HTMLElementPlus {
 		// If not in a valid parent then return
 		if (!layerName) return;
 
-		if ((glAttributes.type === 'texture', glAttributes.source)) {
-			if (customMain) {
-				this.shaderChunks = {
-					main: customMain.replace('[layer]', layerName)
-				};
-			} else {
-				this.shaderChunks = {
-					main: `${layerName} *= texture2D(${glAttributes.source}, newUV);`
-				};
-			}
+		if (glAttributes.type === 'from-source') {
+			const sourceIndexU = this.parentNode.uniforms[`${this.name}_sourceIndex`] || { type: 'i' };
+			this.parentNode.uniforms[`${this.name}_sourceIndex`] = sourceIndexU;
+
+			sourceIndexU.value = Number(glAttributes.source);
+
+			this.shaderChunks = {
+				uniforms: `uniform int ${this.name}_sourceIndex;`,
+				main: `${layerName} *= getSource(${this.name}_sourceIndex, newUV);`
+			};
 		}
 
-		if (
-			glAttributes.type === 'hsl-gradient' &&
-			glAttributes.start &&
-			glAttributes.stop &&
-			glAttributes.direction
-		) {
+		if ( glAttributes.type === 'hsl-gradient' ) {
 			const directionU = this.parentNode.uniforms[
 				`${this.name}_gradientDirection`
 			] || { type: 'i' };
@@ -126,7 +121,7 @@ class VJOTGFilter extends HTMLElementPlus {
 			};
 		}
 
-		if (glAttributes.type === 'splitx' && glAttributes.size) {
+		if (glAttributes.type === 'splitx') {
 			const uniformName = `${this.name}_beatFuzzDistance`;
 
 			glAttributes.size = Number(glAttributes.size);
