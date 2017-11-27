@@ -1,124 +1,102 @@
+@import url(reset.css);
 /* Contents
-1. reset - because yeh bite me
+1. vars etc...
 2. base
+3. layout
+
 3. thumbnails
 4. form controls (effects)
 */
-h1 {
-  color: fuchsia; }
-
-#loading-screen {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.25); }
-
-#loading-screen h1 {
-  display: inline-block;
-  text-align: center; }
-
-#canvas {
-  width: 640px;
-  height: 480px; }
-
-/*1.*/
-html, body,
-div, section, canvas,
-h1, ul, li,
-form, label, input, button {
-  margin: 0px;
-  padding: 0px;
-  border: none;
-  outline: 0;
-  font-size: 100%;
-  vertical-align: baseline;
-  box-sizing: border-box; }
-
+@font-face {
+  font-family: 'Titillium';
+  src: url("TitilliumWeb-Light.ttf"); }
+/* 2. base */
 body {
-  background-color: #fdfdfd;
-  font-family: sans-serif;
+  background-color: #f9fafb;
+  font-family: "Titillium", Arial, sans-serif;
   font-size: 100%;
-  /*font-size 1.1em*/
-  color: #555;
-  text-shadow: 0px 0px 1px #fff; }
-
-ul, li {
-  list-style: none; }
-
-/*generic style classes*/
-.icon {
-  /*put an icon here*/ }
+  color: #595959;
+  text-shadow: 1px 1px 2px #fff; }
 
 /*display layout via grid*/
 #vjotg {
   display: grid;
+  box-sizing: border-box;
   grid-template-columns: auto;
-  grid-template-rows: 32vh 60vh 8vh;
-  grid-template-areas: "video" "card" "nav";
-  max-width: 500px;
+  grid-template-rows: auto auto auto 1fr;
+  width: 100vw;
+  max-width: 1100px;
   height: 100vh;
+  max-height: 100vh;
   margin: 0px auto; }
+  @media screen and (min-width: 880px) {
+    #vjotg {
+      grid-template-columns: auto 1fr; } }
+  #vjotg > header {
+    grid-area: 1/1/2/2;
+    box-sizing: border-box;
+    align-self: center;
+    width: 100%;
+    padding: 2vmin; }
+    @media screen and (min-width: 880px) {
+      #vjotg > header {
+        grid-area: 1/1/2/3; } }
+  #vjotg #screen {
+    grid-area: 2/1/3/2;
+    margin-bottom: 2vmin; }
 
-.screen {
-  backgound-color: black;
-  border: 1px solid #555; }
+.media__select {
+  grid-area: 3/1/4/2; }
+  .media__select ul {
+    display: flex;
+    justify-content: space-around; }
+  .media__select .thumb {
+    width: 20vmin;
+    max-width: 120px;
+    height: 20vmin;
+    max-height: 120px;
+    overflow: hidden; }
+    .media__select .thumb img {
+      display: block;
+      object-fit: cover;
+      height: 130px;
+      width: auto; }
 
-.screen-preview {
-  grid-area: 'video'; }
-
-.card-switcher {
-  grid-area: 'card'; }
-
-.card {
+.media__fx {
+  grid-area: 4/1/5/2;
+  overflow-y: scroll;
   display: none; }
+  @media screen and (min-width: 880px) {
+    .media__fx {
+      grid-area: 2/2/5/3; } }
 
-.card--show {
+.media__fx[data-fxfor="master"] {
   display: block; }
 
-.card__nav {
-  grid-area: 'nav';
+midi-toggle, midi-pad {
+  width: 49%;
+  display: inline-block; }
+
+#screen {
+  background-color: #595959;
+  border: 2px solid #595959; }
+  #screen canvas {
+    margin: 0px auto;
+    display: block; }
+
+.media__select .thumb {
+  border-radius: 2px; }
+.media__select .thumb__master {
   display: flex;
-  align-content: stretch; }
+  background-color: #2bc4f3;
+  background-image: linear-gradient(45deg, #b76bfa, #2bc4f3, #1ef68a); }
+  .media__select .thumb__master span {
+    align-self: center;
+    display: inline-block;
+    margin: 0px auto;
+    font-size: 3em;
+    color: #f9fafb; }
+.media__select .thumb--active {
+  border-bottom: 2px solid #1ef68a; }
 
-.card__nav .btn__icon {
-  flex-grow: 1; }
-
-.card__nav .btn__icon--active {
-  flex-grow: 1;
-  border: 2px solid fuchsia; }
-
-/*thumbnail list*/
-.sel-list ul {
-  display: grid;
-  /*grid-auto-flow: column;*/
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: auto;
-  grid-gap: 1vh; }
-
-.sel-list__thumb {
-  height: 20vh;
-  position: relative;
-  border: 2px solid grey;
-  overflow: hidden; }
-
-.sel-list__thumb img {
-  height: 20vh;
-  object-fit: none;
-  filter: brightness(3) opacity(0.5); }
-
-/*large thumbnail list*/
-.sel-list--large ul {
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap: 2vh; }
-
-.sel-list--large .sel-list__thumb {
-  height: 29vh; }
-
-.sel-list--large .sel-list__thumb img {
-  height: 29vh; }
+/*# sourceMappingURL=styles.css.map */

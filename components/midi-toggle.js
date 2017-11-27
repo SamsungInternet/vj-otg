@@ -11,37 +11,48 @@
 //       get: this.__getFromShadowRoot.bind(this)
 //     });
 //   }
-  
+
 //   __getFromShadowRoot (target, name) {
 //     return this.shadowRoot.querySelector('[ref="' + name + '"]');
 //   }
 // }
 
 // <my-el><span>here</span></my-el>
-  
+
 const toggleTemplate = document.createElement('template');
 
 toggleTemplate.innerHTML = `
   <style>
   .midi-control__group {
-    padding:1.1em 5%;
+    outline: 0;
+    padding: 3vmin;
   }
   .midi-control__label {
-    display: block;
-    margin-bottom:0.5em;
-    font-size: 1.1em;
+    outline: 0;
+    display: inline-block;
+    box-sizing: border-box;
+    margin: 0px auto;
   }
   .midi-control__button--pad {
+    outline: 0;
     display: block;
-    width: 20vh; height: 20vh;
+    width: 20vmin; height: 20vmin;
     margin: 0px auto;
     position: relative;
     cursor: pointer;
-    background-color: #444;
-    border: 2px solid #444;
-    border-radius: 2px;
+    background-color: hsla(210, 25%, 98%, 1.0);
+    background-image:linear-gradient(0deg, hsla(210, 25%, 96%, 1.0), hsla(210, 25%, 98%, 1.0));
+    border: 6px solid;
+    border-image: linear-gradient(120deg, hsla(272, 54%, 80%, 1.0), hsla(194, 49%, 66%, 1.0), hsla(150, 52%, 64%, 1.0)) 10;
+    border-radius: 1px;
+    box-shadow:
+      0px 0px 0px 1px hsla(210, 25%, 98%, 1.0),
+      1px 1px 6px 2px hsla(0, 0%, 35%, 0.5),
+      inset 2px 2px 0px 2px #fff,
+      inset -2px -2px 0px 2px hsla(210, 25%, 98%, 1.0)
+    ;
   }
-  .midi-control__button--pad[data-state="on"] {background-color:#ddd;}
+  .midi-control__button--pad[data-state="on"] {border-image: linear-gradient(120deg, hsla(272, 94%, 70%, 1.0), hsla(194, 89%, 56%, 1.0), hsla(150, 92%, 54%, 1.0)) 10;}
   </style>
   <div class="midi-control__group">
     <label class="midi-control__label" for="padEx" ref="label"><slot></slot></label>
@@ -52,7 +63,7 @@ toggleTemplate.innerHTML = `
 class MidiToggleController extends HTMLElementWithRefs {
   constructor() {
     super();
-    
+
     this.tabIndex = 0;
     this.attachShadow({mode: 'open'});
     this.shadowRoot.appendChild(toggleTemplate.content.cloneNode(true));
@@ -84,7 +95,7 @@ class MidiToggleController extends HTMLElementWithRefs {
     });
 
   }
-  
+
   static get observedAttributes() { return ['channel', 'note', 'state']; }
   attributeChangedCallback(attr, oldValue, newValue) {
 
