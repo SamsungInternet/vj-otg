@@ -62,31 +62,45 @@
 
         <vj-otg-group name="graphGroup">
           <vj-otg-filter type="main">
+
+            // Work in polar coordinates
+            newUV.x = (PI + atan(newUV.x - 0.5, newUV.y - 0.5)) / (2.0 * PI);
+            newUV.y = distanceFromCenter;
+
+            // Get the current column and it's value
             int column = int(newUV.x * noAnalyserBins);
-            bool pixelOn = !(
-              (column == 0 &amp;&amp; newUV.y > analyser[0]) ||
-              (column == 1 &amp;&amp; newUV.y > analyser[1]) ||
-              (column == 2 &amp;&amp; newUV.y > analyser[2]) ||
-              (column == 3 &amp;&amp; newUV.y > analyser[3]) ||
-              (column == 4 &amp;&amp; newUV.y > analyser[4]) ||
-              (column == 5 &amp;&amp; newUV.y > analyser[5]) ||
-              (column == 6 &amp;&amp; newUV.y > analyser[6]) ||
-              (column == 7 &amp;&amp; newUV.y > analyser[7]) ||
-              (column == 8 &amp;&amp; newUV.y > analyser[8]) ||
-              (column == 9 &amp;&amp; newUV.y > analyser[9]) ||
-              (column == 10 &amp;&amp; newUV.y > analyser[10]) ||
-              (column == 11 &amp;&amp; newUV.y > analyser[11]) ||
-              (column == 12 &amp;&amp; newUV.y > analyser[12]) ||
-              (column == 13 &amp;&amp; newUV.y > analyser[13]) ||
-              (column == 14 &amp;&amp; newUV.y > analyser[14]) ||
-              (column == 15 &amp;&amp; newUV.y > analyser[15]) ||
-              (column == 16 &amp;&amp; newUV.y > analyser[16]) ||
-              (column == 17 &amp;&amp; newUV.y > analyser[17]) ||
-              (column == 18 &amp;&amp; newUV.y > analyser[18]) ||
-              (column == 19 &amp;&amp; newUV.y > analyser[19])
+            float columnValue = (
+              (float(column == 0) * analyser[0]) +
+              (float(column == 1) * analyser[1]) +
+              (float(column == 2) * analyser[2]) +
+              (float(column == 3) * analyser[3]) +
+              (float(column == 4) * analyser[4]) +
+              (float(column == 5) * analyser[5]) +
+              (float(column == 6) * analyser[6]) +
+              (float(column == 7) * analyser[7]) +
+              (float(column == 8) * analyser[8]) +
+              (float(column == 9) * analyser[9]) +
+              (float(column == 10) * analyser[10]) +
+              (float(column == 11) * analyser[11]) +
+              (float(column == 12) * analyser[12]) +
+              (float(column == 13) * analyser[13]) +
+              (float(column == 14) * analyser[14]) +
+              (float(column == 15) * analyser[15]) +
+              (float(column == 16) * analyser[16]) +
+              (float(column == 17) * analyser[17]) +
+              (float(column == 18) * analyser[18]) +
+              (float(column == 19) * analyser[19])
             );
+
+            // Each column is coloured using hsl
             vec3 rgbColumnColor = hsl2rgb(float(column)/noAnalyserBins, 1.0 , 0.5);
-            graphGroup = mix(noopVec4, vec4(rgbColumnColor, 1.0), float(pixelOn));
+
+            // Work out whether that pixel should be coloured or not.
+            graphGroup = mix(
+              noopVec4,
+              vec4(rgbColumnColor, 1.0),
+              float(newUV.y &lt;= columnValue) * float(columnValue - newUV.y &lt;= 0.1 )
+            );
           </vj-otg-filter>
         </vj-otg-group>
 
