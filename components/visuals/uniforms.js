@@ -169,7 +169,7 @@ class VJOTGUniform extends HTMLElementPlus {
 						return a + b;
 					});
 
-					beat = avSum / finalSize;
+					beat = 256 * avSum / finalSize;
 
 					if (beat > this.threshold) {
 						// Dispatch the event.
