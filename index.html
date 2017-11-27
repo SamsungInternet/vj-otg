@@ -55,36 +55,38 @@
         <vj-otg-group name="hamsterGroup">
           <vj-otg-filter type="main">float distanceFromCenter = length(centerCoord - newUV);</vj-otg-filter>
           <vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="0.02" speed="0.5"></vj-otg-distort>
-          <vj-otg-distort type="zoom" factor="[1.0 + analyser[1] * (1.0 - distanceFromCenter)]" position="0.5, 0.5"></vj-otg-distort>
           <vj-otg-distort type="rotate" angle="[sqrt(distanceFromCenter) * 1000.0 * (1.0 - mixUniform) + mixUniform * 500.0 + 220.0]"></vj-otg-distort>
+          <vj-otg-distort type="zoom" factor="[1.0 + analyser[1] * (1.0 - distanceFromCenter)]" position="0.5, 0.5"></vj-otg-distort>
           <vj-otg-filter type="from-source" source="3"></vj-otg-filter>
         </vj-otg-group>
 
         <vj-otg-group name="graphGroup">
           <vj-otg-filter type="main">
             int column = int(newUV.x * noAnalyserBins);
-            graphGroup *= vec4(1.0, 
-              float(column == 0) * float(newUV.y > analyser[0]) +
-              float(column == 1) * float(newUV.y > analyser[1]) +
-              float(column == 2) * float(newUV.y > analyser[2]) +
-              float(column == 3) * float(newUV.y > analyser[3]) +
-              float(column == 4) * float(newUV.y > analyser[4]) +
-              float(column == 5) * float(newUV.y > analyser[5]) +
-              float(column == 6) * float(newUV.y > analyser[6]) +
-              float(column == 7) * float(newUV.y > analyser[7]) +
-              float(column == 8) * float(newUV.y > analyser[8]) +
-              float(column == 9) * float(newUV.y > analyser[9]) +
-              float(column == 10) * float(newUV.y > analyser[10]) +
-              float(column == 11) * float(newUV.y > analyser[11]) +
-              float(column == 12) * float(newUV.y > analyser[12]) +
-              float(column == 13) * float(newUV.y > analyser[13]) +
-              float(column == 14) * float(newUV.y > analyser[14]) +
-              float(column == 15) * float(newUV.y > analyser[15]) +
-              float(column == 16) * float(newUV.y > analyser[16]) +
-              float(column == 17) * float(newUV.y > analyser[17]) +
-              float(column == 18) * float(newUV.y > analyser[18]) +
-              float(column == 19) * float(newUV.y > analyser[19]) 
-            , 1.0, 1.0);
+            bool pixelOn = !(
+              (column == 0 &amp;&amp; newUV.y > analyser[0]) ||
+              (column == 1 &amp;&amp; newUV.y > analyser[1]) ||
+              (column == 2 &amp;&amp; newUV.y > analyser[2]) ||
+              (column == 3 &amp;&amp; newUV.y > analyser[3]) ||
+              (column == 4 &amp;&amp; newUV.y > analyser[4]) ||
+              (column == 5 &amp;&amp; newUV.y > analyser[5]) ||
+              (column == 6 &amp;&amp; newUV.y > analyser[6]) ||
+              (column == 7 &amp;&amp; newUV.y > analyser[7]) ||
+              (column == 8 &amp;&amp; newUV.y > analyser[8]) ||
+              (column == 9 &amp;&amp; newUV.y > analyser[9]) ||
+              (column == 10 &amp;&amp; newUV.y > analyser[10]) ||
+              (column == 11 &amp;&amp; newUV.y > analyser[11]) ||
+              (column == 12 &amp;&amp; newUV.y > analyser[12]) ||
+              (column == 13 &amp;&amp; newUV.y > analyser[13]) ||
+              (column == 14 &amp;&amp; newUV.y > analyser[14]) ||
+              (column == 15 &amp;&amp; newUV.y > analyser[15]) ||
+              (column == 16 &amp;&amp; newUV.y > analyser[16]) ||
+              (column == 17 &amp;&amp; newUV.y > analyser[17]) ||
+              (column == 18 &amp;&amp; newUV.y > analyser[18]) ||
+              (column == 19 &amp;&amp; newUV.y > analyser[19])
+            );
+            vec3 rgbColumnColor = hsl2rgb(float(column)/noAnalyserBins, 1.0 , 0.5);
+            graphGroup = mix(noopVec4, vec4(rgbColumnColor, 1.0), float(pixelOn));
           </vj-otg-filter>
         </vj-otg-group>
 
