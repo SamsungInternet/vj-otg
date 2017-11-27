@@ -36,7 +36,7 @@ class HTMLElementPlus extends HTMLElement {
 	}
 
 	attributeChangedCallback(attr, oldValue, newValue) {
-		this.__attributesMap[attr] = this.constructor.parseAttributeValue(
+		this.__attributesMap[attr] = this.constructor.parseAttributeValue.call(this,
 			attr,
 			newValue
 		);

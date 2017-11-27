@@ -1,23 +1,30 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Hello!</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <link rel="stylesheet" href="style/styles.css">
-    <script src="vendor/three.js/three.min.js"></script>
+<head>
+	<title>Hello!</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="stylesheet" href="/style/styles.css">
+	<script src="vendor/three.js/three.min.js"></script>
 	<script src="vendor/three.js/Detector.js"></script>
 	<script src="https://cdn.rawgit.com/webcomponents/webcomponentsjs/edf84e6e/webcomponents-sd-ce.js"></script>
 	<script src="/components/html-element-with-refs.js"></script>
 	<script src="/components/html-element-plus.js"></script>
-    <script src="/components/visuals.js" defer></script>
-    <script src="/components/visuals-filters.js" defer></script>
-    <script src="/components/midi-cc.js" defer></script>
-    <script src="/components/midi-pad.js" defer></script>
-    <script src="/components/midi-toggle.js" defer></script>
-    <script src="/main.js" defer></script>
+<<<<<<< HEAD
+  <script src="/components/visuals/visuals.js" defer></script>
+  <script src="/components/visuals/group.js" defer></script>
+  <script src="/components/visuals/asset.js" defer></script>
+  <script src="/components/visuals/distort.js" defer></script>
+  <script src="/components/visuals/filter.js" defer></script>
+  <script src="/components/visuals/source.js" defer></script>
+  <script src="/components/visuals/uniforms.js" defer></script>
+
+  <script src="/components/midi-cc.js" defer></script>
+  <script src="/components/midi-pad.js" defer></script>
+  <script src="/components/midi-toggle.js" defer></script>
+  <script src="/main.js" defer></script>
   </head>
   <body><div class="wrapper" id="vjotg">
 
@@ -32,38 +39,66 @@
           <video id="minnie" src="./assets/minnie-512.webm" width="512" height="512" autoplay="true" loop="true" controls="true"></video>
           <img id="shera" src="./assets/shera.jpg" />
           <img id="hamster" src="./assets/hamster.jpg" />
-        </vj-otg-assets> 
-        
+        </vj-otg-assets>
+
         <!-- One can change attributes dynamically but do not remove/reorder/add or shader should recompile -->
         <vj-otg-source type="texture" src="#minnie" name="map"></vj-otg-source>
 		    <vj-otg-source type="texture" src="#hamster" name="hamster"></vj-otg-source>
+        <vj-otg-source type="texture" src="#shera" name="shera" index="3"></vj-otg-source>
 
-        <vj-otg-uniform type="beat"></vj-otg-uniform>
+        <vj-otg-uniform type="analyser" threshold="80"></vj-otg-uniform>
 		    <vj-otg-uniform type="time"></vj-otg-uniform>
 		    <vj-otg-uniform type="generic-float" name="mixUniform" value="0.9"></vj-otg-uniform>
-		
+
 		    <vj-otg-group name="hamsterGroup">
           <vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="0.02" speed="0.5"></vj-otg-distort>
           <vj-otg-distort type="zoom" factor="1.2" position="0.5, 0.5"></vj-otg-distort>
           <vj-otg-filter type="main">float distanceFromCenter = length(centerCoord - newUV);</vj-otg-filter>
           <vj-otg-distort type="rotate" angle="[sqrt(distanceFromCenter) * 1000.0 * (1.0 - mixUniform) + mixUniform * 500.0 + 220.0]"></vj-otg-distort>
-          <vj-otg-filter type="texture" source="hamster"></vj-otg-filter>
+          <vj-otg-filter type="from-source" source="3"></vj-otg-filter>
 		    </vj-otg-group>
 
-        <vj-otg-group name="videoGroup">
-          <vj-otg-filter type="splitx" size="0.05">
-            [layer] *= splitXTexture2D(map, newUV, [size] * beat);
+        <vj-otg-group name="graphGroup">
+          <vj-otg-filter type="main">
+            int column = int(newUV.x * noAnalyserBins);
+            graphGroup *= vec4(1.0,
+              float(column == 0) * float(newUV.y > analyser[0]) +
+              float(column == 1) * float(newUV.y > analyser[1]) +
+              float(column == 2) * float(newUV.y > analyser[2]) +
+              float(column == 3) * float(newUV.y > analyser[3]) +
+              float(column == 4) * float(newUV.y > analyser[4]) +
+              float(column == 5) * float(newUV.y > analyser[5]) +
+              float(column == 6) * float(newUV.y > analyser[6]) +
+              float(column == 7) * float(newUV.y > analyser[7]) +
+              float(column == 8) * float(newUV.y > analyser[8]) +
+              float(column == 9) * float(newUV.y > analyser[9]) +
+              float(column == 10) * float(newUV.y > analyser[10]) +
+              float(column == 11) * float(newUV.y > analyser[11]) +
+              float(column == 12) * float(newUV.y > analyser[12]) +
+              float(column == 13) * float(newUV.y > analyser[13]) +
+              float(column == 14) * float(newUV.y > analyser[14]) +
+              float(column == 15) * float(newUV.y > analyser[15]) +
+              float(column == 16) * float(newUV.y > analyser[16]) +
+              float(column == 17) * float(newUV.y > analyser[17]) +
+              float(column == 18) * float(newUV.y > analyser[18]) +
+              float(column == 19) * float(newUV.y > analyser[19])
+            , 1.0, 1.0);
           </vj-otg-filter>
+        </vj-otg-group>
+
+        <vj-otg-group name="videoGroup">
+          <vj-otg-filter type="splitx" size="[beat * 0.05]"></vj-otg-filter>
           <vj-otg-filter type="hsl-gradient" start="120,0.5,0.5" stop="180,1,0.8" direction="3"></vj-otg-filter>
         </vj-otg-group>
 
         <vj-otg-filter type="main">
           float perlinNoise = clamp(snoise(vec3(newUV * 5.0, mixUniform)), 0.0, 1.0);
-          [layer] = mix(videoGroup, hamsterGroup, mixUniform * mixUniform);
+          [layer] = mix(videoGroup, hamsterGroup * graphGroup, mixUniform * mixUniform);
         </vj-otg-filter>
-		
+
       </vj-otg-visuals>
-    </div><!--screen-->
+    </div>
+    <!--screen-->
 
     <nav class="media__select">
       <ul>
@@ -100,33 +135,33 @@
     </section>
 
     <section class="media__fx" data-fxfor="hamster">
-    
+
       <section class="fx--opacity">
         <h3>Opacity</h3>
         <midi-cc channel="144" value="64">Mix Amount</midi-cc>
         <midi-toggle channel="144" note="59" state="off">On/Off</midi-toggle>
         <midi-pad channel="144" note="63">Flash</midi-pad>
       </section>
-    
+
       <section class="fx--wave">
         <h3>Wave</h3>
         <midi-cc channel="144" value="64">Frequency</midi-cc>
         <midi-cc channel="144" value="64">Amplitude</midi-cc>
         <midi-cc channel="144" value="64">Speed</midi-cc>
       </section>
-    
+
       <section class="fx--zoom">
         <h3>Zoom</h3>
         <midi-cc channel="144" value="64">Amount</midi-cc>
         <midi-cc channel="144" value="64">X Pos</midi-cc>
         <midi-cc channel="144" value="64">Y Pos</midi-cc>
       </section>
-    
+
       <section class="fx--rotate">
         <h3>Rotate</h3>
         <midi-cc channel="144" value="64">Degrees</midi-cc>
       </section>
-    
+
     </section>
 
     <section class="media__fx" data-fxfor="minnie">
@@ -151,15 +186,15 @@
     </section>
 
     <!-- <midi-cc channel="144" value="64">Bass</midi-cc>
-    
+
     <midi-pad channel="144" note="63">Pad</midi-pad>
-    
+
     <midi-toggle channel="144" note="59" state="off">Toggle</midi-toggle> -->
-      
+
   </div><!--wrapper-->
 
 <script type="text/javascript">
-  
+
 // simple show hide of cards~~~~~~~~~~~~~~~~
   const nav = document.querySelector('.media__select'),
     fxSets = document.querySelectorAll('.media__fx');
@@ -189,6 +224,6 @@
 
 </script>
 
-
 </body>
+
 </html>
