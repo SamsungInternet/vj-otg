@@ -53,9 +53,9 @@
         <vj-otg-uniform type="generic-float" name="mixUniform" value="0.9"></vj-otg-uniform>
 
         <vj-otg-group name="hamsterGroup">
-          <vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="0.02" speed="0.5"></vj-otg-distort>
-          <vj-otg-distort type="zoom" factor="1.2" position="0.5, 0.5"></vj-otg-distort>
           <vj-otg-filter type="main">float distanceFromCenter = length(centerCoord - newUV);</vj-otg-filter>
+          <vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="0.02" speed="0.5"></vj-otg-distort>
+          <vj-otg-distort type="zoom" factor="[1.0 + analyser[1] * (1.0 - distanceFromCenter)]" position="0.5, 0.5"></vj-otg-distort>
           <vj-otg-distort type="rotate" angle="[sqrt(distanceFromCenter) * 1000.0 * (1.0 - mixUniform) + mixUniform * 500.0 + 220.0]"></vj-otg-distort>
           <vj-otg-filter type="from-source" source="3"></vj-otg-filter>
         </vj-otg-group>
