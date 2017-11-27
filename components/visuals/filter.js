@@ -109,7 +109,7 @@ class VJOTGFilter extends HTMLElementPlus {
 				: this.parentNode.glLayerName; // Otherwise work on the parent layer.
 
 		// If it has custom main script...
-		const customMain = this.innerHTML.trim() || false;
+		const customMain = this.textContent.trim() || false;
 
 		// If not in a valid parent then return
 		if (!layerName) return;

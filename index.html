@@ -62,13 +62,43 @@
 					<vj-otg-filter type="from-source" source="3"></vj-otg-filter>
 				</vj-otg-group>
 
+				
+				<vj-otg-group name="graphGroup">
+					<vj-otg-filter type="main">
+						int column = int(newUV.x * noAnalyserBins);
+						graphGroup *= vec4(1.0, 
+							float(column == 0) * float(newUV.y > analyser[0]) +
+							float(column == 1) * float(newUV.y > analyser[1]) +
+							float(column == 2) * float(newUV.y > analyser[2]) +
+							float(column == 3) * float(newUV.y > analyser[3]) + 
+							float(column == 4) * float(newUV.y > analyser[4]) +
+							float(column == 5) * float(newUV.y > analyser[5]) +
+							float(column == 6) * float(newUV.y > analyser[6]) +
+							float(column == 7) * float(newUV.y > analyser[7]) +
+							float(column == 8) * float(newUV.y > analyser[8]) +
+							float(column == 9) * float(newUV.y > analyser[9]) +
+							float(column == 10) * float(newUV.y > analyser[10]) +
+							float(column == 11) * float(newUV.y > analyser[11]) +
+							float(column == 12) * float(newUV.y > analyser[12]) +
+							float(column == 13) * float(newUV.y > analyser[13]) +
+							float(column == 14) * float(newUV.y > analyser[14]) +
+							float(column == 15) * float(newUV.y > analyser[15]) +
+							float(column == 16) * float(newUV.y > analyser[16]) +
+							float(column == 17) * float(newUV.y > analyser[17]) +
+							float(column == 18) * float(newUV.y > analyser[18]) +
+							float(column == 19) * float(newUV.y > analyser[19])
+						, 1.0, 1.0);
+					</vj-otg-filter>
+				</vj-otg-group>
+
 				<vj-otg-group name="videoGroup">
 					<vj-otg-filter type="splitx" size="[beat * 0.05]"></vj-otg-filter>
 					<vj-otg-filter type="hsl-gradient" start="120,0.5,0.5" stop="180,1,0.8" direction="3"></vj-otg-filter>
 				</vj-otg-group>
 
 				<vj-otg-filter type="main">
-					float perlinNoise = clamp(snoise(vec3(newUV * 5.0, mixUniform)), 0.0, 1.0); [layer] = mix(videoGroup, hamsterGroup, mixUniform * mixUniform);
+					float perlinNoise = clamp(snoise(vec3(newUV * 5.0, mixUniform)), 0.0, 1.0);
+					[layer] = mix(videoGroup, hamsterGroup * graphGroup, mixUniform * mixUniform);
 				</vj-otg-filter>
 
 			</vj-otg-visuals>

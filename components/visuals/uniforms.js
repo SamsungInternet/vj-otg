@@ -52,6 +52,16 @@ class VJOTGUniform extends HTMLElementPlus {
 			glAttributes.type === 'analyser' &&
 			glAttributes.threshold
 		) {
+			const fftSize = 4096;
+			const cutoff = 682; // Cut off high freq maximum is fftSize/2
+			const finalSize = 20; // Number of bins in the histogram
+
+			this.shaderChunks = {
+				uniforms: `
+					uniform float beat;
+					uniform float analyser[${finalSize}];
+					const float noAnalyserBins = ${finalSize.toFixed(1)};`
+			};
 
 			// Fetch an existing uniform to update or create a new one
 			const beatUniform = this.parentNode.uniforms.beat || {
@@ -59,9 +69,12 @@ class VJOTGUniform extends HTMLElementPlus {
 				value: 0
 			};
 			this.parentNode.uniforms.beat = beatUniform;
-			this.shaderChunks = {
-				uniforms: 'uniform float beat;'
+			
+			// Fetch an existing uniform to update or create a new one
+			const analyserUniform = this.parentNode.uniforms.analyser || {
+				type: 'uFloatArray'
 			};
+			this.parentNode.uniforms.analyser = analyserUniform;
 
 			// If this has already been setup then update the threshold and return
 			if (this.threshold) {
@@ -70,17 +83,16 @@ class VJOTGUniform extends HTMLElementPlus {
 			}
 
 			this.threshold = glAttributes.threshold || 127; // our threshold value
-			const fftSize = 4096;
-			const cutoff = 682; // Cut off high freq maximum is fftSize/2
-			const finalSize = 20; // Number of bins in the histogram
 			const base = 2; // Base for the power function, higher means larger groups at higher frequencies.
 			const data = new Uint8Array(fftSize / 2); // Bins in for analyser node
-			const processedData = new Uint16Array(finalSize); // Our bins for post processed data
+			const processedData = new Float32Array(finalSize); // Our bins for post processed data
 			let beat = 0; // our beat value
 			const audioCtx = new window.AudioContext();
 			const analyserNode = audioCtx.createAnalyser();
 			analyserNode.fftSize = fftSize;
 			const beatEvent = new Event('beat');
+
+			analyserUniform.value = processedData;
 
 			const binPattern = (function(inAmount, target) {
 				let val = 1;
@@ -132,8 +144,10 @@ class VJOTGUniform extends HTMLElementPlus {
 					analyserNode.getByteFrequencyData(data);
 
 					// put data into processed data using binPattern
-					let index = 0;
-					let sum = 0;
+					// First index needs to be one for the special case
+					// i=0 where the initial value is 0.
+					let index = 1;
+					let sum = data[0];
 					let binSize = 0;
 
 					// binPattern is the index value of the next cutoff
@@ -144,7 +158,7 @@ class VJOTGUniform extends HTMLElementPlus {
 						if (i >= binPattern[index]) {
 							binSize = binPattern[index] - binPattern[index - 1];
 							sum = sum / binSize;
-							processedData[index] = sum;
+							processedData[index] = sum / 256; // Normalised so between 0 and 1
 							sum = 0;
 							index++;
 						}
