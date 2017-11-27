@@ -10,7 +10,6 @@
 @font-face {
   font-family: 'Titillium';
   src: url("TitilliumWeb-Light.ttf"); }
-
 /* 2. base */
 body {
   background-color: #f9fafb;
@@ -25,23 +24,29 @@ body {
   box-sizing: border-box;
   grid-template-columns: auto;
   grid-template-rows: auto auto auto 1fr;
-  grid-template-areas: "head" "video" "select" "fx";
   width: 100vw;
+  max-width: 1100px;
   height: 100vh;
   max-height: 100vh;
   margin: 0px auto; }
+  @media screen and (min-width: 880px) {
+    #vjotg {
+      grid-template-columns: auto 1fr; } }
   #vjotg > header {
-    grid-area: head;
+    grid-area: 1/1/2/2;
     box-sizing: border-box;
     align-self: center;
-    width: 100vw;
+    width: 100%;
     padding: 2vmin; }
+    @media screen and (min-width: 880px) {
+      #vjotg > header {
+        grid-area: 1/1/2/3; } }
   #vjotg #screen {
-    grid-area: video;
+    grid-area: 2/1/3/2;
     margin-bottom: 2vmin; }
 
 .media__select {
-  grid-area: select; }
+  grid-area: 3/1/4/2; }
   .media__select ul {
     display: flex;
     justify-content: space-around; }
@@ -58,9 +63,12 @@ body {
       width: auto; }
 
 .media__fx {
-  grid-area: fx;
+  grid-area: 4/1/5/2;
   overflow-y: scroll;
   display: none; }
+  @media screen and (min-width: 880px) {
+    .media__fx {
+      grid-area: 2/2/5/3; } }
 
 .media__fx[data-fxfor="master"] {
   display: block; }
@@ -78,7 +86,6 @@ midi-toggle, midi-pad {
 
 .media__select .thumb {
   border-radius: 2px; }
-
 .media__select .thumb__master {
   display: flex;
   background-color: #2bc4f3;
@@ -89,6 +96,7 @@ midi-toggle, midi-pad {
     margin: 0px auto;
     font-size: 3em;
     color: #f9fafb; }
-
 .media__select .thumb--active {
   border-bottom: 2px solid #1ef68a; }
+
+/*# sourceMappingURL=styles.css.map */

@@ -1,0 +1,92 @@
+<html>
+<head>
+  <link rel="stylesheet" href="style/styles.css">
+  <style>
+    .midi-control__group {
+      padding: 3vmin;
+    }
+    .slider {
+      display: grid;
+      grid-template-columns: 20% 80%;
+      align-items: center;
+    }
+
+    .slider .midi-control__label {justify-self: center;}
+
+    .midi-control__label {
+      display: inline-block;
+      box-sizing: border-box;
+    }
+
+    .midi-control__input--slider,
+    .midi-control__input--slider::-webkit-slider-thumblider-runnable-track {
+      display: inline-block;
+      margin: 21px auto;
+      position: relative;
+      height: 6px; width:100%;
+      cursor: pointer;
+      background-color: hsla(272, 94%, 70%, 1.0);
+      background-image: linear-gradient(90deg, hsla(272, 94%, 70%, 1.0), hsla(194, 89%, 56%, 1.0), hsla(150, 92%, 54%, 1.0));
+      /* border: 1px solid fuchsia; */
+      border-radius: 2px;
+      box-shadow:
+        inset 1px 1px 1px hsla(0, 0%, 35%, 0.5),
+        1px 1px 1px #fff;
+      -webkit-appearance: none;
+    }
+    .midi-control__input--slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      box-sizing: border-box;
+      height: 42px;
+      width: 24px;
+      border: 2px solid;
+      border-image: linear-gradient(120deg, hsla(272, 94%, 70%, 1.0), hsla(194, 89%, 56%, 1.0), hsla(150, 92%, 54%, 1.0)) 5;
+      border-radius: 2px;
+      background-color: hsla(210, 25%, 98%, 1.0);
+      background-image:linear-gradient(0deg, hsla(210, 25%, 96%, 1.0), hsla(210, 25%, 98%, 1.0));
+      box-shadow:
+        1px 1px 4px 1px hsla(0, 0%, 35%, 0.4),
+        inset 2px 2px 0px 2px #fff,
+        inset -2px -2px 0px 2px hsla(210, 25%, 98%, 1.0)
+      ;
+    }
+
+    .midi-control__button--pad {
+      display: block;
+      width: 20vmin; height: 20vmin;
+      margin: 0px auto;
+      position: relative;
+      cursor: pointer;
+      background-color: hsla(210, 25%, 98%, 1.0);
+      background-image:linear-gradient(0deg, hsla(210, 25%, 96%, 1.0), hsla(210, 25%, 98%, 1.0));
+      border: 6px solid;
+      border-image: linear-gradient(120deg, hsla(272, 54%, 80%, 1.0), hsla(194, 49%, 66%, 1.0), hsla(150, 52%, 64%, 1.0)) 10;
+      border-radius: 1px;
+      box-shadow:
+        0px 0px 0px 1px hsla(210, 25%, 98%, 1.0),
+        1px 1px 6px 2px hsla(0, 0%, 35%, 0.5),
+        inset 2px 2px 0px 2px #fff,
+        inset -2px -2px 0px 2px hsla(210, 25%, 98%, 1.0)
+      ;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="midi-control__group slider">
+    <label class="midi-control__label" for="sliderEx" ref="label">
+      Control
+    </label><input class="midi-control__input--slider" id="sliderEx" type="range" min="0" max="127" step="1" value="64" ref="input" />
+  </div>
+
+  <div class="midi-control__group">
+    <label class="midi-control__label" for="padEx" ref="label">
+      Pad
+    </label>
+    <button id="padEx" class="midi-control__button--pad" ref="input"></button>
+  </div>
+
+</body>
+
+</html>
