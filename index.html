@@ -49,7 +49,8 @@
 				<vj-otg-source type="texture" src="#hamster" name="hamster" index="2"></vj-otg-source>
 				<vj-otg-source type="texture" src="#shera" name="shera" index="3"></vj-otg-source>
 
-				<vj-otg-uniform type="beat"></vj-otg-uniform>
+				<!-- Provides beat uniform -->
+				<vj-otg-uniform type="analyser" threshold="80"></vj-otg-uniform>
 				<vj-otg-uniform type="time"></vj-otg-uniform>
 				<vj-otg-uniform type="generic-float" name="mixUniform" value="0.9"></vj-otg-uniform>
 
