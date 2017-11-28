@@ -63,7 +63,7 @@
         <vj-otg-group name="graphGroup">
           <vj-otg-filter type="main">
             int column = int(newUV.x * noAnalyserBins);
-            graphGroup *= vec4(1.0, 
+            graphGroup *= vec4(1.0,
               float(column == 0) * float(newUV.y > analyser[0]) +
               float(column == 1) * float(newUV.y > analyser[1]) +
               float(column == 2) * float(newUV.y > analyser[2]) +
@@ -83,7 +83,7 @@
               float(column == 16) * float(newUV.y > analyser[16]) +
               float(column == 17) * float(newUV.y > analyser[17]) +
               float(column == 18) * float(newUV.y > analyser[18]) +
-              float(column == 19) * float(newUV.y > analyser[19]) 
+              float(column == 19) * float(newUV.y > analyser[19])
             , 1.0, 1.0);
           </vj-otg-filter>
         </vj-otg-group>
@@ -126,7 +126,7 @@
         <h3>Opacity</h3>
         <midi-cc channel="144" value="64">Mix Amount</midi-cc>
         <midi-toggle channel="144" note="59" state="off">On/Off</midi-toggle>
-        <midi-pad channel="144" note="63">Flash</midi-pad>
+        <midi-pad channel="144" note="36" name="pad1">Ada press this! For a whole second!</midi-pad>
       </section>
 
       <section class="fx--noise">
