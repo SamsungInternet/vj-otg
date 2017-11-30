@@ -31,7 +31,7 @@
 			"new-cap": 2,
 			"no-caller": 2,
 			"quotes": [1, "single"],
-			"indent": ["error", "tab"],
+			"indent": [0, "tab"],
 			"no-loop-func": 2,
 			"no-irregular-whitespace": 2,
 			"no-multi-spaces": 2,
