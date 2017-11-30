@@ -87,13 +87,13 @@ class MidiPadController extends HTMLElementWithRefs {
     this.refs.input.addEventListener('mouseup', () => {
       this.message.data = [(parseInt(this.channel)-16),parseInt(this.note)];
       this.dispatchEvent(new CustomEvent('midiMsg', {message: this.message}));
-      this.style.borderImage = 'border-image: linear-gradient(120deg, hsla(272, 54%, 80%, 1.0), hsla(194, 49%, 66%, 1.0), hsla(150, 52%, 64%, 1.0)) 10;';
+      this.style.borderImage = 'linear-gradient(120deg, hsla(272, 54%, 80%, 1.0), hsla(194, 49%, 66%, 1.0), hsla(150, 52%, 64%, 1.0)) 10;';
     });
     /* touch release */
     this.refs.input.addEventListener('touchend', () => {
       this.message.data = [(parseInt(this.channel)-16),parseInt(this.note)];
       this.dispatchEvent(new CustomEvent('midiMsg', {message: this.message}));
-      this.style.borderImage = 'border-image: linear-gradient(120deg, hsla(272, 54%, 80%, 1.0), hsla(194, 49%, 66%, 1.0), hsla(150, 52%, 64%, 1.0)) 10;';
+      this.style.borderImage = 'linear-gradient(120deg, hsla(272, 54%, 80%, 1.0), hsla(194, 49%, 66%, 1.0), hsla(150, 52%, 64%, 1.0)) 10;';
     });
 
   }

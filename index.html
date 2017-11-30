@@ -16,7 +16,7 @@
   <script src="/components/visuals/visuals.js" defer></script>
   <script src="/components/visuals/group.js" defer></script>
   <script src="/components/visuals/asset.js" defer></script>
-  <script src="/components/visuals/distort.js" defer></script>
+  <!-- <script src="/components/visuals/distort.js" defer></script> -->
   <script src="/components/visuals/filter.js" defer></script>
   <script src="/components/visuals/source.js" defer></script>
   <script src="/components/visuals/uniforms.js" defer></script>
@@ -24,6 +24,9 @@
   <script src="/components/midi-cc.js" defer></script>
   <script src="/components/midi-pad.js" defer></script>
   <script src="/components/midi-toggle.js" defer></script>
+
+  <script src="/midi/akai.js" defer></script>
+  <script src="/midi/midiConfig.js" defer></script>
   <script src="/main.js" defer></script>
 </head>
 
@@ -89,7 +92,7 @@
         </vj-otg-group>
 
         <vj-otg-group name="videoGroup">
-          <vj-otg-filter type="splitx" size="[beat * 0.05]"></vj-otg-filter>
+          <vj-otg-filter type="splitx" size="[beat * 0.05]" midi="[media1.opacity]"></vj-otg-filter>
           <vj-otg-filter type="hsl-gradient" start="120,0.5,0.5" stop="180,1,0.8" direction="3"></vj-otg-filter>
         </vj-otg-group>
 
@@ -108,7 +111,7 @@
         <li class="thumb thumb__master" data-media="master">
           <span>M</span>
         </li>
-        <li class="thumb" data-media="minie">
+        <li class="thumb" data-media="minnie">
           <img src="./assets/" alt="Thumbnail of Minnie video clip" />
         </li>
         <li class="thumb" data-media="hamster">
@@ -171,19 +174,19 @@
 
       <section class="fx--opacity">
         <h3>Opacity</h3>
-        <midi-cc channel="144" value="64">Mix Amount</midi-cc>
-        <midi-toggle channel="144" note="59" state="off">On/Off</midi-toggle>
-        <midi-pad channel="144" note="63">Flash</midi-pad>
+        <midi-cc channel="176" note="4" value="64">Mix Amount</midi-cc>
+        <midi-pad channel="192" note="1">Flash</midi-pad>
+        <midi-toggle channel="144" note="37" state="off">On/Off</midi-toggle>
       </section>
 
       <section class="fx--hsl">
-        <h3>Colour</h3>
-        <midi-cc channel="144" value="64">Rotate</midi-cc>
+        <h3>Hue Shift</h3>
+        <midi-cc channel="176" note="5" value="64">Rotate</midi-cc>
       </section>
 
       <section class="fx--split">
         <h3>Split Screen</h3>
-        <midi-toggle channel="144" note="59" state="off">Split</midi-toggle>
+        <midi-toggle channel="192" note="2" state="off">Split</midi-toggle>
       </section>
 
     </section>
@@ -205,8 +208,14 @@
 
     nav.addEventListener("click", function (e) {
 
+      // find li el (sometimes click on something dif)
+      var li = e.target.tagName != 'LI' ? e.target.parentElement : e.target;
+      console.log(li);
+
       for (let i = 0; i < fxSets.length; i++) {
-        if (e.target.dataset.media === fxSets[i].dataset.fxfor) {
+        // get li dataset attr
+
+        if (li.dataset.media === fxSets[i].dataset.fxfor) {
           showHideEl(fxSets[i], 'block', true);
         } else {
           showHideEl(fxSets[i], 'block', false);

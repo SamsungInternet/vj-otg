@@ -83,13 +83,14 @@ class MidiCCController extends HTMLElementWithRefs {
     this.tabIndex = 0;
     this.attachShadow({mode: 'open'});
     this.shadowRoot.appendChild(containerTemplate.content.cloneNode(true));
+    this.message = {};
 
     // const midiEvent = new Event('midiMsg');
 
     this.refs.input.addEventListener('input', () => {
-      this.value = [this.channel,this.refs.input.value];
+      this.message.data = [parseInt(this.channel),parseInt(this.refs.input.value)];
       // change this name to be same as midi api
-      this.dispatchEvent(new CustomEvent('midiMsg', {value: this.value}));
+      this.dispatchEvent(new CustomEvent('midiMsg', {message: this.message}));
 
     });
 
