@@ -8,7 +8,7 @@ for (let i=0; i<allMidiEls.length; i++) {
 	allMidiEls[i].addEventListener('midiMsg', function(e) {
 
 		if (this.tagName === 'MIDI-CC') {
-			this.setAttribute('value', Number(sliders[i].message.data[1])/127);
+			this.setAttribute('value', sliders[i].message.data[1]);
 		}
 
 		onMIDIMessage(allMidiEls[i].message);
@@ -45,7 +45,6 @@ function onMIDIFailure(error) {
     console.log("MIDI access has failed ☹️ Check the error & try restarting the browser. " + error);
 }
 
-const uniform = document.querySelector('[name="mixUniform"]');
 // if we get a midi value - do some controlling of effects
 // I am considering a function map rather than what we have now - maybe it will become more clear when I start to control effects
 function onMIDIMessage(message) {
