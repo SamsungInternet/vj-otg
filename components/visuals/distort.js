@@ -112,7 +112,7 @@ class VJOTGDistort extends HTMLElementPlus {
 			};
 			this.parentNode.uniforms[uniformName] = zoom;
 
-			const position = glAttributes.position.split(',').map(String.trim);
+			const position = glAttributes.position.split(',').map(a => a.trim());
 			delete glAttributes.position;
 			glAttributes.positionX = position[0];
 			glAttributes.positionY = position[1];
