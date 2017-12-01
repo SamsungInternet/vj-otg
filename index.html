@@ -53,14 +53,29 @@
 				<vj-otg-uniform type="analyser" threshold="80"></vj-otg-uniform>
 				<vj-otg-uniform type="time"></vj-otg-uniform>
 
-				<vj-otg-uniform type="midi" name="mixUniform" midi-el="#opacity"></vj-otg-uniform>
+				<!-- <vj-otg-uniform type="midi" name="mixUniform" midi-el="#opacity"></vj-otg-uniform> -->
 				<vj-otg-uniform type="midi" name="cc1" midi-el="#cc1"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="cc2" midi-el="#cc2"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="cc3" midi-el="#cc3"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="cc4" midi-el="#cc4"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="cc5" midi-el="#cc5"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="cc6" midi-el="#cc6"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="cc7" midi-el="#cc7"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="cc8" midi-el="#cc8"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="pad1" midi-el="#pad1"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="pad2" midi-el="#pad2"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="pad3" midi-el="#pad3"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="pad4" midi-el="#pad4"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="pad5" midi-el="#pad5"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="pad6" midi-el="#pad6"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="pad7" midi-el="#pad7"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="pad8" midi-el="#pad8"></vj-otg-uniform>
 
 				<vj-otg-group name="hamsterGroup">
 					<vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="0.02" speed="0.5"></vj-otg-distort>
 					<vj-otg-distort type="zoom" factor="1.2" position="0.5, 0.5"></vj-otg-distort>
 					<vj-otg-filter type="main">float distanceFromCenter = length(centerCoord - newUV);</vj-otg-filter>
-					<vj-otg-distort type="rotate" angle="[sqrt(distanceFromCenter) * 1000.0 * (1.0 - mixUniform) + mixUniform * 500.0 + 220.0]"></vj-otg-distort>
+					<vj-otg-distort type="rotate" angle="[sqrt(distanceFromCenter) * 1000.0 * (1.0 - cc2) + cc2 * 500.0 + 220.0]"></vj-otg-distort>
 					<vj-otg-filter type="from-source" source="3"></vj-otg-filter>
 				</vj-otg-group>
 
@@ -98,9 +113,9 @@
 				</vj-otg-group>
 
 				<vj-otg-filter type="main">
-					float perlinNoise = clamp(snoise(vec3(newUV * 5.0, mixUniform)), 0.0, 1.0);
+					float perlinNoise = clamp(snoise(vec3(newUV * 5.0, cc1)), 0.0, 1.0);
 					[layer] = mix(videoGroup, hamsterGroup * graphGroup,
-					mixUniform * mixUniform);
+					cc1 * cc1);
 				</vj-otg-filter>
 
 			</vj-otg-visuals>
