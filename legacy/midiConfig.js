@@ -45,7 +45,7 @@ var midiConfig = {
 			amount: akaiControls.prog1.CC[6],
 			xPos: akaiControls.prog1.CC[7],
 			yPos: akaiControls.prog1.CC[7]
-		}
+		},
 		rotate: {
 			degrees: akaiControls.prog1.CC[7]
 		}

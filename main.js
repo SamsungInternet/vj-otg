@@ -8,10 +8,8 @@ for (let i=0; i<allMidiEls.length; i++) {
 	allMidiEls[i].addEventListener('midiMsg', function(e) {
 
 		if (this.tagName === 'MIDI-CC') {
-			this.setAttribute('value', sliders[i].message.data[1]);
+			this.setAttribute('value', e.detail.data[2]);
 		}
-
-		onMIDIMessage(allMidiEls[i].message);
 
 	});
 }
@@ -45,8 +43,6 @@ function onMIDIFailure(error) {
     console.log("MIDI access has failed ☹️ Check the error & try restarting the browser. " + error);
 }
 
-// if we get a midi value - do some controlling of effects
-// I am considering a function map rather than what we have now - maybe it will become more clear when I start to control effects
 function onMIDIMessage(message) {
 	// I don't fee like I need this anymore
 	data = message.data;
@@ -59,7 +55,7 @@ function onMIDIMessage(message) {
 	}
 
 	// emit event for uniform elements
-	document.dispatchEvent(new CustomEvent('midiMsg', {message: message}));
+	document.dispatchEvent(new CustomEvent('midiMsg', {detail: message}));
 
 }
 

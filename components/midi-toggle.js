@@ -68,6 +68,7 @@ class MidiToggleController extends HTMLElementWithRefs {
     this.attachShadow({mode: 'open'});
     this.shadowRoot.appendChild(toggleTemplate.content.cloneNode(true));
     this.message = {};
+    this.message.type = 'toggle';
 
     /*A pad has two events, on down and on release*/
     // TODO: REFACTOR THE FUCK OUT OF THIS
