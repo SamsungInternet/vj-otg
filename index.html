@@ -54,6 +54,7 @@
         <vj-otg-uniform type="analyser" threshold="80"></vj-otg-uniform>
         <vj-otg-uniform type="time"></vj-otg-uniform>
         <vj-otg-uniform type="generic-float" name="mixUniform" value="0.9"></vj-otg-uniform>
+        <!-- listen for #opcity-cc - midiPad1 -->
 
         <vj-otg-group name="hamsterGroup">
           <vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="0.02" speed="0.5"></vj-otg-distort>
@@ -127,7 +128,8 @@
 
       <section class="fx--opacity">
         <h3>Opacity</h3>
-        <midi-cc channel="144" value="64">Mix Amount</midi-cc>
+        <!-- this updates uniform -->
+        <midi-cc channel="144" value="64" id="opacity-cc">Mix Amount</midi-cc>
         <midi-toggle channel="144" note="59" state="off">On/Off</midi-toggle>
         <midi-pad channel="144" note="36" name="pad1">Ada press this! For a whole second!</midi-pad>
       </section>

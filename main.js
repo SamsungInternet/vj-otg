@@ -49,68 +49,21 @@ const uniform = document.querySelector('[name="mixUniform"]');
 // if we get a midi value - do some controlling of effects
 // I am considering a function map rather than what we have now - maybe it will become more clear when I start to control effects
 function onMIDIMessage(message) {
+	// I don't fee like I need this anymore
 	data = message.data;
 
-	// master
-	// opacity on/off
-	if ( (data[0] === midiConfig.master.opacity.onOff.onPress[0]) && (data[1] === midiConfig.master.opacity.onOff.onPress[1]) ) {
+	// send type as well - if channel is between certain numbers then it's a pad, if not it's a CC - or something (it's a little bit rudementary but I don't have a better way ya)
+	if ( (data[0] > 135) && (data[0] < 150) ) {
+		message.type = 'pad';
+	} else {
+		message.type = 'cc';
+	}
 
-		// turn opacity on off here
-		// if this state is on turn off etc...
-    }
-    // opacity mix
-    if ( (data[0] === midiConfig.master.opacity.mix[0]) && (data[1] === midiConfig.master.opacity.mix[1]) ) {
+	// emit event for uniform elements
+	document.dispatchEvent(new CustomEvent('midiMsg', {message: message}));
 
-		// change opacity based on scale
-		let mixVal = data[2];
-    }
-    // noise
-    if ( (data[0] === midiConfig.master.noise.size[0]) && (data[1] === midiConfig.master.noise.size[1]) ) {
-
-		let mixVal = data[2];
-		// insert this into size val
-    }
-    if ( (data[0] === midiConfig.master.noise.amount[0]) && (data[1] === midiConfig.master.noise.amount[1]) ) {
-
-		let mixVal = data[2];
-		// insert this into amount val
-    }
-
-    // minnie
-    // opacity
-    if ( (data[0] === midiConfig.media1.opacity.mix.channel) && (data[1] === midiConfig.media1.opacity.mix.note) ) {
-
-    	// ok so let's assume the midi channel value is in an attribute midi and in the format [val]
-    	// match it and set value of that effect based on data
-    	const filter = document.querySelector('vj-otg-filter[midi="media1.opacity"]');
-		let mixVal = data[2];
-		// update attributes on the element here
-    }
-    if ( (data[0] === midiConfig.media1.opacity.flash.onPress.channel) && (data[1] === midiConfig.media1.opacity.flash.onPress.note) ) {
-
-		// insert this into amount val
-    }
-    if ( (data[0] === midiConfig.media1.opacity.onOff.channel) && (data[1] === midiConfig.media1.opacity.onOff.note) ) {
-
-		// insert this into amount val
-    }
-    // hue shift
-    if ( (data[0] === midiConfig.media1.hueShift.rotate.channel) && (data[1] === midiConfig.media1.hueShift.rotate.note) ) {
-
-    }
-    // split screen
-    if ( (data[0] === midiConfig.media1.splitScreen.split.channel) && (data[1] === midiConfig.media1.splitScreen.split.note) ) {
-
-    }
-
-
-	// this is a test
-
-
-    if ( (data[0] === akaiControls.prog1.PAD[0].onRelease.channel) && (data[1] === akaiControls.prog1.PAD[0].onRelease.note) ) {
-
-		document.getElementById('vjotg').style.backgroundColor = 'transparent';
-    }
 }
 
+// event test
+document.addEventListener("midiMsg", function(e) {console.log(e)});
 

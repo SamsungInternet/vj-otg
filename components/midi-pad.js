@@ -72,6 +72,7 @@ class MidiPadController extends HTMLElementWithRefs {
     // TODO: REFACTOR THE FUCK OUT OF THIS
     /* mouse down */
     this.refs.input.addEventListener('mousedown', () => {
+      this.message.type = 'pad';
       this.message.data = [parseInt(this.channel),parseInt(this.note)];
       this.dispatchEvent(new CustomEvent('midiMsg', {message: this.message}));
       this.style.borderImage = 'linear-gradient(120deg, hsla(272, 94%, 70%, 1.0), hsla(194, 89%, 56%, 1.0), hsla(150, 92%, 54%, 1.0)) 10;';
