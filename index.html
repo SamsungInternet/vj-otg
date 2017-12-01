@@ -53,7 +53,6 @@
 				<vj-otg-uniform type="analyser" threshold="80"></vj-otg-uniform>
 				<vj-otg-uniform type="time"></vj-otg-uniform>
 
-				<!-- <vj-otg-uniform type="midi" name="mixUniform" midi-el="#opacity"></vj-otg-uniform> -->
 				<vj-otg-uniform type="midi" name="cc1" midi-el="#cc1"></vj-otg-uniform>
 				<vj-otg-uniform type="midi" name="cc2" midi-el="#cc2"></vj-otg-uniform>
 				<vj-otg-uniform type="midi" name="cc3" midi-el="#cc3"></vj-otg-uniform>
@@ -81,29 +80,47 @@
 
 				<vj-otg-group name="graphGroup">
 					<vj-otg-filter type="main">
-						int column = int(newUV.x * noAnalyserBins);
-						graphGroup *= vec4(1.0,
-							float(column == 0) * float(newUV.y > analyser[0]) +
-							float(column == 1) * float(newUV.y > analyser[1]) +
-							float(column == 2) * float(newUV.y > analyser[2]) +
-							float(column == 3) * float(newUV.y > analyser[3]) +
-							float(column == 4) * float(newUV.y > analyser[4]) +
-							float(column == 5) * float(newUV.y > analyser[5]) +
-							float(column == 6) * float(newUV.y > analyser[6]) +
-							float(column == 7) * float(newUV.y > analyser[7]) +
-							float(column == 8) * float(newUV.y > analyser[8]) +
-							float(column == 9) * float(newUV.y > analyser[9]) +
-							float(column == 10) * float(newUV.y > analyser[10]) +
-							float(column == 11) * float(newUV.y > analyser[11]) +
-							float(column == 12) * float(newUV.y > analyser[12]) +
-							float(column == 13) * float(newUV.y > analyser[13]) +
-							float(column == 14) * float(newUV.y > analyser[14]) +
-							float(column == 15) * float(newUV.y > analyser[15]) +
-							float(column == 16) * float(newUV.y > analyser[16]) +
-							float(column == 17) * float(newUV.y > analyser[17]) +
-							float(column == 18) * float(newUV.y > analyser[18]) +
-							float(column == 19) * float(newUV.y > analyser[19])
-						, 1.0, 1.0);
+						<pre><code lang="glsl">
+
+							// Work in polar coordinates
+							newUV.x = (PI + atan(newUV.x - 0.5, newUV.y - 0.5)) / (2.0 * PI);
+							newUV.y = distanceFromCenter;
+				
+							// Get the current column and it's value
+							int column = int(newUV.x * noAnalyserBins);
+							float columnValue = (
+								(float(column == 0) * analyser[0]) +
+								(float(column == 1) * analyser[1]) +
+								(float(column == 2) * analyser[2]) +
+								(float(column == 3) * analyser[3]) +
+								(float(column == 4) * analyser[4]) +
+								(float(column == 5) * analyser[5]) +
+								(float(column == 6) * analyser[6]) +
+								(float(column == 7) * analyser[7]) +
+								(float(column == 8) * analyser[8]) +
+								(float(column == 9) * analyser[9]) +
+								(float(column == 10) * analyser[10]) +
+								(float(column == 11) * analyser[11]) +
+								(float(column == 12) * analyser[12]) +
+								(float(column == 13) * analyser[13]) +
+								(float(column == 14) * analyser[14]) +
+								(float(column == 15) * analyser[15]) +
+								(float(column == 16) * analyser[16]) +
+								(float(column == 17) * analyser[17]) +
+								(float(column == 18) * analyser[18]) +
+								(float(column == 19) * analyser[19])
+							);
+				
+							// Each column is coloured using hsl
+							vec3 rgbColumnColor = hsl2rgb(float(column)/noAnalyserBins, 1.0 , 0.5);
+				
+							// Work out whether that pixel should be coloured or not.
+							graphGroup = mix(
+								noopVec4,
+								vec4(rgbColumnColor, 1.0),
+								float(newUV.y &lt;= columnValue) * float(columnValue - newUV.y &lt;= 0.1 )
+							);
+					</code></pre>
 					</vj-otg-filter>
 				</vj-otg-group>
 
@@ -113,8 +130,7 @@
 				</vj-otg-group>
 
 				<vj-otg-filter type="main">
-					float perlinNoise = clamp(snoise(vec3(newUV * 5.0, cc1)), 0.0, 1.0);
-					[layer] = mix(videoGroup, hamsterGroup * graphGroup,
+					float perlinNoise = clamp(snoise(vec3(newUV * 5.0, cc1)), 0.0, 1.0); [layer] = mix(videoGroup, hamsterGroup * graphGroup,
 					cc1 * cc1);
 				</vj-otg-filter>
 
@@ -141,9 +157,6 @@
 		</nav>
 
 		<section class="midi-controls media__fx" data-fxfor="master">
-			<midi-cc id="opacity" channel="144" note="58" value="64">Mix Amount</midi-cc>
-
-
 			<midi-pad channel="144" note="36" id="pad1">PAD1</midi-pad>
 			<midi-pad channel="144" note="37" id="pad2">PAD2</midi-pad>
 			<midi-pad channel="144" note="38" id="pad3">PAD3</midi-pad>
@@ -163,80 +176,6 @@
 			<midi-cc id="cc7" channel="176" note="7" value="64">CC7</midi-cc>
 			<midi-cc id="cc8" channel="176" note="8" value="64">CC8</midi-cc>
 		</section>
-
-		<!-- <section class="media__fx" data-fxfor="master">
-
-			<section class="fx--opacity">
-				<h3>Opacity</h3>
-				<midi-toggle channel="144" note="59" state="off">On/Off</midi-toggle>
-				<midi-pad channel="144" note="36" name="pad1">Ada press this! For a whole second!</midi-pad>
-			</section>
-
-			<section class="fx--noise">
-				<h3>Noise</h3>
-				<midi-cc channel="144" value="64">Size</midi-cc>
-				<midi-cc channel="144" value="64">Amount</midi-cc>
-			</section>
-
-		</section>
-
-		<section class="media__fx" data-fxfor="hamster">
-
-			<section class="fx--opacity">
-				<h3>Opacity</h3>
-				<midi-cc channel="144" value="64">Mix Amount</midi-cc>
-				<midi-toggle channel="144" note="59" state="off">On/Off</midi-toggle>
-				<midi-pad channel="144" note="63">Flash</midi-pad>
-			</section>
-
-			<section class="fx--wave">
-				<h3>Wave</h3>
-				<midi-cc channel="144" value="64">Frequency</midi-cc>
-				<midi-cc channel="144" value="64">Amplitude</midi-cc>
-				<midi-cc channel="144" value="64">Speed</midi-cc>
-			</section>
-
-			<section class="fx--zoom">
-				<h3>Zoom</h3>
-				<midi-cc channel="144" value="64">Amount</midi-cc>
-				<midi-cc channel="144" value="64">X Pos</midi-cc>
-				<midi-cc channel="144" value="64">Y Pos</midi-cc>
-			</section>
-
-			<section class="fx--rotate">
-				<h3>Rotate</h3>
-				<midi-cc channel="144" value="64">Degrees</midi-cc>
-			</section>
-
-		</section>
-
-		<section class="media__fx" data-fxfor="minnie">
-
-			<section class="fx--opacity">
-				<h3>Opacity</h3>
-				<midi-cc channel="176" note="4" value="64">Mix Amount</midi-cc>
-				<midi-pad channel="192" note="1">Flash</midi-pad>
-				<midi-toggle channel="144" note="37" state="off">On/Off</midi-toggle>
-			</section>
-
-			<section class="fx--hsl">
-				<h3>Hue Shift</h3>
-				<midi-cc channel="176" note="5" value="64">Rotate</midi-cc>
-			</section>
-
-			<section class="fx--split">
-				<h3>Split Screen</h3>
-				<midi-toggle channel="192" note="2" state="off">Split</midi-toggle>
-			</section>
-
-		</section>
- -->
-		<!-- <midi-cc channel="144" value="64">Bass</midi-cc>
-
-		<midi-pad channel="144" note="63">Pad</midi-pad>
-
-		<midi-toggle channel="144" note="59" state="off">Toggle</midi-toggle> -->
-
 	</div>
 	<!--wrapper-->
 

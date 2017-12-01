@@ -163,12 +163,9 @@ vec4 getSource(int i, vec2 uv) {
 			}
 		`;
 
-		console.log(
-			fragmentShader
-				.split('\n')
-				.map((l, i) => i + 101 + ': ' + l)
-				.join('\n')
-		);
+		fragmentShader
+			.split('\n')
+			.map((l, i) => console.log(i + 101 + ': ' + l))
 
 		return new THREE.ShaderMaterial({
 			uniforms: this.uniforms,
