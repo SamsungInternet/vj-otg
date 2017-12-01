@@ -94,6 +94,7 @@ class MidiCCController extends HTMLElementWithRefs {
       this.dispatchEvent(new CustomEvent('midiMsg', {detail: this.message}));
 
     });
+    // this.refs.input.
 
   }
 

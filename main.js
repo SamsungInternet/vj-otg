@@ -4,15 +4,23 @@
 const sliders = document.querySelectorAll('midi-cc');
 const allMidiEls = document.querySelectorAll('midi-cc, midi-pad, midi-toggle');
 
-for (let i=0; i<allMidiEls.length; i++) {
-	allMidiEls[i].addEventListener('midiMsg', function(e) {
+// for (let i=0; i<allMidiEls.length; i++) {
+// 	allMidiEls[i].addEventListener('midiMsg', function(e) {
 
-		if (this.tagName === 'MIDI-CC') {
-			this.setAttribute('value', e.detail.data[2]);
-		}
+// 		if (this.tagName === 'MIDI-CC') {
+// 			this.setAttribute('value', e.detail.data[2]);
+// 		}
 
-	});
-}
+// 	});
+// }
+
+// set midi element cc value - should probably be part of the custom element
+document.addEventListener('midiMsg', function(e) {
+	if (e.detail.type === 'cc') {
+		document.querySelector('midi-cc[note="'+e.detail.data[1]+'"]').setAttribute('value', e.detail.data[2]);
+	}
+})
+
 
 // midi stuff here
 var midi, data;
@@ -44,21 +52,20 @@ function onMIDIFailure(error) {
 }
 
 function onMIDIMessage(message) {
-	// I don't fee like I need this anymore
-	data = message.data;
+
+	let detail = {};
+
+	detail.data = message.data;
+	detail.type = 'cc';
 
 	// send type as well - if channel is between certain numbers then it's a pad, if not it's a CC - or something (it's a little bit rudementary but I don't have a better way ya)
-	if ( (data[0] > 135) && (data[0] < 150) ) {
-		message.type = 'pad';
-	} else {
-		message.type = 'cc';
+	if ( (detail.data[0] > 135) && (detail.data[0] < 150) ) {
+		detail.type = 'pad';
 	}
 
 	// emit event for uniform elements
-	document.dispatchEvent(new CustomEvent('midiMsg', {detail: message}));
+	document.dispatchEvent(new CustomEvent('midiMsg', {detail: detail}));
 
 }
 
-// event test
-document.addEventListener("midiMsg", function(e) {console.log(e)});
 
