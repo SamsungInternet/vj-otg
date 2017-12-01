@@ -48,6 +48,7 @@ class VJOTGSource extends HTMLElementPlus {
 			};
 			uniform.value = texture;
 			this.parentNode.uniforms[glAttributes.name] = uniform;
+			this.parentNode.dirty = true;
 
 			this.shaderChunks = {
 				uniforms: `uniform sampler2D ${glAttributes.name};`,
