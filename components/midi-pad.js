@@ -66,33 +66,35 @@ class MidiPadController extends HTMLElementWithRefs {
     this.tabIndex = 0;
     this.attachShadow({mode: 'open'});
     this.shadowRoot.appendChild(padTemplate.content.cloneNode(true));
+    this.message = {};
+    this.message.type = 'pad';
 
     /*A pad has two events, on down and on release*/
     // TODO: REFACTOR THE FUCK OUT OF THIS
     /* mouse down */
     this.refs.input.addEventListener('mousedown', () => {
-      this.value = [this.channel,this.note];
-      this.dispatchEvent(new CustomEvent('midiMsg', {value: this.value}));
+      this.message.data = [parseInt(this.channel),parseInt(this.note), 64];
+      this.dispatchEvent(new CustomEvent('midiMsg', {detail: this.message}));
       this.style.borderImage = 'linear-gradient(120deg, hsla(272, 94%, 70%, 1.0), hsla(194, 89%, 56%, 1.0), hsla(150, 92%, 54%, 1.0)) 10;';
     });
     /* touch down */
     this.refs.input.addEventListener('touchstart', () => {
-      this.value = [this.channel,this.note];
-      this.dispatchEvent(new CustomEvent('midiMsg', {value: this.value}));
+      this.message.data = [parseInt(this.channel),parseInt(this.note), 64];
+      this.dispatchEvent(new CustomEvent('midiMsg', {detail: this.message}));
       this.style.borderImage = 'linear-gradient(120deg, hsla(272, 94%, 70%, 1.0), hsla(194, 89%, 56%, 1.0), hsla(150, 92%, 54%, 1.0)) 10;';
     });
 
     /* mouse release */
     this.refs.input.addEventListener('mouseup', () => {
-      this.value = [this.channel,this.note];
-      this.dispatchEvent(new CustomEvent('midiMsg', {value: this.value}));
-      this.style.borderImage = 'border-image: linear-gradient(120deg, hsla(272, 54%, 80%, 1.0), hsla(194, 49%, 66%, 1.0), hsla(150, 52%, 64%, 1.0)) 10;';
+      this.message.data = [(parseInt(this.channel)-16),parseInt(this.note), 0];
+      this.dispatchEvent(new CustomEvent('midiMsg', {detail: this.message}));
+      this.style.borderImage = 'linear-gradient(120deg, hsla(272, 54%, 80%, 1.0), hsla(194, 49%, 66%, 1.0), hsla(150, 52%, 64%, 1.0)) 10;';
     });
     /* touch release */
     this.refs.input.addEventListener('touchend', () => {
-      this.value = [this.channel,this.note];
-      this.dispatchEvent(new CustomEvent('midiMsg', {value: this.value}));
-      this.style.borderImage = 'border-image: linear-gradient(120deg, hsla(272, 54%, 80%, 1.0), hsla(194, 49%, 66%, 1.0), hsla(150, 52%, 64%, 1.0)) 10;';
+      this.message.data = [(parseInt(this.channel)-16),parseInt(this.note), 0];
+      this.dispatchEvent(new CustomEvent('midiMsg', {detail: this.message}));
+      this.style.borderImage = 'linear-gradient(120deg, hsla(272, 54%, 80%, 1.0), hsla(194, 49%, 66%, 1.0), hsla(150, 52%, 64%, 1.0)) 10;';
     });
 
   }

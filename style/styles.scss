@@ -13,8 +13,8 @@
 
 // 1. vars
 @font-face {
-  font-family: 'Titillium';
-  src: url('TitilliumWeb-Light.ttf');
+	font-family: 'Titillium';
+	src: url('TitilliumWeb-Light.ttf');
 }
 $font: 'Titillium', Arial, sans-serif;
 $purple:hsla(272, 94%, 70%, 1.0);
@@ -26,119 +26,119 @@ $black:hsla(0, 0%, 35%, 1.0);
 $spacing: 2vmin;
 
 @mixin gradient($degVal) {
-  background-image: linear-gradient(#{$degVal}deg, $purple, $blue, $green);
+	background-image: linear-gradient(#{$degVal}deg, $purple, $blue, $green);
 }
 // a nicer way to media query
 @mixin at-least($device-width) {
-  @media screen and (min-width: $device-width) {
-    @content
-  }
+	@media screen and (min-width: $device-width) {
+		@content
+	}
 }
 @mixin until($device-width) {
-  @media screen and (max-width: $device-width - 1) {
-    @content
-  }
+	@media screen and (max-width: $device-width - 1) {
+		@content
+	}
 }
 $breakPoint: 880px;
 
 /* 2. base */
 
 body {
-  background-color: $offWhite;
-  font-family: $font;
-  font-size: 100%;
-  color: $black; text-shadow: 1px 1px 2px #fff;
+	background-color: $offWhite;
+	font-family: $font;
+	font-size: 100%;
+	color: $black; text-shadow: 1px 1px 2px #fff;
 }
 
 /*display layout via grid*/
 #vjotg {
-  display:grid; box-sizing: border-box;
-  grid-template-columns: auto;
-  grid-template-rows: auto auto auto 1fr;
-  width:100vw; max-width: 1100px;
-  height:100vh; max-height:100vh;
-  margin:0px auto;
+	display:grid; box-sizing: border-box;
+	grid-template-columns: auto;
+	grid-template-rows: auto auto auto 1fr;
+	width:100vw; max-width: 1100px;
+	height:100vh; max-height:100vh;
+	margin:0px auto;
 
-  @include at-least($breakPoint) {
-    grid-template-columns: auto 1fr;
-  }
+	@include at-least($breakPoint) {
+		grid-template-columns: auto 1fr;
+	}
 
-  & > header {
-    grid-area: 1/1/2/2; box-sizing: border-box;
-    align-self: center;
-    width:100%;
-    padding: $spacing;
-    @include at-least($breakPoint) {
-      grid-area: 1/1/2/3;
-    }
-  }
+	& > header {
+		grid-area: 1/1/2/2; box-sizing: border-box;
+		align-self: center;
+		width:100%;
+		padding: $spacing;
+		@include at-least($breakPoint) {
+			grid-area: 1/1/2/3;
+		}
+	}
 
-  #screen {
-    grid-area: 2/1/3/2;
-    margin-bottom: $spacing;
-  }
+	#screen {
+		grid-area: 2/1/3/2;
+		margin-bottom: $spacing;
+	}
 }
 
 .media__select {
-  grid-area: 3/1/4/2;
-  ul {
-    display: flex; justify-content: space-around;
-  }
-  .thumb {
-    width:20vmin; max-width:120px;
-    height:20vmin; max-height:120px;
-    overflow: hidden;
-    img {
-      display: block;
-      object-fit: cover;
-      height:130px; width:auto;
-    }
-  }
+	grid-area: 3/1/4/2;
+	ul {
+		display: flex; justify-content: space-around;
+	}
+	.thumb {
+		width:20vmin; max-width:120px;
+		height:20vmin; max-height:120px;
+		overflow: hidden;
+		img {
+			display: block;
+			object-fit: cover;
+			height:130px; width:auto;
+		}
+	}
 }
 
 .media__fx {
-  grid-area: 4/1/5/2;
-  @include at-least($breakPoint) {
-    grid-area: 2/2/5/3;
-  }
-  overflow-y: scroll;
-  display: none;
+	grid-area: 4/1/5/2;
+	@include at-least($breakPoint) {
+		grid-area: 2/2/5/3;
+	}
+	overflow-y: scroll;
+	display: none;
 }
 .media__fx[data-fxfor="master"] {display:block;}
 
 midi-toggle, midi-pad {
-  width: 49%;
-  display: inline-block;
+	width: 49%;
+	display: inline-block;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // styles
 #screen {
-  background-color: $black;
-  border:2px solid $black;
-  & canvas {margin:0px auto; display:block;}
+	background-color: $black;
+	border:2px solid $black;
+	& canvas {margin:0px auto; display:block;}
 }
 
 // media nav
 .media__select {
-  .thumb {border-radius: 2px;}
+	.thumb {border-radius: 2px;}
 
-  .thumb__master {
-    display: flex;
-    background-color: $blue;
-    @include gradient(45);
-    span {
-      align-self: center;
-      display: inline-block;
-      margin: 0px auto;
-      font-size: 3em; color:$offWhite;
+	.thumb__master {
+		display: flex;
+		background-color: $blue;
+		@include gradient(45);
+		span {
+			align-self: center;
+			display: inline-block;
+			margin: 0px auto;
+			font-size: 3em; color:$offWhite;
 
-    }
-  }
+		}
+	}
 
-  .thumb--active {
-    border-bottom:2px solid $green;
-  }
+	.thumb--active {
+		border-bottom:2px solid $green;
+	}
 }
 
 // .screen {background-color:black; border: 1px solid #555;}

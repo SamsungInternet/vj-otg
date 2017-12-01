@@ -13,7 +13,7 @@ class VJOTGUniform extends HTMLElementPlus {
 		this.name = 'uniform_id_' + this.constructor.filterCount++;
 	}
 	static get observedAttributes() {
-		return ['name', 'type', 'value', 'threshold'];
+		return ['name', 'type', 'value', 'threshold', 'midi-el'];
 	}
 	allAttributesChangedCallback(glAttributes) {
 		if (
@@ -49,6 +49,35 @@ class VJOTGUniform extends HTMLElementPlus {
 		}
 
 		if (
+			glAttributes.type === 'midi' &&
+			glAttributes.name &&
+			glAttributes['midi-el']
+		) {
+
+			const uniform = this.parentNode.uniforms[glAttributes.name] || {
+				type: 'f',
+				value: 0
+			};
+
+			if (this.__listeningToEl) {
+				this.__listeningToEl.removeEventListener('midiMsg', this.__listenerFn);
+			}
+
+			this.__listeningToEl = document.querySelector(glAttributes['midi-el']);
+
+			if (!this.__listeningToEl) throw Error('No element found with selector: ' + glAttributes['midi-el']);
+			this.__listenerFn = function (e) {
+				uniform.value = e.detail.data[2] / 127;
+			};
+			this.__listeningToEl.addEventListener('midiMsg', this.__listenerFn);
+
+			this.parentNode.uniforms[glAttributes.name] = uniform;
+			this.shaderChunks = {
+				uniforms: `uniform float ${glAttributes.name};`
+			};
+		}
+
+		if (
 			glAttributes.type === 'analyser' &&
 			glAttributes.threshold
 		) {
@@ -69,7 +98,7 @@ class VJOTGUniform extends HTMLElementPlus {
 				value: 0
 			};
 			this.parentNode.uniforms.beat = beatUniform;
-			
+
 			// Fetch an existing uniform to update or create a new one
 			const analyserUniform = this.parentNode.uniforms.analyser || {
 				type: 'uFloatArray'

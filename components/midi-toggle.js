@@ -67,31 +67,33 @@ class MidiToggleController extends HTMLElementWithRefs {
     this.tabIndex = 0;
     this.attachShadow({mode: 'open'});
     this.shadowRoot.appendChild(toggleTemplate.content.cloneNode(true));
+    this.message = {};
+    this.message.type = 'toggle';
 
     /*A pad has two events, on down and on release*/
     // TODO: REFACTOR THE FUCK OUT OF THIS
     /* mouse down */
     this.refs.input.addEventListener('mousedown', () => {
-      this.value = [this.channel,this.note];
-      this.dispatchEvent(new CustomEvent('midiMsg', {value: this.value}));
+      this.message.data = [parseInt(this.channel),parseInt(this.note)];
+      this.dispatchEvent(new CustomEvent('midiMsg', {message: this.message}));
       this.state === 'off' ? this.setAttribute('state', 'on') : this.setAttribute('state', 'off');
     });
     /* touch down */
     this.refs.input.addEventListener('touchstart', () => {
-      this.value = [this.channel,this.note];
-      this.dispatchEvent(new CustomEvent('midiMsg', {value: this.value}));
+      this.message.data = [parseInt(this.channel),parseInt(this.note)];
+      this.dispatchEvent(new CustomEvent('midiMsg', {message: this.message}));
       this.state === 'off' ? this.setAttribute('state', 'on') : this.setAttribute('state', 'off');
     });
 
     /* mouse release */
     this.refs.input.addEventListener('mouseup', () => {
-      this.value = [this.channel,this.note];
-      this.dispatchEvent(new CustomEvent('midiMsg', {value: this.value}));
+      this.message.data = [(parseInt(this.channel)-16),parseInt(this.note)];
+      this.dispatchEvent(new CustomEvent('midiMsg', {message: this.message}));
     });
     /* touch release */
     this.refs.input.addEventListener('touchend', () => {
-      this.value = [this.channel,this.note];
-      this.dispatchEvent(new CustomEvent('midiMsg', {value: this.value}));
+      this.message.data = [(parseInt(this.channel)-16),parseInt(this.note)];
+      this.dispatchEvent(new CustomEvent('midiMsg', {message: this.message}));
     });
 
   }

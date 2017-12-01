@@ -2,247 +2,219 @@
 <html>
 
 <head>
-  <title>Hello!</title>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Hello!</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="/style/styles.css">
-  <script src="vendor/three.js/three.min.js"></script>
-  <script src="vendor/three.js/Detector.js"></script>
-  <script src="https://cdn.rawgit.com/webcomponents/webcomponentsjs/edf84e6e/webcomponents-sd-ce.js"></script>
-  <script src="/components/html-element-with-refs.js"></script>
-  <script src="/components/html-element-plus.js"></script>
-  <script src="/components/visuals/visuals.js" defer></script>
-  <script src="/components/visuals/group.js" defer></script>
-  <script src="/components/visuals/asset.js" defer></script>
-  <script src="/components/visuals/distort.js" defer></script>
-  <script src="/components/visuals/filter.js" defer></script>
-  <script src="/components/visuals/source.js" defer></script>
-  <script src="/components/visuals/uniforms.js" defer></script>
+	<link rel="stylesheet" href="/style/styles.css">
+	<script src="vendor/three.js/three.min.js"></script>
+	<script src="vendor/three.js/Detector.js"></script>
+	<script src="https://cdn.rawgit.com/webcomponents/webcomponentsjs/edf84e6e/webcomponents-sd-ce.js"></script>
+	<script src="/components/html-element-with-refs.js"></script>
+	<script src="/components/html-element-plus.js"></script>
+	<script src="/components/visuals/visuals.js" defer></script>
+	<script src="/components/visuals/group.js" defer></script>
+	<script src="/components/visuals/asset.js" defer></script>
+	<script src="/components/visuals/distort.js" defer></script>
+	<script src="/components/visuals/filter.js" defer></script>
+	<script src="/components/visuals/source.js" defer></script>
+	<script src="/components/visuals/uniforms.js" defer></script>
 
-  <script src="/components/midi-cc.js" defer></script>
-  <script src="/components/midi-pad.js" defer></script>
-  <script src="/components/midi-toggle.js" defer></script>
-  <script src="/main.js" defer></script>
+	<script src="/components/midi-cc.js" defer></script>
+	<script src="/components/midi-pad.js" defer></script>
+	<script src="/components/midi-toggle.js" defer></script>
+
+	<script src="/midi/akai.js" defer></script>
+	<script src="/main.js" defer></script>
 </head>
 
 <body>
-  <div class="wrapper" id="vjotg">
+	<div class="wrapper" id="vjotg">
 
-    <header>
-      <h1>VJ On.The.Go</h1>
-    </header>
+		<header>
+			<h1>VJ On.The.Go</h1>
+		</header>
 
-    <!-- Where visuals.js does it's rendering -->
-    <div id="screen">
-      <vj-otg-visuals>
-        <vj-otg-assets>
-          <video id="minnie" src="./assets/minnie-512.webm" width="512" height="512" autoplay="true" loop="true" controls="true"></video>
-          <img id="shera" src="./assets/shera.jpg" />
-          <img id="hamster" src="./assets/hamster.jpg" />
-        </vj-otg-assets>
+		<!-- Where visuals.js does it's rendering -->
+		<div id="screen">
+			<vj-otg-visuals>
+				<vj-otg-assets>
+					<video id="minnie" src="./assets/minnie-512.webm" width="512" height="512" autoplay="true" loop="true" controls="true"></video>
+					<img id="shera" src="./assets/shera.jpg" />
+					<img id="hamster" src="./assets/hamster.jpg" />
+				</vj-otg-assets>
 
-        <!-- One can change attributes dynamically but do not remove/reorder/add or shader should recompile -->
-        <vj-otg-source type="texture" src="#minnie" name="minnie" index="1"></vj-otg-source>
-        <vj-otg-source type="texture" src="#hamster" name="hamster" index="2"></vj-otg-source>
-        <vj-otg-source type="texture" src="#shera" name="shera" index="3"></vj-otg-source>
+				<!-- One can change attributes dynamically but do not remove/reorder/add or shader should recompile -->
+				<vj-otg-source type="texture" src="#minnie" name="minnie" index="1"></vj-otg-source>
+				<vj-otg-source type="texture" src="#hamster" name="hamster" index="2"></vj-otg-source>
+				<vj-otg-source type="texture" src="#shera" name="shera" index="3"></vj-otg-source>
 
-        <vj-otg-uniform type="analyser" threshold="80"></vj-otg-uniform>
-        <vj-otg-uniform type="time"></vj-otg-uniform>
-        <vj-otg-uniform type="generic-float" name="mixUniform" value="0.9"></vj-otg-uniform>
+				<vj-otg-uniform type="analyser" threshold="80"></vj-otg-uniform>
+				<vj-otg-uniform type="time"></vj-otg-uniform>
 
-        <vj-otg-group name="hamsterGroup">
-          <vj-otg-filter type="main">float distanceFromCenter = length(centerCoord - newUV);</vj-otg-filter>
-          <vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="0.02" speed="0.5"></vj-otg-distort>
-          <vj-otg-distort type="rotate" angle="[sqrt(distanceFromCenter) * 1000.0 * (1.0 - mixUniform) + mixUniform * 500.0 + 220.0]"></vj-otg-distort>
-          <vj-otg-distort type="zoom" factor="[1.0 + analyser[1] * (1.0 - distanceFromCenter)]" position="0.5, 0.5"></vj-otg-distort>
-          <vj-otg-filter type="from-source" source="3"></vj-otg-filter>
-        </vj-otg-group>
+				<vj-otg-uniform type="midi" name="cc1" midi-el="#cc1"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="cc2" midi-el="#cc2"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="cc3" midi-el="#cc3"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="cc4" midi-el="#cc4"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="cc5" midi-el="#cc5"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="cc6" midi-el="#cc6"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="cc7" midi-el="#cc7"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="cc8" midi-el="#cc8"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="pad1" midi-el="#pad1"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="pad2" midi-el="#pad2"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="pad3" midi-el="#pad3"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="pad4" midi-el="#pad4"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="pad5" midi-el="#pad5"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="pad6" midi-el="#pad6"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="pad7" midi-el="#pad7"></vj-otg-uniform>
+				<vj-otg-uniform type="midi" name="pad8" midi-el="#pad8"></vj-otg-uniform>
 
-        <vj-otg-group name="graphGroup">
-          <vj-otg-filter type="main">
+				<vj-otg-group name="hamsterGroup">
+					<vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="0.02" speed="0.5"></vj-otg-distort>
+					<vj-otg-distort type="zoom" factor="1.2" position="0.5, 0.5"></vj-otg-distort>
+					<vj-otg-filter type="main">float distanceFromCenter = length(centerCoord - newUV);</vj-otg-filter>
+					<vj-otg-distort type="rotate" angle="[sqrt(distanceFromCenter) * 1000.0 * (1.0 - cc2) + cc2 * 500.0 + 220.0]"></vj-otg-distort>
+					<vj-otg-filter type="from-source" source="3"></vj-otg-filter>
+				</vj-otg-group>
 
-            // Work in polar coordinates
-            newUV.x = (PI + atan(newUV.x - 0.5, newUV.y - 0.5)) / (2.0 * PI);
-            newUV.y = distanceFromCenter;
+				<vj-otg-group name="graphGroup">
+					<vj-otg-filter type="main">
+						<pre><code lang="glsl">
 
-            // Get the current column and it's value
-            int column = int(newUV.x * noAnalyserBins);
-            float columnValue = (
-              (float(column == 0) * analyser[0]) +
-              (float(column == 1) * analyser[1]) +
-              (float(column == 2) * analyser[2]) +
-              (float(column == 3) * analyser[3]) +
-              (float(column == 4) * analyser[4]) +
-              (float(column == 5) * analyser[5]) +
-              (float(column == 6) * analyser[6]) +
-              (float(column == 7) * analyser[7]) +
-              (float(column == 8) * analyser[8]) +
-              (float(column == 9) * analyser[9]) +
-              (float(column == 10) * analyser[10]) +
-              (float(column == 11) * analyser[11]) +
-              (float(column == 12) * analyser[12]) +
-              (float(column == 13) * analyser[13]) +
-              (float(column == 14) * analyser[14]) +
-              (float(column == 15) * analyser[15]) +
-              (float(column == 16) * analyser[16]) +
-              (float(column == 17) * analyser[17]) +
-              (float(column == 18) * analyser[18]) +
-              (float(column == 19) * analyser[19])
-            );
+							// Work in polar coordinates
+							newUV.x = (PI + atan(newUV.x - 0.5, newUV.y - 0.5)) / (2.0 * PI);
+							newUV.y = distanceFromCenter;
+				
+							// Get the current column and it's value
+							int column = int(newUV.x * noAnalyserBins);
+							float columnValue = (
+								(float(column == 0) * analyser[0]) +
+								(float(column == 1) * analyser[1]) +
+								(float(column == 2) * analyser[2]) +
+								(float(column == 3) * analyser[3]) +
+								(float(column == 4) * analyser[4]) +
+								(float(column == 5) * analyser[5]) +
+								(float(column == 6) * analyser[6]) +
+								(float(column == 7) * analyser[7]) +
+								(float(column == 8) * analyser[8]) +
+								(float(column == 9) * analyser[9]) +
+								(float(column == 10) * analyser[10]) +
+								(float(column == 11) * analyser[11]) +
+								(float(column == 12) * analyser[12]) +
+								(float(column == 13) * analyser[13]) +
+								(float(column == 14) * analyser[14]) +
+								(float(column == 15) * analyser[15]) +
+								(float(column == 16) * analyser[16]) +
+								(float(column == 17) * analyser[17]) +
+								(float(column == 18) * analyser[18]) +
+								(float(column == 19) * analyser[19])
+							);
+				
+							// Each column is coloured using hsl
+							vec3 rgbColumnColor = hsl2rgb(float(column)/noAnalyserBins, 1.0 , 0.5);
+				
+							// Work out whether that pixel should be coloured or not.
+							graphGroup = mix(
+								noopVec4,
+								vec4(rgbColumnColor, 1.0),
+								float(newUV.y &lt;= columnValue) * float(columnValue - newUV.y &lt;= 0.1 )
+							);
+					</code></pre>
+					</vj-otg-filter>
+				</vj-otg-group>
 
-            // Each column is coloured using hsl
-            vec3 rgbColumnColor = hsl2rgb(float(column)/noAnalyserBins, 1.0 , 0.5);
+				<vj-otg-group name="videoGroup">
+					<vj-otg-filter type="splitx" size="[beat * 0.05]"></vj-otg-filter>
+					<vj-otg-filter type="hsl-gradient" start="120,0.5,0.5" stop="180,1,0.8" direction="3"></vj-otg-filter>
+				</vj-otg-group>
 
-            // Work out whether that pixel should be coloured or not.
-            graphGroup = mix(
-              noopVec4,
-              vec4(rgbColumnColor, 1.0),
-              float(newUV.y &lt;= columnValue) * float(columnValue - newUV.y &lt;= 0.1 )
-            );
-          </vj-otg-filter>
-        </vj-otg-group>
+				<vj-otg-filter type="main">
+					float perlinNoise = clamp(snoise(vec3(newUV * 5.0, cc1)), 0.0, 1.0); [layer] = mix(videoGroup, hamsterGroup * graphGroup,
+					cc1 * cc1);
+				</vj-otg-filter>
 
-        <vj-otg-group name="videoGroup">
-          <vj-otg-filter type="splitx" size="[beat * 0.05]"></vj-otg-filter>
-          <vj-otg-filter type="hsl-gradient" start="120,0.5,0.5" stop="180,1,0.8" direction="3"></vj-otg-filter>
-        </vj-otg-group>
+			</vj-otg-visuals>
+		</div>
+		<!--screen-->
 
-        <vj-otg-filter type="main">
-          float perlinNoise = clamp(snoise(vec3(newUV * 5.0, mixUniform)), 0.0, 1.0);
-          [layer] = mix(videoGroup, hamsterGroup * graphGroup,
-          mixUniform * mixUniform);
-        </vj-otg-filter>
+		<p>NB: I guess we don't need the media selector anymore *but* should we show media library anyways?</p>
+		<nav class="media__select">
+			<ul>
+				<li class="thumb thumb__master" data-media="master">
+					<span>M</span>
+				</li>
+				<li class="thumb" data-media="minnie">
+					<img src="./assets/" alt="Thumbnail of Minnie video clip" />
+				</li>
+				<li class="thumb" data-media="hamster">
+					<img src="./assets/hamster.jpg" alt="" />
+				</li>
+				<li class="thumb thumb--active" data-media="shera">
+					<img class="thumb" src="./assets/shera.jpg" alt="" />
+				</li>
+			</ul>
+		</nav>
 
-      </vj-otg-visuals>
-    </div>
-    <!--screen-->
-
-    <nav class="media__select">
-      <ul>
-        <li class="thumb thumb__master" data-media="master">
-          <span>M</span>
-        </li>
-        <li class="thumb" data-media="minie">
-          <img src="./assets/" alt="Thumbnail of Minnie video clip" />
-        </li>
-        <li class="thumb" data-media="hamster">
-          <img src="./assets/hamster.jpg" alt="" />
-        </li>
-        <li class="thumb thumb--active" data-media="shera">
-          <img class="thumb" src="./assets/shera.jpg" alt="" />
-        </li>
-      </ul>
-    </nav>
-
-    <section class="media__fx" data-fxfor="master">
-
-      <section class="fx--opacity">
-        <h3>Opacity</h3>
-        <midi-cc channel="144" value="64">Mix Amount</midi-cc>
-        <midi-toggle channel="144" note="59" state="off">On/Off</midi-toggle>
-        <midi-pad channel="144" note="63">Flash</midi-pad>
-      </section>
-
-      <section class="fx--noise">
-        <h3>Noise</h3>
-        <midi-cc channel="144" value="64">Size</midi-cc>
-        <midi-cc channel="144" value="64">Amount</midi-cc>
-      </section>
-
-    </section>
-
-    <section class="media__fx" data-fxfor="hamster">
-
-      <section class="fx--opacity">
-        <h3>Opacity</h3>
-        <midi-cc channel="144" value="64">Mix Amount</midi-cc>
-        <midi-toggle channel="144" note="59" state="off">On/Off</midi-toggle>
-        <midi-pad channel="144" note="63">Flash</midi-pad>
-      </section>
-
-      <section class="fx--wave">
-        <h3>Wave</h3>
-        <midi-cc channel="144" value="64">Frequency</midi-cc>
-        <midi-cc channel="144" value="64">Amplitude</midi-cc>
-        <midi-cc channel="144" value="64">Speed</midi-cc>
-      </section>
-
-      <section class="fx--zoom">
-        <h3>Zoom</h3>
-        <midi-cc channel="144" value="64">Amount</midi-cc>
-        <midi-cc channel="144" value="64">X Pos</midi-cc>
-        <midi-cc channel="144" value="64">Y Pos</midi-cc>
-      </section>
-
-      <section class="fx--rotate">
-        <h3>Rotate</h3>
-        <midi-cc channel="144" value="64">Degrees</midi-cc>
-      </section>
-
-    </section>
-
-    <section class="media__fx" data-fxfor="minnie">
-
-      <section class="fx--opacity">
-        <h3>Opacity</h3>
-        <midi-cc channel="144" value="64">Mix Amount</midi-cc>
-        <midi-toggle channel="144" note="59" state="off">On/Off</midi-toggle>
-        <midi-pad channel="144" note="63">Flash</midi-pad>
-      </section>
-
-      <section class="fx--hsl">
-        <h3>Colour</h3>
-        <midi-cc channel="144" value="64">Rotate</midi-cc>
-      </section>
-
-      <section class="fx--split">
-        <h3>Split Screen</h3>
-        <midi-toggle channel="144" note="59" state="off">Split</midi-toggle>
-      </section>
-
-    </section>
-
-    <!-- <midi-cc channel="144" value="64">Bass</midi-cc>
-
-    <midi-pad channel="144" note="63">Pad</midi-pad>
-
-    <midi-toggle channel="144" note="59" state="off">Toggle</midi-toggle> -->
-
-  </div>
-  <!--wrapper-->
-
-  <script type="text/javascript">
-
-    // simple show hide of cards~~~~~~~~~~~~~~~~
-    const nav = document.querySelector('.media__select'),
-      fxSets = document.querySelectorAll('.media__fx');
-
-    nav.addEventListener("click", function (e) {
-
-      for (let i = 0; i < fxSets.length; i++) {
-        if (e.target.dataset.media === fxSets[i].dataset.fxfor) {
-          showHideEl(fxSets[i], 'block', true);
-        } else {
-          showHideEl(fxSets[i], 'block', false);
-        }
-      }
-
-      // to do - also add classes to nav items
-
-    }, false);
+		<section class="midi-controls media__fx" data-fxfor="master">
+			<midi-pad channel="144" note="36" id="pad1">PAD1</midi-pad>
+			<midi-pad channel="144" note="37" id="pad2">PAD2</midi-pad>
+			<midi-pad channel="144" note="38" id="pad3">PAD3</midi-pad>
+			<midi-pad channel="144" note="39" id="pad4">PAD4</midi-pad>
+			<midi-pad channel="144" note="40" id="pad5">PAD5</midi-pad>
+			<midi-pad channel="144" note="41" id="pad6">PAD6</midi-pad>
+			<midi-pad channel="144" note="42" id="pad7">PAD7</midi-pad>
+			<midi-pad channel="144" note="43" id="pad8">PAD8</midi-pad>
 
 
-    function showHideEl(element, displayType, show = true) {
-      if (show) {
-        element.style.display = displayType;
-      } else {
-        element.style.display = 'none';
-      }
-    }
+			<midi-cc id="cc1" channel="176" note="1" value="64">CC1</midi-cc>
+			<midi-cc id="cc2" channel="176" note="2" value="64">CC2</midi-cc>
+			<midi-cc id="cc3" channel="176" note="3" value="64">CC3</midi-cc>
+			<midi-cc id="cc4" channel="176" note="4" value="64">CC4</midi-cc>
+			<midi-cc id="cc5" channel="176" note="5" value="64">CC5</midi-cc>
+			<midi-cc id="cc6" channel="176" note="6" value="64">CC6</midi-cc>
+			<midi-cc id="cc7" channel="176" note="7" value="64">CC7</midi-cc>
+			<midi-cc id="cc8" channel="176" note="8" value="64">CC8</midi-cc>
+		</section>
+	</div>
+	<!--wrapper-->
 
-  </script>
+	<script type="text/javascript">
+
+		// simple show hide of cards~~~~~~~~~~~~~~~~
+		const nav = document.querySelector('.media__select'),
+			fxSets = document.querySelectorAll('.media__fx');
+
+		nav.addEventListener("click", function (e) {
+
+			// find li el (sometimes click on something dif)
+			var li = e.target.tagName != 'LI' ? e.target.parentElement : e.target;
+			console.log(li);
+
+			for (let i = 0; i < fxSets.length; i++) {
+				// get li dataset attr
+
+				if (li.dataset.media === fxSets[i].dataset.fxfor) {
+					showHideEl(fxSets[i], 'block', true);
+				} else {
+					showHideEl(fxSets[i], 'block', false);
+				}
+			}
+
+			// to do - also add classes to nav items
+
+		}, false);
+
+
+		function showHideEl(element, displayType, show = true) {
+			if (show) {
+				element.style.display = displayType;
+			} else {
+				element.style.display = 'none';
+			}
+		}
+
+	</script>
 
 </body>
 
