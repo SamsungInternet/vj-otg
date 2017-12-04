@@ -3,15 +3,50 @@
 const w = 480;
 const h = 320;
 
+function toggleFullScreen(el) {
+	const doc = window.document;
+	el = el || doc.documentElement;
+  
+	const requestFullScreen = el.requestFullscreen || el.mozRequestFullScreen || el.webkitRequestFullScreen || el.msRequestFullscreen;
+	const cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+  
+	if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+	  requestFullScreen.call(el);
+	}
+	else {
+	  cancelFullScreen.call(doc);
+	}
+}
+  
 const vjOTGVisuals = document.createElement('template');
 vjOTGVisuals.innerHTML = `
 	<style>
 	vj-otg-assets {
 		display: none;
 	}
+	:host {
+		width: 100%;
+		height: 100%;
+		position: relative;
+		display: block;
+	}
+	:host:-webkit-full-screen {
+		width: 100vw;
+		height: 100vh;
+	}
+	:host button[ref="fullscreenbtn"] {
+		position: absolute;
+		bottom: 1em;
+		right: 1em;
+	}
 	</style>
 	<slot></slot>
+	<button ref="fullscreenbtn">Go Fullscreen</button>
 `;
+
+if (window.ShadyCSS) {
+	window.ShadyCSS.prepareTemplate(vjOTGVisuals, 'vj-otg-visuals');
+}
 
 const glslFunctionSet = new Set();
 
@@ -36,8 +71,12 @@ class VJOTGVisuals extends HTMLElementPlus {
 		renderer.setSize(480, 320);
 		this.shadowRoot.appendChild(renderer.domElement);
 
-		renderer.domElement.style.width = 'auto';
-		renderer.domElement.style.height = 'auto';
+		this.shadowRoot.appendChild(this.refs.fullscreenbtn);
+		this.refs.fullscreenbtn.addEventListener('click', () => toggleFullScreen(this));
+
+		renderer.domElement.style.width = '100%';
+		renderer.domElement.style.height = '100%';
+		renderer.domElement.style.objectFit = 'cover';
 
 		//            WEBGL
 		// ---------------------------
