@@ -1,0 +1,134 @@
+@import 'reset.css';
+
+/*there's a portrait view and a landscape view. Portrait goes up to 600px, which then gives us enough room to put video and fx panel side by side - this is the only media query. Max width is set at 900 as this looks good for the layout. Default styling is for portrait, media queries change for landscape.*/
+
+/* Contents
+1. vars etc...
+2. base
+3. layout
+
+3. thumbnails
+4. form controls (effects)
+*/
+
+@font-face {
+	font-family: 'Titillium';
+	src: url('TitilliumWeb-Light.ttf');
+}
+:root {
+	--font:'Titillium', Arial, sans-serif;
+
+	--purple:hsla(272, 94%, 70%, 1.0);
+	--blue:hsla(194, 89%, 56%, 1.0);
+	--green:hsla(150, 92%, 54%, 1.0);
+	--offWhite:hsla(210, 25%, 98%, 1.0);
+	--black:hsla(0, 0%, 35%, 1.0);
+
+	--spacing: 2vmin;
+	--deviceWidth: 800px;
+
+	--gradient:linear-gradient( 45deg, var(--purple), var(--blue), var(--green) );
+}
+
+/* 2. base */
+
+body {
+	background-color: var(--offWhite);
+	font-family: var(--font);
+	font-size: 100%;
+	color: var(--black); text-shadow: 1px 1px 2px #fff;
+}
+
+/*display layout via grid*/
+#vjotg {
+	display:grid; box-sizing: border-box;
+	grid-template-columns: auto;
+	grid-template-rows: auto auto auto 1fr;
+	width:100vw; max-width: 1100px;
+	height:100vh; max-height:100vh;
+	margin:0px auto; padding: 6px 0px 0px;
+}
+
+#vjotg > header {
+	grid-area: 1/1/2/2; box-sizing: border-box;
+	align-self: center;
+	width:100%;
+	padding: var(--spacing);
+}
+
+#screen {
+	grid-area: 2/1/3/2;
+	margin-bottom: var(--spacing);
+}
+
+/* I removed this from the dom - but I want to keep this here, as I might put it back */
+.media__select {
+	grid-area: 3/1/4/2;
+}
+.media__select ul {
+	display: flex; justify-content: space-around;
+}
+.media__select ul .thumb {
+	width:20vmin; max-width:120px;
+	height:20vmin; max-height:120px;
+	overflow: hidden;
+}
+.media__select ul .thumb img {
+	display: block;
+	object-fit: cover;
+	height:130px; width:auto;
+}
+
+.midi-controls {
+	grid-area: 4/1/5/2;
+	overflow-y: scroll;
+	padding: 0px 1vw;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
+midi-pad {
+	width: 23vmin; height: 27vmin;
+
+}
+midi-cc {width: 100%;}
+
+/* landscape view */
+@media screen and (min-width: 640px) {
+
+	#vjotg {grid-template-columns: repeat(2, 50%);}
+	#vjotg > header {grid-area: 1/1/2/3;}
+	.midi-controls {grid-area: 2/2/5/3;}
+	midi-pad {width: 11vw; height: 12vw;}
+
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/* styles */
+#vjotg {
+	background-image: var(--gradient);
+	background-size: 100% 6px;
+	background-repeat: no-repeat;
+}
+#vjotg > header {border-bottom: 1px solid hsla(0, 0%, 35%, 0.5);}
+#screen {
+	background-color: white;
+	padding: calc(var(--spacing) / 2) 0px;
+	border-bottom: 1px solid hsla(0, 0%, 35%, 0.5);
+}
+#screen canvas {margin:0px auto; display:block;}
+
+.media__select .thumb {border-radius: 2px;}
+.thumb__master {
+	display: flex;
+	background-color: var(--blue);
+	background-image: var(--gradient);
+}
+.thumb__master span {
+	align-self: center;
+	display: inline-block;
+	margin: 0px auto;
+	font-size: 3em; color:var(--offWhite);
+}
+

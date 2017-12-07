@@ -1,0 +1,39 @@
+{
+  "name": "VJ On The Go",
+  "short_name": "VJ-OTG",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "description": "A portable audio visual mixing app",
+  "icons": [{
+    "src": "assets/icon/vjotg48.png",
+    "sizes": "48x48",
+    "type": "image/png"
+  }, {
+    "src": "assets/icon/vjotg72.png",
+    "sizes": "72x72",
+    "type": "image/png"
+  }, {
+    "src": "assets/icon/vjotg96.png",
+    "sizes": "96x96",
+    "type": "image/png"
+  }, {
+    "src": "assets/icon/vjotg144.png",
+    "sizes": "144x144",
+    "type": "image/png"
+  }, {
+    "src": "assets/icon/vjotg168.png",
+    "sizes": "168x168",
+    "type": "image/png"
+  }, {
+    "src": "assets/icon/vjotg192.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  }],
+  "related_applications": [{
+    "platform": "web"
+  }, {
+    "platform": "play",
+    "url": ""
+  }]
+}
