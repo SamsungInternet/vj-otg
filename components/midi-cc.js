@@ -25,7 +25,7 @@ containerTemplate.innerHTML = `
   <style>
   .midi-control__group {
     outline: 0;
-    padding: 3vmin;
+    padding: 2vmin;
     display: grid;
     grid-template-columns: 20% 80%;
     align-items: center;
