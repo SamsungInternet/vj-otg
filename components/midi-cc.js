@@ -76,45 +76,45 @@ containerTemplate.innerHTML = `
   </div>
 `;
 
-class MidiCCController extends HTMLElementWithRefs {
-  constructor() {
-    super();
+class MidiCCController extends HTMLElementPlus {
+	constructor() {
+		super();
 
-    this.tabIndex = 0;
-    this.attachShadow({mode: 'open'});
-    this.shadowRoot.appendChild(containerTemplate.content.cloneNode(true));
-    this.message = {};
-    this.message.type = 'cc';
+		this.tabIndex = 0;
+		this.attachShadow({ mode: 'open' });
+		this.shadowRoot.appendChild(containerTemplate.content.cloneNode(true));
+		this.message = {};
+		this.message.type = 'cc';
 
-    // const midiEvent = new Event('midiMsg');
+		// const midiEvent = new Event('midiMsg');
 
-    this.refs.input.addEventListener('input', () => {
-      this.message.data = [parseInt(this.channel), parseInt(this.note), parseInt(this.refs.input.value)];
-      // change this name to be same as midi api
-      this.dispatchEvent(new CustomEvent('midiMsg', {detail: this.message}));
-    });
-    // this.refs.input.
+		this.refs.input.addEventListener('input', () => {
+			this.message.data = [parseInt(this.channel), parseInt(this.note), parseInt(this.refs.input.value)];
+			// change this name to be same as midi api
+			this.dispatchEvent(new CustomEvent('midiMsg', { detail: this.message }));
+		});
+		// this.refs.input.
 
-  }
+	}
 
-  static get observedAttributes() { return ['channel', 'note', 'value']; }
-  attributeChangedCallback(attr, oldValue, newValue) {
+	static get observedAttributes() { return ['channel', 'note', 'value']; }
+	attributeChangedCallback(attr, oldValue, newValue) {
 
-    if (attr === 'value') {
-	  this.refs.input.value = newValue;
-	  this.refs.input.dispatchEvent(new CustomEvent('input'));
-    }
+		if (attr === 'value') {
+			this.refs.input.value = newValue;
+			this.refs.input.dispatchEvent(new CustomEvent('input'));
+		}
 
-    if (attr === 'note') {
-      this.note = newValue;
-    }
+		if (attr === 'note') {
+			this.note = newValue;
+		}
 
-    if (attr === 'channel') {
-      this.channel = newValue;
-    }
-  }
+		if (attr === 'channel') {
+			this.channel = newValue;
+		}
+	}
 }
 
 window.addEventListener('DOMContentLoaded', function () {
-  customElements.define('midi-cc', MidiCCController);
+	customElements.define('midi-cc', MidiCCController);
 });
