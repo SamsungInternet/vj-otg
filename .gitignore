@@ -60,3 +60,5 @@ typings/
 #sass cache
 style/.sass-cache
 
+*/.DS_Store
+

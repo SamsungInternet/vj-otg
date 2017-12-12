@@ -127,6 +127,9 @@ class MidiPadController extends HTMLElementWithRefs {
     if (attr === 'state') {
       this.state = newValue;
       this.refs.input.dataset.state = newValue;
+      if (newValue === 'on') {
+        this.refs.input.dispatchEvent(new CustomEvent('midiMsg'));
+      }
     }
   }
 }
