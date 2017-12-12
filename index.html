@@ -39,17 +39,22 @@
 		<!-- Where visuals.js does it's rendering -->
 		<div id="screen">
 			<vj-otg-visuals>
+
+				<!-- load any assets that you want to use -->
 				<vj-otg-assets>
-					<video id="minnie" src="./assets/minnie-512.webm" width="512" height="512" autoplay="true" loop="true" controls="true"></video>
+					<video id="minnie" src="./assets/minnie-512.webm" width="512" height="512" autoplay="true" loop="true"></video>
+					<video id="potus" src="./assets/potus3012.mp4" width="512" height="512" autoplay="true" loop="true"></video>
 					<img id="shera" src="./assets/shera.jpg" />
 					<img id="hamster" src="./assets/hamster.jpg" />
 				</vj-otg-assets>
 
 				<!-- One can change attributes dynamically but do not remove/reorder/add or shader should recompile -->
+				<!-- refer to these assets later by assing them as sources here -->
 				<vj-otg-source type="texture" src="#minnie" name="minnie" index="1"></vj-otg-source>
-				<vj-otg-source type="texture" src="#hamster" name="hamster" index="2"></vj-otg-source>
+				<vj-otg-source type="texture" src="#potus" name="potus" index="2"></vj-otg-source>
 				<vj-otg-source type="texture" src="#shera" name="shera" index="3"></vj-otg-source>
 
+				<!-- other uniforms you might want to use later -->
 				<vj-otg-uniform type="analyser" threshold="80"></vj-otg-uniform>
 				<vj-otg-uniform type="time"></vj-otg-uniform>
 
@@ -70,12 +75,21 @@
 				<vj-otg-uniform type="midi" name="pad7" midi-el="#pad7"></vj-otg-uniform>
 				<vj-otg-uniform type="midi" name="pad8" midi-el="#pad8"></vj-otg-uniform>
 
-				<vj-otg-group name="hamsterGroup">
+				<!-- these are the groups for each media item, with effects and uniforms for controls -->
+
+				<vj-otg-group name="minnieGroup">
+					<vj-otg-filter type="splitx" size="[beat * 0.05]"></vj-otg-filter>
+					<vj-otg-filter type="hsl-gradient" start="120,0.5,0.5" stop="180,1,0.8" direction="3"></vj-otg-filter>
+				</vj-otg-group>
+
+				<vj-otg-group name="potusGroup">
 					<vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="0.02" speed="0.5"></vj-otg-distort>
 					<vj-otg-distort type="zoom" factor="1.2" position="0.5, 0.5"></vj-otg-distort>
-					<vj-otg-filter type="main">float distanceFromCenter = length(centerCoord - newUV);</vj-otg-filter>
+					<vj-otg-filter type="main">
+						float distanceFromCenter = length(centerCoord - newUV);
+					</vj-otg-filter>
 					<vj-otg-distort type="rotate" angle="[sqrt(distanceFromCenter) * 1000.0 * (1.0 - cc2) + cc2 * 500.0 + 220.0]"></vj-otg-distort>
-					<vj-otg-filter type="from-source" source="3"></vj-otg-filter>
+					<vj-otg-filter type="from-source" source="2"></vj-otg-filter>
 				</vj-otg-group>
 
 				<vj-otg-group name="graphGroup">
@@ -124,13 +138,9 @@
 					</vj-otg-filter>
 				</vj-otg-group>
 
-				<vj-otg-group name="videoGroup">
-					<vj-otg-filter type="splitx" size="[beat * 0.05]"></vj-otg-filter>
-					<vj-otg-filter type="hsl-gradient" start="120,0.5,0.5" stop="180,1,0.8" direction="3"></vj-otg-filter>
-				</vj-otg-group>
-
+				<!-- this is everything and mixes all the previous media groups -->
 				<vj-otg-filter type="main">
-					float perlinNoise = clamp(snoise(vec3(newUV * 5.0, cc1)), 0.0, 1.0); [layer] = mix(videoGroup, hamsterGroup * graphGroup,
+					float perlinNoise = clamp(snoise(vec3(newUV * 5.0, cc1)), 0.0, 1.0); [layer] = mix(minnieGroup, potusGroup * graphGroup,
 					cc1 * cc1);
 				</vj-otg-filter>
 
