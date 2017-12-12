@@ -25,7 +25,7 @@ containerTemplate.innerHTML = `
   <style>
   .midi-control__group {
     outline: 0;
-    padding: 3vmin;
+    padding: 2vmin;
     display: grid;
     grid-template-columns: 20% 80%;
     align-items: center;
@@ -89,10 +89,9 @@ class MidiCCController extends HTMLElementWithRefs {
     // const midiEvent = new Event('midiMsg');
 
     this.refs.input.addEventListener('input', () => {
-      this.message.data = [parseInt(this.channel), parseInt(this.note),  parseInt(this.refs.input.value)];
+      this.message.data = [parseInt(this.channel), parseInt(this.note), parseInt(this.refs.input.value)];
       // change this name to be same as midi api
       this.dispatchEvent(new CustomEvent('midiMsg', {detail: this.message}));
-
     });
     // this.refs.input.
 
@@ -102,7 +101,8 @@ class MidiCCController extends HTMLElementWithRefs {
   attributeChangedCallback(attr, oldValue, newValue) {
 
     if (attr === 'value') {
-      this.refs.input.value = newValue;
+	  this.refs.input.value = newValue;
+	  this.refs.input.dispatchEvent(new CustomEvent('input'));
     }
 
     if (attr === 'note') {

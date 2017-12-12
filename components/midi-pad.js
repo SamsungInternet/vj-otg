@@ -25,19 +25,23 @@ padTemplate.innerHTML = `
   <style>
   .midi-control__group {
     outline: 0;
-    padding: 3vmin;
+    display: flex; box-sizing: border-box;
+    flex-direction: column;
+    align-content: stretch;
+    width: 100%; height: 100%;
+    padding: 1vw;
   }
   .midi-control__label {
     outline: 0;
-    display: inline-block;
-    box-sizing: border-box;
-    margin: 0px auto;
+    display: block; box-sizing: border-box;
+    padding-bottom: 0.5em;
   }
   .midi-control__button--pad {
     outline: 0;
-    display: block;
-    width: 20vmin; height: 20vmin;
+    display: block; box-sizing: border-box;
+    flex: auto;
     margin: 0px auto;
+    width: 100%;
     position: relative;
     cursor: pointer;
     background-color: hsla(210, 25%, 98%, 1.0);
@@ -52,6 +56,7 @@ padTemplate.innerHTML = `
       inset -2px -2px 0px 2px hsla(210, 25%, 98%, 1.0)
     ;
   }
+  .midi-control__button--pad[data-state="on"] {border-image: linear-gradient(120deg, hsla(272, 94%, 70%, 1.0), hsla(194, 89%, 56%, 1.0), hsla(150, 92%, 54%, 1.0)) 10;}
   </style>
   <div class="midi-control__group">
     <label class="midi-control__label" for="padEx" ref="label"><slot></slot></label>
@@ -73,33 +78,38 @@ class MidiPadController extends HTMLElementWithRefs {
     // TODO: REFACTOR THE FUCK OUT OF THIS
     /* mouse down */
     this.refs.input.addEventListener('mousedown', () => {
-      this.message.data = [parseInt(this.channel),parseInt(this.note), 64];
+      this.message.data = [parseInt(this.channel),parseInt(this.note), parseInt(this.value)];
       this.dispatchEvent(new CustomEvent('midiMsg', {detail: this.message}));
-      this.style.borderImage = 'linear-gradient(120deg, hsla(272, 94%, 70%, 1.0), hsla(194, 89%, 56%, 1.0), hsla(150, 92%, 54%, 1.0)) 10;';
+      this.setAttribute('state', 'on');
+      console.log(this.message);
+      // this.style.borderImage = 'linear-gradient(120deg, hsla(272, 94%, 70%, 1.0), hsla(194, 89%, 56%, 1.0), hsla(150, 92%, 54%, 1.0)) 10;';
     });
     /* touch down */
     this.refs.input.addEventListener('touchstart', () => {
-      this.message.data = [parseInt(this.channel),parseInt(this.note), 64];
+      this.message.data = [parseInt(this.channel),parseInt(this.note), parseInt(this.value)];
       this.dispatchEvent(new CustomEvent('midiMsg', {detail: this.message}));
-      this.style.borderImage = 'linear-gradient(120deg, hsla(272, 94%, 70%, 1.0), hsla(194, 89%, 56%, 1.0), hsla(150, 92%, 54%, 1.0)) 10;';
+      this.setAttribute('state', 'on');
+      // this.style.borderImage = 'linear-gradient(120deg, hsla(272, 94%, 70%, 1.0), hsla(194, 89%, 56%, 1.0), hsla(150, 92%, 54%, 1.0)) 10;';
     });
 
     /* mouse release */
     this.refs.input.addEventListener('mouseup', () => {
       this.message.data = [(parseInt(this.channel)-16),parseInt(this.note), 0];
       this.dispatchEvent(new CustomEvent('midiMsg', {detail: this.message}));
-      this.style.borderImage = 'linear-gradient(120deg, hsla(272, 54%, 80%, 1.0), hsla(194, 49%, 66%, 1.0), hsla(150, 52%, 64%, 1.0)) 10;';
+      this.setAttribute('state', 'off');
+      // this.style.borderImage = 'linear-gradient(120deg, hsla(272, 54%, 80%, 1.0), hsla(194, 49%, 66%, 1.0), hsla(150, 52%, 64%, 1.0)) 10;';
     });
     /* touch release */
     this.refs.input.addEventListener('touchend', () => {
       this.message.data = [(parseInt(this.channel)-16),parseInt(this.note), 0];
       this.dispatchEvent(new CustomEvent('midiMsg', {detail: this.message}));
-      this.style.borderImage = 'linear-gradient(120deg, hsla(272, 54%, 80%, 1.0), hsla(194, 49%, 66%, 1.0), hsla(150, 52%, 64%, 1.0)) 10;';
+      this.setAttribute('state', 'off');
+      // this.style.borderImage = 'linear-gradient(120deg, hsla(272, 54%, 80%, 1.0), hsla(194, 49%, 66%, 1.0), hsla(150, 52%, 64%, 1.0)) 10;';
     });
 
   }
 
-  static get observedAttributes() { return ['channel', 'note']; }
+  static get observedAttributes() { return ['channel', 'note', 'value', 'state']; }
   attributeChangedCallback(attr, oldValue, newValue) {
 
     if (attr === 'note') {
@@ -108,6 +118,18 @@ class MidiPadController extends HTMLElementWithRefs {
 
     if (attr === 'channel') {
       this.channel = newValue;
+    }
+
+    if (attr === 'value') {
+      this.value = newValue;
+    }
+
+    if (attr === 'state') {
+      this.state = newValue;
+      this.refs.input.dataset.state = newValue;
+      if (newValue === 'on') {
+        this.refs.input.dispatchEvent(new CustomEvent('midiMsg'));
+      }
     }
   }
 }

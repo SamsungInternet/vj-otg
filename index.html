@@ -6,8 +6,9 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="manifest" href="/vjotg.webmanifest">
 
-	<link rel="stylesheet" href="/style/styles.css">
+	<link rel="stylesheet" href="/style/style.css">
 	<script src="vendor/three.js/three.min.js"></script>
 	<script src="vendor/three.js/Detector.js"></script>
 	<script src="https://cdn.rawgit.com/webcomponents/webcomponentsjs/edf84e6e/webcomponents-sd-ce.js"></script>
@@ -23,7 +24,6 @@
 
 	<script src="/components/midi-cc.js" defer></script>
 	<script src="/components/midi-pad.js" defer></script>
-	<script src="/components/midi-toggle.js" defer></script>
 
 	<script src="/midi/akai.js" defer></script>
 	<script src="/main.js" defer></script>
@@ -85,7 +85,7 @@
 							// Work in polar coordinates
 							newUV.x = (PI + atan(newUV.x - 0.5, newUV.y - 0.5)) / (2.0 * PI);
 							newUV.y = distanceFromCenter;
-				
+
 							// Get the current column and it's value
 							int column = int(newUV.x * noAnalyserBins);
 							float columnValue = (
@@ -110,10 +110,10 @@
 								(float(column == 18) * analyser[18]) +
 								(float(column == 19) * analyser[19])
 							);
-				
+
 							// Each column is coloured using hsl
 							vec3 rgbColumnColor = hsl2rgb(float(column)/noAnalyserBins, 1.0 , 0.5);
-				
+
 							// Work out whether that pixel should be coloured or not.
 							graphGroup = mix(
 								noopVec4,
@@ -138,8 +138,7 @@
 		</div>
 		<!--screen-->
 
-		<p>NB: I guess we don't need the media selector anymore *but* should we show media library anyways?</p>
-		<nav class="media__select">
+		<!-- <nav class="media__select">
 			<ul>
 				<li class="thumb thumb__master" data-media="master">
 					<span>M</span>
@@ -150,21 +149,22 @@
 				<li class="thumb" data-media="hamster">
 					<img src="./assets/hamster.jpg" alt="" />
 				</li>
-				<li class="thumb thumb--active" data-media="shera">
+				<li class="thumb" data-media="shera">
 					<img class="thumb" src="./assets/shera.jpg" alt="" />
 				</li>
 			</ul>
-		</nav>
+		</nav> -->
 
-		<section class="midi-controls media__fx" data-fxfor="master">
-			<midi-pad channel="144" note="36" id="pad1">PAD1</midi-pad>
-			<midi-pad channel="144" note="37" id="pad2">PAD2</midi-pad>
-			<midi-pad channel="144" note="38" id="pad3">PAD3</midi-pad>
-			<midi-pad channel="144" note="39" id="pad4">PAD4</midi-pad>
-			<midi-pad channel="144" note="40" id="pad5">PAD5</midi-pad>
-			<midi-pad channel="144" note="41" id="pad6">PAD6</midi-pad>
-			<midi-pad channel="144" note="42" id="pad7">PAD7</midi-pad>
-			<midi-pad channel="144" note="43" id="pad8">PAD8</midi-pad>
+		<section class="midi-controls">
+			<!-- set values between 0-127 -->
+			<midi-pad channel="144" note="36" value="64" state="off" id="pad1">PAD1</midi-pad>
+			<midi-pad channel="144" note="37" value="127" state="off" id="pad2">PAD2</midi-pad>
+			<midi-pad channel="144" note="38" value="64" state="off" id="pad3">PAD3</midi-pad>
+			<midi-pad channel="144" note="39" value="64" state="off" id="pad4">PAD4</midi-pad>
+			<midi-pad channel="144" note="40" value="64" state="off" id="pad5">PAD5</midi-pad>
+			<midi-pad channel="144" note="41" value="64" state="off" id="pad6">PAD6</midi-pad>
+			<midi-pad channel="144" note="42" value="64" state="off" id="pad7">PAD7</midi-pad>
+			<midi-pad channel="144" note="43" value="64" state="off" id="pad8">PAD8</midi-pad>
 
 
 			<midi-cc id="cc1" channel="176" note="1" value="64">CC1</midi-cc>
@@ -178,43 +178,6 @@
 		</section>
 	</div>
 	<!--wrapper-->
-
-	<script type="text/javascript">
-
-		// simple show hide of cards~~~~~~~~~~~~~~~~
-		const nav = document.querySelector('.media__select'),
-			fxSets = document.querySelectorAll('.media__fx');
-
-		nav.addEventListener("click", function (e) {
-
-			// find li el (sometimes click on something dif)
-			var li = e.target.tagName != 'LI' ? e.target.parentElement : e.target;
-			console.log(li);
-
-			for (let i = 0; i < fxSets.length; i++) {
-				// get li dataset attr
-
-				if (li.dataset.media === fxSets[i].dataset.fxfor) {
-					showHideEl(fxSets[i], 'block', true);
-				} else {
-					showHideEl(fxSets[i], 'block', false);
-				}
-			}
-
-			// to do - also add classes to nav items
-
-		}, false);
-
-
-		function showHideEl(element, displayType, show = true) {
-			if (show) {
-				element.style.display = displayType;
-			} else {
-				element.style.display = 'none';
-			}
-		}
-
-	</script>
 
 </body>
 
