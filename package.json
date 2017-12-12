@@ -1,6 +1,6 @@
 {
 	"name": "vj-otg",
-	"version": "1.0.0",
+	"version": "2.0.0",
 	"description": "Video DJ on the Go!!!",
 	"main": "",
 	"scripts": {
@@ -30,14 +30,26 @@
 			"wrap-iife": 2,
 			"new-cap": 2,
 			"no-caller": 2,
-			"quotes": [1, "single"],
-			"indent": [0, "tab"],
+			"quotes": [
+				1,
+				"single"
+			],
+			"indent": [
+				0,
+				"tab"
+			],
 			"no-loop-func": 2,
 			"no-irregular-whitespace": 2,
 			"no-multi-spaces": 2,
-			"one-var": [2, "never"],
+			"one-var": [
+				2,
+				"never"
+			],
 			"no-var": 1,
-			"strict": [1, "global"]
+			"strict": [
+				1,
+				"global"
+			]
 		},
 		"root": true
 	},
