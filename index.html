@@ -43,7 +43,7 @@
 				<!-- load any assets that you want to use -->
 				<vj-otg-assets>
 					<video id="minnie" src="./assets/minnie-512.webm" width="512" height="512" autoplay="true" loop="true"></video>
-					<video id="potus" src="./assets/potus3012.mp4" width="512" height="512" autoplay="true" loop="true"></video>
+					<video id="potus" src="./assets/potus.webm" width="512" height="512" autoplay="true" loop="true"></video>
 					<img id="shera" src="./assets/shera.jpg" />
 					<img id="hamster" src="./assets/hamster.jpg" />
 				</vj-otg-assets>
@@ -88,7 +88,7 @@
 					<vj-otg-filter type="main">
 						float distanceFromCenter = length(centerCoord - newUV);
 					</vj-otg-filter>
-					<vj-otg-distort type="rotate" angle="[sqrt(distanceFromCenter) * 1000.0 * (1.0 - cc2) + cc2 * 500.0 + 220.0]"></vj-otg-distort>
+					<!-- <vj-otg-distort type="rotate" angle="[sqrt(distanceFromCenter) * 1000.0 * (1.0 - cc2) + cc2 * 500.0 + 220.0]"></vj-otg-distort> -->
 					<vj-otg-filter type="from-source" source="2"></vj-otg-filter>
 				</vj-otg-group>
 
@@ -130,7 +130,7 @@
 
 							// Work out whether that pixel should be coloured or not.
 							graphGroup = mix(
-								noopVec4 * 0.0,
+								noopVec4,
 								vec4(rgbColumnColor, 1.0),
 								float(newUV.y &lt;= columnValue) * float(columnValue - newUV.y &lt;= 0.1 )
 							);
@@ -138,17 +138,19 @@
 					</vj-otg-filter>
 				</vj-otg-group>
 
-				<vj-otg-group name="shera">
-					float xOn = floor(mod(newUV.x * 8.0 , 2.0));
-					float yOn = floor(mod(newUV.y * 8.0 , 2.0));
-					[layer] = vec4(mix(xOn , 1.0 - xOn, yOn), pad1, 0.0, 1.0) * texture2D(shera, newUV);
-					[layer] = mix([layer], graphGroup, cc1 * graphGroup.a);
+				<vj-otg-group name="sheraGroup">
+					<vj-otg-filter type="main">
+						float xOn = floor(mod(newUV.x * 8.0 , 2.0));
+						float yOn = floor(mod(newUV.y * 8.0 , 2.0));
+						[layer] = vec4(mix(xOn , 1.0 - xOn, yOn), pad1, 0.0, 1.0) * texture2D(shera, newUV);
+						[layer] = mix([layer], graphGroup, cc1 * graphGroup.a);
+					</vj-otg-filter>
 				</vj-otg-group>
 
 				<!-- this is everything and mixes all the previous media groups -->
 				<vj-otg-filter type="main">
-					float perlinNoise = clamp(snoise(vec3(newUV * 5.0, cc1)), 0.0, 1.0); [layer] = mix(minnieGroup, potusGroup * graphGroup,
-					cc1 * cc1);
+					float perlinNoise = clamp(snoise(vec3(newUV * 5.0, cc1)), 0.0, 1.0);
+					[layer] = mix(minnieGroup, potusGroup * graphGroup, cc1 * cc1);
 				</vj-otg-filter>
 
 			</vj-otg-visuals>
