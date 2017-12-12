@@ -116,7 +116,7 @@
 
 							// Work out whether that pixel should be coloured or not.
 							graphGroup = mix(
-								noopVec4,
+								noopVec4 * 0.0,
 								vec4(rgbColumnColor, 1.0),
 								float(newUV.y &lt;= columnValue) * float(columnValue - newUV.y &lt;= 0.1 )
 							);
@@ -130,8 +130,10 @@
 				</vj-otg-group>
 
 				<vj-otg-filter type="main">
-					float perlinNoise = clamp(snoise(vec3(newUV * 5.0, cc1)), 0.0, 1.0); [layer] = mix(videoGroup, hamsterGroup * graphGroup,
-					cc1 * cc1);
+					float xOn = floor(mod(newUV.x * 8.0 , 2.0));
+					float yOn = floor(mod(newUV.y * 8.0 , 2.0));
+					[layer] = vec4(mix(xOn , 1.0 - xOn, yOn), pad1, 0.0, 1.0) * texture2D(shera, newUV);
+					[layer] = mix([layer], graphGroup, cc1 * graphGroup.a);
 				</vj-otg-filter>
 
 			</vj-otg-visuals>

@@ -1,11 +1,7 @@
 'use strict';
 
-// get all our elements
-const sliders = document.querySelectorAll('midi-cc');
-const allMidiEls = document.querySelectorAll('midi-cc, midi-pad, midi-toggle');
-
 // midi stuff here
-var midi, data;
+let midi;
 // request MIDI access
 if (navigator.requestMIDIAccess) {
 	navigator
@@ -14,9 +10,9 @@ if (navigator.requestMIDIAccess) {
 		})
 		.then(onMIDISuccess, onMIDIFailure);
 } else {
-	alert(
-		"Sorry! There's no MIDI support in your browser ☹️ Why not try using Samsung Internet Browser 🤓"
-	);
+	// alert(
+	// 	"Sorry! There's no MIDI support in your browser ☹️ Why not try using Samsung Internet Browser 🤓"
+	// );
 }
 
 // midi functions
@@ -24,10 +20,10 @@ function onMIDISuccess(midiAccess) {
 	// when we get a succesful response, run this code
 	midi = midiAccess; // this is our raw MIDI data, inputs, outputs, and sysex status
 
-	var inputs = midi.inputs.values();
+	const inputs = midi.inputs.values();
 	// loop over all available inputs and listen for any MIDI input
 	for (
-		var input = inputs.next();
+		const input = inputs.next();
 		input && !input.done;
 		input = inputs.next()
 	) {
@@ -45,7 +41,7 @@ function onMIDIFailure(error) {
 }
 
 function onMIDIMessage(message) {
-	var detail = {};
+	const detail = {};
 
 	detail.data = message.data;
 	detail.type = 'cc';
@@ -81,7 +77,4 @@ function onMIDIMessage(message) {
 		}
 		el.dispatchEvent(new CustomEvent('midiMsg', { detail: detail }));
 	}
-
-	// emit event for uniform elements
-	// document.dispatchEvent(new CustomEvent('midiMsg', { detail: detail }));
 }

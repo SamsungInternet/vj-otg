@@ -161,7 +161,7 @@ class VJOTGFilter extends HTMLElementPlus {
 		if (glAttributes.type === 'main') {
 			// Set the main program
 			this.shaderChunks = {
-				main: customMain.replace('[layer]', layerName)
+				main: customMain.replace(/\[layer\]/gi, layerName)
 			};
 		}
 
