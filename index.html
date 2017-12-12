@@ -12,8 +12,8 @@
 	<script src="vendor/three.js/three.min.js"></script>
 	<script src="vendor/three.js/Detector.js"></script>
 	<script src="https://cdn.rawgit.com/webcomponents/webcomponentsjs/edf84e6e/webcomponents-sd-ce.js"></script>
-	<script src="/components/html-element-with-refs.js"></script>
 	<script src="/components/html-element-plus.js"></script>
+
 	<script src="/components/visuals/visuals.js" defer></script>
 	<script src="/components/visuals/group.js" defer></script>
 	<script src="/components/visuals/asset.js" defer></script>
@@ -157,15 +157,14 @@
 
 		<section class="midi-controls">
 			<!-- set values between 0-127 -->
-			<midi-pad channel="144" note="36" value="64" state="off" id="pad1">PAD1</midi-pad>
-			<midi-pad channel="144" note="37" value="127" state="off" id="pad2">PAD2</midi-pad>
-			<midi-pad channel="144" note="38" value="64" state="off" id="pad3">PAD3</midi-pad>
-			<midi-pad channel="144" note="39" value="64" state="off" id="pad4">PAD4</midi-pad>
-			<midi-pad channel="144" note="40" value="64" state="off" id="pad5">PAD5</midi-pad>
-			<midi-pad channel="144" note="41" value="64" state="off" id="pad6">PAD6</midi-pad>
-			<midi-pad channel="144" note="42" value="64" state="off" id="pad7">PAD7</midi-pad>
-			<midi-pad channel="144" note="43" value="64" state="off" id="pad8">PAD8</midi-pad>
-
+			<midi-pad channel-press="144" channel-release="128" note="36" value="64" id="pad1">PAD1</midi-pad>
+			<midi-pad channel-press="144" channel-release="128" note="37" value="127" id="pad2">PAD2</midi-pad>
+			<midi-pad channel-press="144" channel-release="128" note="38" value="64" id="pad3">PAD3</midi-pad>
+			<midi-pad channel-press="144" channel-release="128" note="39" value="64" id="pad4">PAD4</midi-pad>
+			<midi-pad channel-press="144" channel-release="128" note="40" value="64" id="pad5">PAD5</midi-pad>
+			<midi-pad channel-press="144" channel-release="128" note="41" value="64" id="pad6">PAD6</midi-pad>
+			<midi-pad channel-press="144" channel-release="128" note="42" value="64" id="pad7">PAD7</midi-pad>
+			<midi-pad channel-press="144" channel-release="128" note="43" value="64" id="pad8">PAD8</midi-pad>
 
 			<midi-cc id="cc1" channel="176" note="1" value="64">CC1</midi-cc>
 			<midi-cc id="cc2" channel="176" note="2" value="64">CC2</midi-cc>

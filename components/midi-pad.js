@@ -22,118 +22,123 @@
 const padTemplate = document.createElement('template');
 
 padTemplate.innerHTML = `
-  <style>
-  .midi-control__group {
-    outline: 0;
-    display: flex; box-sizing: border-box;
-    flex-direction: column;
-    align-content: stretch;
-    width: 100%; height: 100%;
-    padding: 1vw;
-  }
-  .midi-control__label {
-    outline: 0;
-    display: block; box-sizing: border-box;
-    padding-bottom: 0.5em;
-  }
-  .midi-control__button--pad {
-    outline: 0;
-    display: block; box-sizing: border-box;
-    flex: auto;
-    margin: 0px auto;
-    width: 100%;
-    position: relative;
-    cursor: pointer;
-    background-color: hsla(210, 25%, 98%, 1.0);
-    background-image:linear-gradient(0deg, hsla(210, 25%, 96%, 1.0), hsla(210, 25%, 98%, 1.0));
-    border: 6px solid;
-    border-image: linear-gradient(120deg, hsla(272, 54%, 80%, 1.0), hsla(194, 49%, 66%, 1.0), hsla(150, 52%, 64%, 1.0)) 10;
-    border-radius: 1px;
-    box-shadow:
-      0px 0px 0px 1px hsla(210, 25%, 98%, 1.0),
-      1px 1px 6px 2px hsla(0, 0%, 35%, 0.5),
-      inset 2px 2px 0px 2px #fff,
-      inset -2px -2px 0px 2px hsla(210, 25%, 98%, 1.0)
-    ;
-  }
-  .midi-control__button--pad[data-state="on"] {border-image: linear-gradient(120deg, hsla(272, 94%, 70%, 1.0), hsla(194, 89%, 56%, 1.0), hsla(150, 92%, 54%, 1.0)) 10;}
-  </style>
-  <div class="midi-control__group">
-    <label class="midi-control__label" for="padEx" ref="label"><slot></slot></label>
-    <button id="padEx" class="midi-control__button--pad" ref="input"></button>
-  </div>
+	<style>
+	.midi-control__group {
+		outline: 0;
+		display: flex; box-sizing: border-box;
+		flex-direction: column;
+		align-content: stretch;
+		width: 100%; height: 100%;
+		padding: 1vw;
+	}
+	.midi-control__label {
+		outline: 0;
+		display: block; box-sizing: border-box;
+		padding-bottom: 0.5em;
+	}
+	.midi-control__button--pad {
+		outline: 0;
+		display: block; box-sizing: border-box;
+		flex: auto;
+		margin: 0px auto;
+		width: 100%;
+		position: relative;
+		cursor: pointer;
+		background-color: hsla(210, 25%, 98%, 1.0);
+		background-image:linear-gradient(0deg, hsla(210, 25%, 96%, 1.0), hsla(210, 25%, 98%, 1.0));
+		border: 6px solid;
+		border-image: linear-gradient(120deg, hsla(272, 54%, 80%, 1.0), hsla(194, 49%, 66%, 1.0), hsla(150, 52%, 64%, 1.0)) 10;
+		border-radius: 1px;
+		box-shadow:
+			0px 0px 0px 1px hsla(210, 25%, 98%, 1.0),
+			1px 1px 6px 2px hsla(0, 0%, 35%, 0.5),
+			inset 2px 2px 0px 2px #fff,
+			inset -2px -2px 0px 2px hsla(210, 25%, 98%, 1.0)
+		;
+	}
+	.midi-control__button--pad[data-state="on"] {border-image: linear-gradient(120deg, hsla(272, 94%, 70%, 1.0), hsla(194, 89%, 56%, 1.0), hsla(150, 92%, 54%, 1.0)) 10;}
+	</style>
+	<div class="midi-control__group">
+		<label class="midi-control__label" for="padEx" ref="label"><slot></slot></label>
+		<button id="padEx" class="midi-control__button--pad" ref="input"></button>
+	</div>
 `;
 
-class MidiPadController extends HTMLElementWithRefs {
-  constructor() {
-    super();
+class MidiPadController extends HTMLElementPlus {
+	constructor() {
+		super();
 
-    this.tabIndex = 0;
-    this.attachShadow({mode: 'open'});
-    this.shadowRoot.appendChild(padTemplate.content.cloneNode(true));
-    this.message = {};
-    this.message.type = 'pad';
+		this.tabIndex = 0;
+		this.attachShadow({ mode: 'open' });
+		this.shadowRoot.appendChild(padTemplate.content.cloneNode(true));
+		this.message = {};
+		this.message.type = 'pad';
 
-    /*A pad has two events, on down and on release*/
-    // TODO: REFACTOR THE FUCK OUT OF THIS
-    /* mouse down */
-    this.refs.input.addEventListener('mousedown', () => {
-      this.message.data = [parseInt(this.channel),parseInt(this.note), parseInt(this.value)];
-      this.dispatchEvent(new CustomEvent('midiMsg', {detail: this.message}));
-      this.setAttribute('state', 'on');
-      console.log(this.message);
-      // this.style.borderImage = 'linear-gradient(120deg, hsla(272, 94%, 70%, 1.0), hsla(194, 89%, 56%, 1.0), hsla(150, 92%, 54%, 1.0)) 10;';
-    });
-    /* touch down */
-    this.refs.input.addEventListener('touchstart', () => {
-      this.message.data = [parseInt(this.channel),parseInt(this.note), parseInt(this.value)];
-      this.dispatchEvent(new CustomEvent('midiMsg', {detail: this.message}));
-      this.setAttribute('state', 'on');
-      // this.style.borderImage = 'linear-gradient(120deg, hsla(272, 94%, 70%, 1.0), hsla(194, 89%, 56%, 1.0), hsla(150, 92%, 54%, 1.0)) 10;';
-    });
+		/*A pad has two events, on down and on release*/
+		// TODO: REFACTOR THE FUCK OUT OF THIS
+		/* mouse down */
+		this.refs.input.addEventListener('mousedown', () => {
+			this.message.data = [this.channelPress, this.note, this.value];
+			this.dispatchEvent(new CustomEvent('midiMsg', { detail: this.message }));
+		});
 
-    /* mouse release */
-    this.refs.input.addEventListener('mouseup', () => {
-      this.message.data = [(parseInt(this.channel)-16),parseInt(this.note), 0];
-      this.dispatchEvent(new CustomEvent('midiMsg', {detail: this.message}));
-      this.setAttribute('state', 'off');
-      // this.style.borderImage = 'linear-gradient(120deg, hsla(272, 54%, 80%, 1.0), hsla(194, 49%, 66%, 1.0), hsla(150, 52%, 64%, 1.0)) 10;';
-    });
-    /* touch release */
-    this.refs.input.addEventListener('touchend', () => {
-      this.message.data = [(parseInt(this.channel)-16),parseInt(this.note), 0];
-      this.dispatchEvent(new CustomEvent('midiMsg', {detail: this.message}));
-      this.setAttribute('state', 'off');
-      // this.style.borderImage = 'linear-gradient(120deg, hsla(272, 54%, 80%, 1.0), hsla(194, 49%, 66%, 1.0), hsla(150, 52%, 64%, 1.0)) 10;';
-    });
+		/* touch down */
+		this.refs.input.addEventListener('touchstart', () => {
+			this.message.data = [this.channelPress, this.note, this.value];
+			this.dispatchEvent(new CustomEvent('midiMsg', { detail: this.message }));
+		});
 
-  }
+		/* mouse release */
+		this.refs.input.addEventListener('mouseup', () => {
+			this.message.data = [this.channelRelease, this.note, 0];
+			this.dispatchEvent(new CustomEvent('midiMsg', { detail: this.message }));
+		});
+		/* touch release */
+		this.refs.input.addEventListener('touchend', () => {
+			this.message.data = [this.channelRelease, this.note, 0];
+			this.dispatchEvent(new CustomEvent('midiMsg', { detail: this.message }));
+		});
 
-  static get observedAttributes() { return ['channel', 'note', 'value', 'state']; }
-  attributeChangedCallback(attr, oldValue, newValue) {
+		this.addEventListener('midiMsg', function(e) {
+			if (e.detail.data[0] === this.channelPress) {
+				this.setAttribute('state', 'on');
+			}
+			if (e.detail.data[0] === this.channelRelease) {
+				this.setAttribute('state', 'off');
+			}
+		});
+	}
 
-    if (attr === 'note') {
-      this.note = newValue;
-    }
+	static get observedAttributes() {
+		return ['channel-press', 'channel-release', 'note', 'value', 'state'];
+	}
+	attributeChangedCallback(attr, oldValue, newValue) {
+		if (attr === 'note') {
+			this.note = parseInt(newValue);
+		}
 
-    if (attr === 'channel') {
-      this.channel = newValue;
-    }
+		if (attr === 'channel-press') {
+			this.channelPress = parseInt(newValue);
+		}
 
-    if (attr === 'value') {
-      this.value = newValue;
-    }
+		if (attr === 'channel-release') {
+			this.channelRelease = parseInt(newValue);
+		}
 
-    if (attr === 'state') {
-      this.state = newValue;
-      this.refs.input.dataset.state = newValue;
-      if (newValue === 'on') {
-        this.refs.input.dispatchEvent(new CustomEvent('midiMsg'));
-      }
-    }
-  }
+		if (attr === 'value') {
+			this.value = parseInt(newValue);
+		}
+
+		if (attr === 'state') {
+			this.state = newValue;
+			this.refs.input.dataset.state = newValue;
+			// if (newValue === 'on') {
+			//  this.refs.input.dispatchEvent(new CustomEvent('midiMsg'));
+			// }
+		}
+	}
 }
 
-window.addEventListener('DOMContentLoaded', function () {
-  customElements.define('midi-pad', MidiPadController);
+window.addEventListener('DOMContentLoaded', function() {
+	customElements.define('midi-pad', MidiPadController);
 });
