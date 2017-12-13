@@ -84,7 +84,7 @@
 
 				<vj-otg-group name="potusGroup">
 					<vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="0.02" speed="0.5"></vj-otg-distort>
-					<vj-otg-distort type="zoom" factor="1.2" position="0.5, 0.5"></vj-otg-distort>
+					<vj-otg-distort type="zoom" factor="[1.2 * pad1]" position="0.5, 0.5"></vj-otg-distort>
 					<vj-otg-filter type="main">
 						float distanceFromCenter = length(centerCoord - newUV);
 					</vj-otg-filter>
