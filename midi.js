@@ -22,13 +22,9 @@ function onMIDISuccess(midiAccess) {
 
 	const inputs = midi.inputs.values();
 	// loop over all available inputs and listen for any MIDI input
-	for (
-		const input = inputs.next();
-		input && !input.done;
-		input = inputs.next()
-	) {
+	for (const input of inputs) {
 		// each time there is a midi message call the onMIDIMessage function
-		input.value.onmidimessage = onMIDIMessage;
+		input.onmidimessage = onMIDIMessage;
 	}
 }
 
@@ -65,7 +61,7 @@ function onMIDIMessage(message) {
 				detail.data[1]
 			}"]`
 		);
-		
+
 	// If it has been released then set release value.
 	if (el && detail.data[0] === el.channelRelease) {
 		detail.data[2] = el.releaseValue;
