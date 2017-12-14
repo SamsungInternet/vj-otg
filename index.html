@@ -6,27 +6,27 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="manifest" href="/vjotg.webmanifest">
+	<link rel="manifest" href="./vjotg.webmanifest">
 
 	<link rel="stylesheet" href="/style/style.css">
 	<script src="vendor/three.js/three.min.js"></script>
 	<script src="vendor/three.js/Detector.js"></script>
 	<script src="https://cdn.rawgit.com/webcomponents/webcomponentsjs/edf84e6e/webcomponents-sd-ce.js"></script>
-	<script src="/components/html-element-plus.js"></script>
+	<script src="./components/html-element-plus.js"></script>
 
-	<script src="/components/visuals/visuals.js" defer></script>
-	<script src="/components/visuals/group.js" defer></script>
-	<script src="/components/visuals/asset.js" defer></script>
-	<script src="/components/visuals/distort.js" defer></script>
-	<script src="/components/visuals/filter.js" defer></script>
-	<script src="/components/visuals/source.js" defer></script>
-	<script src="/components/visuals/uniforms.js" defer></script>
+	<script src="./components/visuals/visuals.js" defer></script>
+	<script src="./components/visuals/group.js" defer></script>
+	<script src="./components/visuals/asset.js" defer></script>
+	<script src="./components/visuals/distort.js" defer></script>
+	<script src="./components/visuals/filter.js" defer></script>
+	<script src="./components/visuals/source.js" defer></script>
+	<script src="./components/visuals/uniforms.js" defer></script>
 
-	<script src="/components/midi-cc.js" defer></script>
-	<script src="/components/midi-pad.js" defer></script>
+	<script src="./components/midi-cc.js" defer></script>
+	<script src="./components/midi-pad.js" defer></script>
 
-	<script src="/midi.js" defer></script>
-	<script src="/main.js" defer></script>
+	<script src="./midi.js" defer></script>
+	<script src="./main.js" defer></script>
 </head>
 
 <body>
@@ -88,7 +88,7 @@
 				-->
 
 				<vj-otg-group name="channel1">
-					<vj-otg-filter type="splitx" size="[beat * 0.05]"></vj-otg-filter>
+					<vj-otg-filter type="splitx" source-name="minnie" size="[beat * 0.05]"></vj-otg-filter>
 					<vj-otg-filter type="hsl-gradient" start="120,0.5,0.5" stop="180,1,0.8" direction="3"></vj-otg-filter>
 				</vj-otg-group>
 
@@ -102,7 +102,7 @@
 					<vj-otg-distort type="rotate" angle="[sqrt(distanceFromCenter) * 1000.0 * (pad2) + pad2 * 500.0 + 0.0]"></vj-otg-distort>
 					<!-- rotate -->
 					<vj-otg-distort type="rotate" angle="[pad3 * 360.0]"></vj-otg-distort>
-					<vj-otg-filter type="from-source" source="2"></vj-otg-filter>
+					<vj-otg-filter type="from-static-source" source-name="potus"></vj-otg-filter>
 				</vj-otg-group>
 
 				<vj-otg-group name="channel3">
@@ -159,7 +159,7 @@
 						[layer] = mix([layer], channel3, cc1 * channel3.a);
 					</vj-otg-filter>
 					<vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="0.02" speed="0.5"></vj-otg-distort>
-					<vj-otg-filter type="from-source" source="3"></vj-otg-filter>
+					<vj-otg-filter type="from-static-source" source-name="shera"></vj-otg-filter>
 				</vj-otg-group>
 
 				<!-- this is everything and mixes all the previous media groups -->

@@ -35,7 +35,8 @@ class VJOTGFilter extends HTMLElementPlus {
 			'stop', // For Gradient
 			'direction', // For Gradient
 			'size', // For splitX
-			'source' // For from-source
+			'source-index', // For from-source
+			'source-name', // For from-static-source
 		];
 	}
 
@@ -67,7 +68,7 @@ class VJOTGFilter extends HTMLElementPlus {
 				break;
 
 			case 'direction':
-			case 'source':
+			case 'source-index':
 				value = Number(value);
 				type = 'i';
 				break;
@@ -77,7 +78,14 @@ class VJOTGFilter extends HTMLElementPlus {
 				value = Number(value);
 				type = 'f';
 				break;
+				
+			case 'source-name':
+				return {
+					value: value,
+					isSnippet: false,
+				};
 			}
+
 
 			const uniformName = `${this.name}_${name}`;
 			if (!this.parentNode.uniforms[uniformName]) {
@@ -116,19 +124,26 @@ class VJOTGFilter extends HTMLElementPlus {
 
 		if (
 			glAttributes.type === 'from-source' &&
-			glAttributes.source !== undefined
+			glAttributes['source-index'] !== undefined
 		) {
 			// Update the uniform.
-			if (glAttributes.source.uniform) {
-				glAttributes.source.uniform.value = glAttributes.source.value;
+			if (glAttributes['source-index'].uniform) {
+				glAttributes['source-index'].uniform.value = glAttributes['source-index'].value;
 			}
 
 			// Set the main program
-			if (glAttributes.source.isSnippet) {
-				this.shaderChunks.main = `${layerName} *= getSource((${glAttributes.source.glslSnippet}), newUV);`
+			if (glAttributes['source-index'].isSnippet) {
+				this.shaderChunks.main = `${layerName} *= getSource((${glAttributes['source-index'].glslSnippet}), newUV);`
 			} else {
-				this.shaderChunks.main = `${layerName} *= getSource(${glAttributes.source.uniformName}, newUV);`
+				this.shaderChunks.main = `${layerName} *= getSource(${glAttributes['source-index'].uniformName}, newUV);`
 			}
+		}
+
+		if (
+			glAttributes.type === 'from-static-source'  &&
+			glAttributes['source-name']
+		) {
+			this.shaderChunks.main = `${layerName} *= texture2D(${glAttributes['source-name'].value}, newUV);`
 		}
 
 		if (
@@ -167,7 +182,8 @@ class VJOTGFilter extends HTMLElementPlus {
 
 		if (
 			glAttributes.type === 'splitx' &&
-			glAttributes.size !== undefined
+			glAttributes.size !== undefined &&
+			glAttributes['source-name']
 		) {
 			// Update the uniform.
 			if (glAttributes.size.uniform) {
@@ -175,9 +191,9 @@ class VJOTGFilter extends HTMLElementPlus {
 			}
 
 			if (glAttributes.size.isSnippet) {
-				this.shaderChunks.main = `${layerName} *= splitXTexture2D(minnie, newUV, ${glAttributes.size.glslSnippet});`
+				this.shaderChunks.main = `${layerName} *= splitXTexture2D(${glAttributes['source-name'].value}, newUV, ${glAttributes.size.glslSnippet});`
 			} else {
-				this.shaderChunks.main = `${layerName} *= splitXTexture2D(minnie, newUV, ${glAttributes.size.uniformName});`
+				this.shaderChunks.main = `${layerName} *= splitXTexture2D(${glAttributes['source-name'].value}, newUV, ${glAttributes.size.uniformName});`
 			}
 		}
 	}

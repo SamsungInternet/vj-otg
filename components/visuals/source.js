@@ -9,8 +9,6 @@
 class VJOTGSource extends HTMLElementPlus {
 	constructor() {
 		super();
-		this.constructor.filterCount = this.constructor.filterCount || 0;
-		this.name = 'uniform_id_' + this.constructor.filterCount++;
 	}
 	static get observedAttributes() {
 		return ['type', 'src', 'index', 'name'];
