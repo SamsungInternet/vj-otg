@@ -25,7 +25,7 @@
 	<script src="/components/midi-cc.js" defer></script>
 	<script src="/components/midi-pad.js" defer></script>
 
-	<script src="/midi/akai.js" defer></script>
+	<script src="/midi.js" defer></script>
 	<script src="/main.js" defer></script>
 </head>
 
@@ -77,18 +77,31 @@
 
 				<!-- these are the groups for each media item, with effects and uniforms for controls -->
 
+				<!--
+				effects I can have:
+					distort: zoom, rotate
+					filter: hsl-gradient, splitx, main (anything)
+
+				uniforms I can use:
+					all midis
+					time, analyser
+				-->
+
 				<vj-otg-group name="minnieGroup">
 					<vj-otg-filter type="splitx" size="[beat * 0.05]"></vj-otg-filter>
 					<vj-otg-filter type="hsl-gradient" start="120,0.5,0.5" stop="180,1,0.8" direction="3"></vj-otg-filter>
 				</vj-otg-group>
 
 				<vj-otg-group name="potusGroup">
-					<vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="0.02" speed="0.5"></vj-otg-distort>
+					<!-- zoom -->
 					<vj-otg-distort type="zoom" factor="[1.0 + 1.2 * pad1]" position="0.5, 0.5"></vj-otg-distort>
 					<vj-otg-filter type="main">
 						float distanceFromCenter = length(centerCoord - newUV);
 					</vj-otg-filter>
-					<!-- <vj-otg-distort type="rotate" angle="[sqrt(distanceFromCenter) * 1000.0 * (1.0 - cc2) + cc2 * 500.0 + 220.0]"></vj-otg-distort> -->
+					<!-- spiral distort -->
+					<vj-otg-distort type="rotate" angle="[sqrt(distanceFromCenter) * 1000.0 * (pad2) + pad2 * 500.0 + 0.0]"></vj-otg-distort>
+					<!-- rotate -->
+					<vj-otg-distort type="rotate" angle="[pad3 * 360.0]"></vj-otg-distort>
 					<vj-otg-filter type="from-source" source="2"></vj-otg-filter>
 				</vj-otg-group>
 
@@ -142,15 +155,18 @@
 					<vj-otg-filter type="main">
 						float xOn = floor(mod(newUV.x * 8.0 , 2.0));
 						float yOn = floor(mod(newUV.y * 8.0 , 2.0));
-						[layer] = vec4(mix(xOn , 1.0 - xOn, yOn), pad1, 0.0, 1.0) * texture2D(shera, newUV);
+						[layer] = vec4(mix(xOn , 1.0 - xOn, yOn), pad2, 0.0, 1.0) * texture2D(shera, newUV);
 						[layer] = mix([layer], graphGroup, cc1 * graphGroup.a);
 					</vj-otg-filter>
+					<vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="0.02" speed="0.5"></vj-otg-distort>
+					<vj-otg-filter type="from-source" source="3"></vj-otg-filter>
 				</vj-otg-group>
 
 				<!-- this is everything and mixes all the previous media groups -->
 				<vj-otg-filter type="main">
 					float perlinNoise = clamp(snoise(vec3(newUV * 5.0, cc1)), 0.0, 1.0);
-					[layer] = mix(minnieGroup, potusGroup * graphGroup, cc1 * cc1);
+					<!-- [layer] = mix(minnieGroup, potusGroup * graphGroup, cc1 * cc1); -->
+					[layer] = mix(potusGroup * graphGroup, sheraGroup, cc1 * cc1);
 				</vj-otg-filter>
 
 			</vj-otg-visuals>
@@ -177,7 +193,7 @@
 		<section class="midi-controls">
 			<!-- set values between 0-127 -->
 			<midi-pad channel-press="144" channel-release="128" note="36" value="64" id="pad1">PAD1</midi-pad>
-			<midi-pad channel-press="144" channel-release="128" note="37" value="127" id="pad2">PAD2</midi-pad>
+			<midi-pad channel-press="144" channel-release="128" note="37" value="64" id="pad2">PAD2</midi-pad>
 			<midi-pad channel-press="144" channel-release="128" note="38" value="64" id="pad3">PAD3</midi-pad>
 			<midi-pad channel-press="144" channel-release="128" note="39" value="64" id="pad4">PAD4</midi-pad>
 			<midi-pad channel-press="144" channel-release="128" note="40" value="64" id="pad5">PAD5</midi-pad>
