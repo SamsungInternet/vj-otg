@@ -80,24 +80,24 @@ class MidiPadController extends HTMLElementPlus {
 		/* mouse down */
 		this.refs.input.addEventListener('mousedown', () => {
 			this.message.data = [this.channelPress, this.note, this.value];
-			this.dispatchEvent(new CustomEvent('midiMsg', { detail: this.message }));
+			this.emitEvent('midiMsg', this.message );
 		});
 
 		/* touch down */
 		this.refs.input.addEventListener('touchstart', () => {
 			this.message.data = [this.channelPress, this.note, this.value];
-			this.dispatchEvent(new CustomEvent('midiMsg', { detail: this.message }));
+			this.emitEvent('midiMsg', this.message );
 		});
 
 		/* mouse release */
 		this.refs.input.addEventListener('mouseup', () => {
 			this.message.data = [this.channelRelease, this.note, this.releaseValue];
-			this.dispatchEvent(new CustomEvent('midiMsg', { detail: this.message }));
+			this.emitEvent('midiMsg', this.message );
 		});
 		/* touch release */
 		this.refs.input.addEventListener('touchend', () => {
 			this.message.data = [this.channelRelease, this.note, this.releaseValue];
-			this.dispatchEvent(new CustomEvent('midiMsg', { detail: this.message }));
+			this.emitEvent('midiMsg', this.message );
 		});
 
 		this.addEventListener('midiMsg', function(e) {

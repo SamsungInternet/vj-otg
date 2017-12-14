@@ -91,7 +91,7 @@ class MidiCCController extends HTMLElementPlus {
 		this.refs.input.addEventListener('input', () => {
 			this.message.data = [parseInt(this.channel), parseInt(this.note), parseInt(this.refs.input.value)];
 			// change this name to be same as midi api
-			this.dispatchEvent(new CustomEvent('midiMsg', { detail: this.message }));
+			this.emitEvent('midiMsg', this.message );
 		});
 		// this.refs.input.
 

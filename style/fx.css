@@ -1,0 +1,27 @@
+vj-otg-visuals {
+
+	--pad1: 0;
+	--pad2: 0;
+	--pad3: 0;
+	--pad4: 0;
+	--pad5: 0;
+	--pad6: 0;
+	--pad7: 0;
+	--pad8: 0;
+	--cc1: 0;
+	--cc2: 0;
+	--cc3: 0;
+	--cc4: 0;
+	--cc5: 0;
+	--cc6: 0;
+	--cc7: 0;
+	--cc8: 0;
+
+	filter:
+		invert( calc( var(--pad1)/127 ) )
+		hue-rotate( calc( var(--pad2)*2deg ) )
+		brightness( calc(1 + var(--pad3)*0.05 ) )
+		blur( calc( var(--pad4)*0.1px )  )
+	;
+
+}
