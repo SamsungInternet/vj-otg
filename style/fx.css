@@ -10,7 +10,6 @@ vj-otg-visuals {
 	--pad8: 0;
 	--cc1: 0;
 	--cc2: 0;
-	--cc2: 0;
 	--cc3: 0;
 	--cc4: 0;
 	--cc5: 0;
@@ -18,6 +17,11 @@ vj-otg-visuals {
 	--cc7: 0;
 	--cc8: 0;
 
-	filter: invert(var(--pad1)) blur(var(--pad2));
+	filter:
+		invert( calc( var(--pad1)/127 ) )
+		hue-rotate( calc( var(--pad2)*2deg ) )
+		brightness( calc(1 + var(--pad3)*0.05 ) )
+		blur( calc( var(--pad4)*0.1px )  )
+	;
 
 }

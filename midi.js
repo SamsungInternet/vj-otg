@@ -75,6 +75,6 @@ function onMIDIMessage(message) {
 			detail.type = 'cc';
 			el.setAttribute('value', detail.data[2]);
 		}
-		el.dispatchEvent(new CustomEvent('midiMsg', { detail: detail }));
+		el.dispatchEvent(new CustomEvent('midiMsg', { detail: detail, bubbles: true }));
 	}
 }
