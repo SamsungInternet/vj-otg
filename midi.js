@@ -45,7 +45,6 @@ function onMIDIMessage(message) {
 
 	detail.data = message.data;
 	detail.type = 'cc';
-	detail.value = message.data[2];
 
 	// send type as well - if channel is between certain numbers then it's a pad, if not it's a CC - or something (it's a little bit rudementary but I don't have a better way ya)
 	if (detail.data[0] > 120 && detail.data[0] < 150) {
@@ -66,6 +65,11 @@ function onMIDIMessage(message) {
 				detail.data[1]
 			}"]`
 		);
+		
+	// If it has been released then set release value.
+	if (el && detail.data[0] === el.channelRelease) {
+		detail.data[2] = el.releaseValue;
+	}
 
 	if (el) {
 		if (el.tagName === 'MIDI-PAD') {
