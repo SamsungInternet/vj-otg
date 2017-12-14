@@ -87,12 +87,12 @@
 					time, analyser
 				-->
 
-				<vj-otg-group name="minnieGroup">
+				<vj-otg-group name="channel1">
 					<vj-otg-filter type="splitx" size="[beat * 0.05]"></vj-otg-filter>
 					<vj-otg-filter type="hsl-gradient" start="120,0.5,0.5" stop="180,1,0.8" direction="3"></vj-otg-filter>
 				</vj-otg-group>
 
-				<vj-otg-group name="potusGroup">
+				<vj-otg-group name="channel2">
 					<!-- zoom -->
 					<vj-otg-distort type="zoom" factor="[1.0 + 1.2 * pad1]" position="0.5, 0.5"></vj-otg-distort>
 					<vj-otg-filter type="main">
@@ -105,7 +105,7 @@
 					<vj-otg-filter type="from-source" source="2"></vj-otg-filter>
 				</vj-otg-group>
 
-				<vj-otg-group name="graphGroup">
+				<vj-otg-group name="channel3">
 					<vj-otg-filter type="main">
 						<pre><code lang="glsl">
 
@@ -142,7 +142,7 @@
 							vec3 rgbColumnColor = hsl2rgb(float(column)/noAnalyserBins, 1.0 , 0.5);
 
 							// Work out whether that pixel should be coloured or not.
-							graphGroup = mix(
+							[layer] = mix(
 								noopVec4,
 								vec4(rgbColumnColor, 1.0),
 								float(newUV.y &lt;= columnValue) * float(columnValue - newUV.y &lt;= 0.1 )
@@ -151,12 +151,12 @@
 					</vj-otg-filter>
 				</vj-otg-group>
 
-				<vj-otg-group name="sheraGroup">
+				<vj-otg-group name="channel4">
 					<vj-otg-filter type="main">
 						float xOn = floor(mod(newUV.x * 8.0 , 2.0));
 						float yOn = floor(mod(newUV.y * 8.0 , 2.0));
 						[layer] = vec4(mix(xOn , 1.0 - xOn, yOn), pad2, 0.0, 1.0) * texture2D(shera, newUV);
-						[layer] = mix([layer], graphGroup, cc1 * graphGroup.a);
+						[layer] = mix([layer], channel3, cc1 * channel3.a);
 					</vj-otg-filter>
 					<vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="0.02" speed="0.5"></vj-otg-distort>
 					<vj-otg-filter type="from-source" source="3"></vj-otg-filter>
@@ -164,9 +164,11 @@
 
 				<!-- this is everything and mixes all the previous media groups -->
 				<vj-otg-filter type="main">
-					float perlinNoise = clamp(snoise(vec3(newUV * 5.0, cc1)), 0.0, 1.0);
-					<!-- [layer] = mix(minnieGroup, potusGroup * graphGroup, cc1 * cc1); -->
-					[layer] = mix(potusGroup * graphGroup, sheraGroup, cc1 * cc1);
+					<pre><code lang="c">
+					// float perlinNoise = clamp(snoise(vec3(newUV * 5.0, cc1)), 0.0, 1.0);
+					float total = cc1 + cc2 + cc3 + cc4;
+					[layer] = mix(noopVec4, channel1, cc1 / total) * mix(noopVec4, channel2, cc2 / total) * mix(noopVec4, channel3, cc3 / total) * mix(noopVec4, channel4, cc4 / total);
+					</code></pre>
 				</vj-otg-filter>
 
 			</vj-otg-visuals>
