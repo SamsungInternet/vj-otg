@@ -73,6 +73,7 @@ class MidiPadController extends HTMLElementPlus {
 		this.shadowRoot.appendChild(padTemplate.content.cloneNode(true));
 		this.message = {};
 		this.message.type = 'pad';
+		this.releaseValue = 0;
 
 		/*A pad has two events, on down and on release*/
 		// TODO: REFACTOR THE FUCK OUT OF THIS
@@ -90,12 +91,12 @@ class MidiPadController extends HTMLElementPlus {
 
 		/* mouse release */
 		this.refs.input.addEventListener('mouseup', () => {
-			this.message.data = [this.channelRelease, this.note, 0];
+			this.message.data = [this.channelRelease, this.note, this.releaseValue];
 			this.dispatchEvent(new CustomEvent('midiMsg', { detail: this.message }));
 		});
 		/* touch release */
 		this.refs.input.addEventListener('touchend', () => {
-			this.message.data = [this.channelRelease, this.note, 0];
+			this.message.data = [this.channelRelease, this.note, this.releaseValue];
 			this.dispatchEvent(new CustomEvent('midiMsg', { detail: this.message }));
 		});
 
@@ -110,7 +111,7 @@ class MidiPadController extends HTMLElementPlus {
 	}
 
 	static get observedAttributes() {
-		return ['channel-press', 'channel-release', 'note', 'value', 'state'];
+		return ['channel-press', 'channel-release', 'note', 'value', 'state', 'release-value'];
 	}
 	attributeChangedCallback(attr, oldValue, newValue) {
 		if (attr === 'note') {
@@ -123,6 +124,10 @@ class MidiPadController extends HTMLElementPlus {
 
 		if (attr === 'channel-release') {
 			this.channelRelease = parseInt(newValue);
+		}
+
+		if (attr === 'release-value') {
+			this.releaseValue = parseInt(newValue);
 		}
 
 		if (attr === 'value') {
