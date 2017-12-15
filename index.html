@@ -145,7 +145,7 @@
 
 							// Work out whether that pixel should be coloured or not.
 							[layer] = mix(
-								noopVec4,
+								vec4(0.0, 0.0, 0.0, 0.0),
 								vec4(rgbColumnColor, 1.0),
 								float(newUV.y &lt;= columnValue) * float(columnValue - newUV.y &lt;= 0.1 )
 							);
@@ -194,8 +194,16 @@
 				<vj-otg-filter type="main">
 					<pre><code lang="c">
 					// float perlinNoise = clamp(snoise(vec3(newUV * 5.0, cc1)), 0.0, 1.0);
-					float total = cc1 + cc2 + cc3 + cc4;
-					[layer] = mix(noopVec4, channel1, cc1 / total) * mix(noopVec4, channel2, cc2 / total) * mix(noopVec4, channel3, cc3 / total) * mix(noopVec4, channel4, cc4 / total);
+					float cc1a = cc1 * channel1.a;
+					float cc2a = cc2 * channel2.a;
+					float cc3a = cc3 * channel3.a;
+					float cc4a = cc4 * channel4.a;
+					float total = cc1a + cc2a + cc3a + cc4a + 0.05;
+					[layer] =   mix(noopVec4, channel1, cc1a / total) *
+								mix(noopVec4, channel2, cc2a / total) *
+								mix(noopVec4, channel3, cc3a / total) *
+								mix(noopVec4, channel4, cc4a / total) *
+								mix(noopVec4, (0.0 * noopVec4), 0.05 / total);
 					</code></pre>
 				</vj-otg-filter>
 
