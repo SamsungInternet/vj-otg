@@ -1,4 +1,5 @@
 @import 'reset.css';
+@import 'fx.css';
 
 /*there's a portrait view and a landscape view. Portrait goes up to 600px, which then gives us enough room to put video and fx panel side by side - this is the only media query. Max width is set at 900 as this looks good for the layout. Default styling is for portrait, media queries change for landscape.*/
 

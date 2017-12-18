@@ -26,7 +26,7 @@
 	<script src="./components/midi-pad.js" defer></script>
 
 	<script src="./midi.js" defer></script>
-	<script src="./main.js" defer></script>
+	<script src="./fx.js" defer></script>
 </head>
 
 <body>
@@ -78,30 +78,32 @@
 				<!-- these are the groups for each media item, with effects and uniforms for controls -->
 
 				<!--
-				effects I can have:
+				effects you can have:
 					distort: zoom, rotate
 					filter: hsl-gradient, splitx, main (anything)
 
-				uniforms I can use:
+				uniforms you can use:
 					all midis
 					time, analyser
 				-->
 
 				<vj-otg-group name="channel1">
+					<!-- beat detection video split -->
 					<vj-otg-filter type="splitx" source-name="minnie" size="[beat * 0.05]"></vj-otg-filter>
-					<vj-otg-filter type="hsl-gradient" start="120,0.5,0.5" stop="180,1,0.8" direction="3"></vj-otg-filter>
+					<!-- add a gradient -->
+					<vj-otg-filter type="hsl-gradient" start="150,0.92,0.54" stop="194,0.89,0.56" direction="3"></vj-otg-filter>
 				</vj-otg-group>
 
 				<vj-otg-group name="channel2">
 					<!-- zoom -->
-					<vj-otg-distort type="zoom" factor="[1.0 + 1.2 * pad1]" position="0.5, 0.5"></vj-otg-distort>
+					<vj-otg-distort type="zoom" factor="[1.0 + 1.2 * pad5]" position="0.5, 0.5"></vj-otg-distort>
 					<vj-otg-filter type="main">
 						float distanceFromCenter = length(centerCoord - newUV);
 					</vj-otg-filter>
 					<!-- spiral distort -->
-					<vj-otg-distort type="rotate" angle="[sqrt(distanceFromCenter) * 1000.0 * (pad2) + pad2 * 500.0 + 0.0]"></vj-otg-distort>
+					<vj-otg-distort type="rotate" angle="[sqrt(distanceFromCenter) * 1000.0 * (pad6) + pad6 * 500.0 + 0.0]"></vj-otg-distort>
 					<!-- rotate -->
-					<vj-otg-distort type="rotate" angle="[pad3 * 360.0]"></vj-otg-distort>
+					<vj-otg-distort type="rotate" angle="[pad7 * 360.0]"></vj-otg-distort>
 					<vj-otg-filter type="from-static-source" source-name="potus"></vj-otg-filter>
 				</vj-otg-group>
 
@@ -143,7 +145,7 @@
 
 							// Work out whether that pixel should be coloured or not.
 							[layer] = mix(
-								noopVec4,
+								vec4(0.0, 0.0, 0.0, 0.0),
 								vec4(rgbColumnColor, 1.0),
 								float(newUV.y &lt;= columnValue) * float(columnValue - newUV.y &lt;= 0.1 )
 							);
@@ -152,13 +154,39 @@
 				</vj-otg-group>
 
 				<vj-otg-group name="channel4">
+					<!-- symmetry -->
+					<vj-otg-filter type="main">
+						int sym = int(floor(cc6 * 3.99));
+						if (sym == 1 || sym == 3) {
+							if (cc6 > 0.25) {
+								if (newUV.x > 0.5) {
+									newUV.x = 0.5 - (newUV.x - 0.5);
+								}
+							}
+						}
+						if (sym == 2 || sym == 3) {
+							if (cc6 > 0.25) {
+								if (newUV.y > 0.5) {
+									newUV.y = 0.5 - (newUV.y - 0.5);
+								}
+							}
+						}
+
+					</vj-otg-filter>
+					<!-- wave distort -->
+					<vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="[beat * 0.05]" speed="0.5"></vj-otg-distort>
+					<!-- add a checkerboard -->
 					<vj-otg-filter type="main">
 						float xOn = floor(mod(newUV.x * 8.0 , 2.0));
 						float yOn = floor(mod(newUV.y * 8.0 , 2.0));
-						[layer] = vec4(mix(xOn , 1.0 - xOn, yOn), pad2, 0.0, 1.0) * texture2D(shera, newUV);
+						[layer] = vec4(
+							mix(xOn , 1.0 - xOn, yOn),
+							cc5,
+							mix(xOn , 1.0 - xOn, yOn),
+							1.0
+						) * texture2D(shera, newUV);
 						[layer] = mix([layer], channel3, cc1 * channel3.a);
 					</vj-otg-filter>
-					<vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="0.02" speed="0.5"></vj-otg-distort>
 					<vj-otg-filter type="from-static-source" source-name="shera"></vj-otg-filter>
 				</vj-otg-group>
 
@@ -166,8 +194,16 @@
 				<vj-otg-filter type="main">
 					<pre><code lang="c">
 					// float perlinNoise = clamp(snoise(vec3(newUV * 5.0, cc1)), 0.0, 1.0);
-					float total = cc1 + cc2 + cc3 + cc4;
-					[layer] = mix(noopVec4, channel1, cc1 / total) * mix(noopVec4, channel2, cc2 / total) * mix(noopVec4, channel3, cc3 / total) * mix(noopVec4, channel4, cc4 / total);
+					float cc1a = cc1 * channel1.a;
+					float cc2a = cc2 * channel2.a;
+					float cc3a = cc3 * channel3.a;
+					float cc4a = cc4 * channel4.a;
+					float total = cc1a + cc2a + cc3a + cc4a + 0.05;
+					[layer] =   mix(noopVec4, channel1, cc1a / total) *
+								mix(noopVec4, channel2, cc2a / total) *
+								mix(noopVec4, channel3, cc3a / total) *
+								mix(noopVec4, channel4, cc4a / total) *
+								mix(noopVec4, (0.0 * noopVec4), 0.05 / total);
 					</code></pre>
 				</vj-otg-filter>
 
@@ -194,7 +230,7 @@
 
 		<section class="midi-controls">
 			<!-- set values between 0-127 -->
-			<midi-pad channel-press="144" channel-release="128" note="36" value="64" id="pad1">PAD1</midi-pad>
+			<midi-pad channel-press="144" channel-release="128" note="36" value="127" id="pad1">PAD1</midi-pad>
 			<midi-pad channel-press="144" channel-release="128" note="37" value="64" id="pad2">PAD2</midi-pad>
 			<midi-pad channel-press="144" channel-release="128" note="38" value="64" id="pad3">PAD3</midi-pad>
 			<midi-pad channel-press="144" channel-release="128" note="39" value="64" id="pad4">PAD4</midi-pad>
@@ -203,10 +239,10 @@
 			<midi-pad channel-press="144" channel-release="128" note="42" value="64" id="pad7">PAD7</midi-pad>
 			<midi-pad channel-press="144" channel-release="128" note="43" value="64" id="pad8">PAD8</midi-pad>
 
-			<midi-cc id="cc1" channel="176" note="1" value="64">CC1</midi-cc>
-			<midi-cc id="cc2" channel="176" note="2" value="64">CC2</midi-cc>
-			<midi-cc id="cc3" channel="176" note="3" value="64">CC3</midi-cc>
-			<midi-cc id="cc4" channel="176" note="4" value="64">CC4</midi-cc>
+			<midi-cc id="cc1" channel="176" note="1" value="0">CC1</midi-cc>
+			<midi-cc id="cc2" channel="176" note="2" value="0">CC2</midi-cc>
+			<midi-cc id="cc3" channel="176" note="3" value="0">CC3</midi-cc>
+			<midi-cc id="cc4" channel="176" note="4" value="0">CC4</midi-cc>
 			<midi-cc id="cc5" channel="176" note="5" value="64">CC5</midi-cc>
 			<midi-cc id="cc6" channel="176" note="6" value="64">CC6</midi-cc>
 			<midi-cc id="cc7" channel="176" note="7" value="64">CC7</midi-cc>
