@@ -1,4 +1,3 @@
-'use strict';
 /* global HTMLElementPlus */
 
 /**
@@ -22,3 +21,4 @@ class VJOTGAssets extends HTMLElementPlus {
 }
 
 customElements.define('vj-otg-assets', VJOTGAssets);
+export default VJOTGAssets;

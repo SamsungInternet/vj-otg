@@ -2,7 +2,8 @@
 
 class HTMLElementPlus extends HTMLElement {
 
-	static defaultAttributeValue(name) {
+	static defaultAttributeValue() {
+		/* the name of the attribute is parsed in as a parameter */
 		return;
 	}
 
@@ -26,9 +27,17 @@ class HTMLElementPlus extends HTMLElement {
 			? this.constructor.observedAttributes
 			: []
 		).filter(name => {
-			this.__attributesMap[name] = this.constructor.defaultAttributeValue(name);
+			if (!this.attributes.getNamedItem(name)) {
+				this.__attributesMap[name] = this.constructor.defaultAttributeValue(name);
+			}
 			return !!this.attributes.getNamedItem(name);
 		});
+
+		// No attributes so update attribute never called.
+		// SO fire this anyway.
+		if (this.__waitingOnAttr.length === 0) {
+			this.allAttributesChangedCallback(this.__attributesMap);
+		}
 	}
 
 	__getFromShadowRoot(target, name) {

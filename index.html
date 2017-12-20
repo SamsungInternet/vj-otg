@@ -12,15 +12,9 @@
 	<script src="vendor/three.js/three.min.js"></script>
 	<script src="vendor/three.js/Detector.js"></script>
 	<script src="https://cdn.rawgit.com/webcomponents/webcomponentsjs/edf84e6e/webcomponents-sd-ce.js"></script>
-	<script src="./components/html-element-plus.js"></script>
 
-	<script src="./components/visuals/visuals.js" defer></script>
-	<script src="./components/visuals/group.js" defer></script>
-	<script src="./components/visuals/asset.js" defer></script>
-	<script src="./components/visuals/distort.js" defer></script>
-	<script src="./components/visuals/filter.js" defer></script>
-	<script src="./components/visuals/source.js" defer></script>
-	<script src="./components/visuals/uniforms.js" defer></script>
+	<script src="./components/html-element-plus.js"></script>
+	<script src="./components/visuals/filters.js" defer></script>
 
 	<script src="./components/midi-cc.js" defer></script>
 	<script src="./components/midi-pad.js" defer></script>
@@ -50,30 +44,30 @@
 
 				<!-- One can change attributes dynamically but do not remove/reorder/add or shader should recompile -->
 				<!-- refer to these assets later by assing them as sources here -->
-				<vj-otg-source type="texture" src="#minnie" name="minnie" index="1"></vj-otg-source>
-				<vj-otg-source type="texture" src="#potus" name="potus" index="2"></vj-otg-source>
-				<vj-otg-source type="texture" src="#shera" name="shera" index="3"></vj-otg-source>
+				<vj-otg-source-uniform type="texture" src="#minnie" name="minnie" index="1"></vj-otg-source-uniform>
+				<vj-otg-source-uniform type="texture" src="#potus" name="potus" index="2"></vj-otg-source-uniform>
+				<vj-otg-source-uniform type="texture" src="#shera" name="shera" index="3"></vj-otg-source-uniform>
 
 				<!-- other uniforms you might want to use later -->
-				<vj-otg-uniform type="analyser" threshold="80"></vj-otg-uniform>
-				<vj-otg-uniform type="time"></vj-otg-uniform>
+				<vj-otg-audio-uniform threshold="80"></vj-otg-audio-uniform>
+				<vj-otg-time-uniform></vj-otg-time-uniform>
 
-				<vj-otg-uniform type="midi" name="cc1" midi-el="#cc1"></vj-otg-uniform>
-				<vj-otg-uniform type="midi" name="cc2" midi-el="#cc2"></vj-otg-uniform>
-				<vj-otg-uniform type="midi" name="cc3" midi-el="#cc3"></vj-otg-uniform>
-				<vj-otg-uniform type="midi" name="cc4" midi-el="#cc4"></vj-otg-uniform>
-				<vj-otg-uniform type="midi" name="cc5" midi-el="#cc5"></vj-otg-uniform>
-				<vj-otg-uniform type="midi" name="cc6" midi-el="#cc6"></vj-otg-uniform>
-				<vj-otg-uniform type="midi" name="cc7" midi-el="#cc7"></vj-otg-uniform>
-				<vj-otg-uniform type="midi" name="cc8" midi-el="#cc8"></vj-otg-uniform>
-				<vj-otg-uniform type="midi" name="pad1" midi-el="#pad1"></vj-otg-uniform>
-				<vj-otg-uniform type="midi" name="pad2" midi-el="#pad2"></vj-otg-uniform>
-				<vj-otg-uniform type="midi" name="pad3" midi-el="#pad3"></vj-otg-uniform>
-				<vj-otg-uniform type="midi" name="pad4" midi-el="#pad4"></vj-otg-uniform>
-				<vj-otg-uniform type="midi" name="pad5" midi-el="#pad5"></vj-otg-uniform>
-				<vj-otg-uniform type="midi" name="pad6" midi-el="#pad6"></vj-otg-uniform>
-				<vj-otg-uniform type="midi" name="pad7" midi-el="#pad7"></vj-otg-uniform>
-				<vj-otg-uniform type="midi" name="pad8" midi-el="#pad8"></vj-otg-uniform>
+				<vj-otg-midi-uniform name="cc1" midi-el="#cc1"></vj-otg-midi-uniform>
+				<vj-otg-midi-uniform name="cc2" midi-el="#cc2"></vj-otg-midi-uniform>
+				<vj-otg-midi-uniform name="cc3" midi-el="#cc3"></vj-otg-midi-uniform>
+				<vj-otg-midi-uniform name="cc4" midi-el="#cc4"></vj-otg-midi-uniform>
+				<vj-otg-midi-uniform name="cc5" midi-el="#cc5"></vj-otg-midi-uniform>
+				<vj-otg-midi-uniform name="cc6" midi-el="#cc6"></vj-otg-midi-uniform>
+				<vj-otg-midi-uniform name="cc7" midi-el="#cc7"></vj-otg-midi-uniform>
+				<vj-otg-midi-uniform name="cc8" midi-el="#cc8"></vj-otg-midi-uniform>
+				<vj-otg-midi-uniform name="pad1" midi-el="#pad1"></vj-otg-midi-uniform>
+				<vj-otg-midi-uniform name="pad2" midi-el="#pad2"></vj-otg-midi-uniform>
+				<vj-otg-midi-uniform name="pad3" midi-el="#pad3"></vj-otg-midi-uniform>
+				<vj-otg-midi-uniform name="pad4" midi-el="#pad4"></vj-otg-midi-uniform>
+				<vj-otg-midi-uniform name="pad5" midi-el="#pad5"></vj-otg-midi-uniform>
+				<vj-otg-midi-uniform name="pad6" midi-el="#pad6"></vj-otg-midi-uniform>
+				<vj-otg-midi-uniform name="pad7" midi-el="#pad7"></vj-otg-midi-uniform>
+				<vj-otg-midi-uniform name="pad8" midi-el="#pad8"></vj-otg-midi-uniform>
 
 				<!-- these are the groups for each media item, with effects and uniforms for controls -->
 
@@ -89,26 +83,26 @@
 
 				<vj-otg-group name="channel1">
 					<!-- beat detection video split -->
-					<vj-otg-filter type="splitx" source-name="minnie" size="[beat * 0.05]"></vj-otg-filter>
+					<vj-otg-splitx source-name="minnie" size="[beat * 0.05]"></vj-otg-splitx>
 					<!-- add a gradient -->
-					<vj-otg-filter type="hsl-gradient" start="150,0.92,0.54" stop="194,0.89,0.56" direction="3"></vj-otg-filter>
+					<vj-otg-gradient start="150,0.92,0.54" stop="194,0.89,0.56" direction="3"></vj-otg-gradient>
 				</vj-otg-group>
 
 				<vj-otg-group name="channel2">
 					<!-- zoom -->
-					<vj-otg-distort type="zoom" factor="[1.0 + 1.2 * pad5]" position="0.5, 0.5"></vj-otg-distort>
-					<vj-otg-filter type="main">
+					<vj-otg-zoom factor="[1.0 + 1.2 * pad5]" position="0.5, 0.5"></vj-otg-zoom>
+					<vj-otg-main>
 						float distanceFromCenter = length(centerCoord - newUV);
-					</vj-otg-filter>
+					</vj-otg-main>
 					<!-- spiral distort -->
-					<vj-otg-distort type="rotate" angle="[sqrt(distanceFromCenter) * 1000.0 * (pad6) + pad6 * 500.0 + 0.0]"></vj-otg-distort>
+					<vj-otg-rotate angle="[sqrt(distanceFromCenter) * 1000.0 * (pad6) + pad6 * 500.0 + 0.0]"></vj-otg-rotate>
 					<!-- rotate -->
-					<vj-otg-distort type="rotate" angle="[pad7 * 360.0]"></vj-otg-distort>
-					<vj-otg-filter type="from-static-source" source-name="potus"></vj-otg-filter>
+					<vj-otg-rotate angle="[pad7 * 360.0]"></vj-otg-rotate>
+					<vj-otg-static-texture source-name="potus"></vj-otg-static-texture>
 				</vj-otg-group>
 
 				<vj-otg-group name="channel3">
-					<vj-otg-filter type="main">
+					<vj-otg-main>
 						<pre><code lang="glsl">
 
 							// Work in polar coordinates
@@ -150,12 +144,12 @@
 								float(newUV.y &lt;= columnValue) * float(columnValue - newUV.y &lt;= 0.1 )
 							);
 					</code></pre>
-					</vj-otg-filter>
+					</vj-otg-main>
 				</vj-otg-group>
 
 				<vj-otg-group name="channel4">
 					<!-- symmetry -->
-					<vj-otg-filter type="main">
+					<vj-otg-main>
 						int sym = int(floor(cc6 * 3.99));
 						if (sym == 1 || sym == 3) {
 							if (cc6 > 0.25) {
@@ -172,11 +166,11 @@
 							}
 						}
 
-					</vj-otg-filter>
+					</vj-otg-main>
 					<!-- wave distort -->
-					<vj-otg-distort type="wave" t="[time]" frequency="3.0" amplitude="[beat * 0.05]" speed="0.5"></vj-otg-distort>
+					<vj-otg-wave t="[time]" frequency="3.0" amplitude="[beat * 0.05]" speed="0.5"></vj-otg-wave>
 					<!-- add a checkerboard -->
-					<vj-otg-filter type="main">
+					<vj-otg-main>
 						float xOn = floor(mod(newUV.x * 8.0 , 2.0));
 						float yOn = floor(mod(newUV.y * 8.0 , 2.0));
 						[layer] = vec4(
@@ -186,12 +180,12 @@
 							1.0
 						) * texture2D(shera, newUV);
 						[layer] = mix([layer], channel3, cc1 * channel3.a);
-					</vj-otg-filter>
-					<vj-otg-filter type="from-static-source" source-name="shera"></vj-otg-filter>
+					</vj-otg-main>
+					<vj-otg-static-texture source-name="shera"></vj-otg-static-texture>
 				</vj-otg-group>
 
 				<!-- this is everything and mixes all the previous media groups -->
-				<vj-otg-filter type="main">
+				<vj-otg-main>
 					<pre><code lang="c">
 					// float perlinNoise = clamp(snoise(vec3(newUV * 5.0, cc1)), 0.0, 1.0);
 					float cc1a = cc1 * channel1.a;
@@ -205,7 +199,7 @@
 								mix(noopVec4, channel4, cc4a / total) *
 								mix(noopVec4, (0.0 * noopVec4), 0.05 / total);
 					</code></pre>
-				</vj-otg-filter>
+				</vj-otg-main>
 
 			</vj-otg-visuals>
 		</div>
