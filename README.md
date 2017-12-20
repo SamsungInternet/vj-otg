@@ -1,7 +1,7 @@
 # vj-otg
 Video DJ on the Go!!!
 
-## Forking
+## Make your own visualisations
 
 Please go ahead and fork to make it your own!
 
