@@ -76,7 +76,7 @@ class MidiPadController extends HTMLElementPlus {
 		this.releaseValue = 0;
 
 		/*A pad has two events, on down and on release*/
-		// TODO: REFACTOR THE FUCK OUT OF THIS
+		// TODO: refactor this - also sort mousedown interfearing with scroll
 		/* mouse down */
 		this.refs.input.addEventListener('mousedown', () => {
 			this.message.data = [this.channelPress, this.note, this.value];
@@ -137,9 +137,6 @@ class MidiPadController extends HTMLElementPlus {
 		if (attr === 'state') {
 			this.state = newValue;
 			this.refs.input.dataset.state = newValue;
-			// if (newValue === 'on') {
-			//  this.refs.input.dispatchEvent(new CustomEvent('midiMsg'));
-			// }
 		}
 	}
 }

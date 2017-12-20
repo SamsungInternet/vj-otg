@@ -37,7 +37,9 @@ containerTemplate.innerHTML = `
     box-sizing: border-box;
   }
   .midi-control__input--slider,
-  .midi-control__input--slider::-webkit-slider-thumblider-runnable-track {
+  .midi-control__input--slider::-webkit-slider-thumblider-runnable-track,
+  .midi-control__input--slider::-moz-range-track,
+  .midi-control__input--slider::-ms-track {
     outline: 0;
     display: inline-block;
     margin: 21px auto;
@@ -53,7 +55,9 @@ containerTemplate.innerHTML = `
       1px 1px 1px #fff;
     -webkit-appearance: none;
   }
-  .midi-control__input--slider::-webkit-slider-thumb {
+  .midi-control__input--slider::-webkit-slider-thumb,
+  .midi-control__input--slider::-moz-range-thumb,
+  .midi-control__input--slider::-ms-thumb {
     -webkit-appearance: none;
     box-sizing: border-box;
     height: 42px;
@@ -86,14 +90,10 @@ class MidiCCController extends HTMLElementPlus {
 		this.message = {};
 		this.message.type = 'cc';
 
-		// const midiEvent = new Event('midiMsg');
-
 		this.refs.input.addEventListener('input', () => {
 			this.message.data = [parseInt(this.channel), parseInt(this.note), parseInt(this.refs.input.value)];
-			// change this name to be same as midi api
 			this.emitEvent('midiMsg', this.message );
 		});
-		// this.refs.input.
 
 	}
 
