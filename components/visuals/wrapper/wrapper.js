@@ -1,4 +1,3 @@
-'use strict';
 /* global THREE, Detector, HTMLElementPlus */
 const w = 480;
 const h = 320;
@@ -134,7 +133,7 @@ class VJOTGVisuals extends HTMLElementPlus {
 		const material = this.mesh.material;
 
 		for (const el of this.children) {
-			if (el.tagName === 'VJ-OTG-UNIFORM' && el.rafFn) el.rafFn();
+			if (el.rafFn) el.rafFn();
 		}
 
 		material.needsUpdate = true;
@@ -143,11 +142,7 @@ class VJOTGVisuals extends HTMLElementPlus {
 
 	generateShader() {
 
-		const chunks = Array.from(
-			this.querySelectorAll(
-				'VJ-OTG-FILTER, VJ-OTG-GROUP ,VJ-OTG-DISTORT, VJ-OTG-SOURCE, VJ-OTG-UNIFORM'
-			)
-		)
+		const chunks = Array.from(this.querySelectorAll('*')).filter(el => el.tagName.match(/^vj-otg-/i))
 			.map(el => {
 				if (el.constructor.glslFunction) {
 					glslFunctionSet.add(el.constructor.glslFunction());
@@ -229,8 +224,6 @@ vec4 getSource(int i, vec2 uv) {
 		this.__renderer.render(this.__scene, this.__camera);
 	}
 }
-
-customElements.define('vj-otg-visuals', VJOTGVisuals);
 
 const shaderChunks = {};
 
@@ -337,3 +330,6 @@ float snoise(vec3 v) {
 		dot(p2,x2), dot(p3,x3) ) );
 }
 `;
+
+export default VJOTGVisuals;
+customElements.define('vj-otg-visuals', VJOTGVisuals);

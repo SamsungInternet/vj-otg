@@ -56,4 +56,5 @@ class VJOTGSource extends HTMLElementPlus {
 	}
 }
 
-customElements.define('vj-otg-source', VJOTGSource);
+customElements.define('vj-otg-source-uniform', VJOTGSource);
+export default VJOTGSource;

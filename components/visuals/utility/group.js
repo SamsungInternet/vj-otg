@@ -1,4 +1,3 @@
-'use strict';
 /* global HTMLElementPlus */
 
 /**
@@ -29,3 +28,4 @@ class VJOTGGroup extends HTMLElementPlus {
 }
 
 customElements.define('vj-otg-group', VJOTGGroup);
+export default VJOTGGroup;

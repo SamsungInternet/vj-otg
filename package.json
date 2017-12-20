@@ -4,7 +4,8 @@
 	"description": "Video DJ on the Go!!!",
 	"main": "",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "rollup -c -i components/visuals/filters.es6.js -o components/visuals/filters.js;"
 	},
 	"repository": {
 		"type": "git",
@@ -58,5 +59,8 @@
 		"useTabs": true,
 		"singleQuote": true,
 		"bracketSpacing": true
+	},
+	"devDependencies": {
+		"rollup": "^0.52.2"
 	}
 }
