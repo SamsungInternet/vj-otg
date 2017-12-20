@@ -10,9 +10,9 @@ if (navigator.requestMIDIAccess) {
 		})
 		.then(onMIDISuccess, onMIDIFailure);
 } else {
-	// alert(
-	// 	"Sorry! There's no MIDI support in your browser ☹️ Why not try using Samsung Internet Browser 🤓"
-	// );
+	console.log(
+		"Sorry! There's no MIDI support in your browser ☹️ Why not try using Samsung Internet Browser 🤓"
+	);
 }
 
 // midi functions
