@@ -24,9 +24,7 @@ class VJOTGSource extends HTMLElementPlus {
 			const source = this.parentNode.querySelector(glAttributes.src);
 			let texture;
 			if (source.tagName === 'VIDEO') {
-				window.addEventListener('click', () => source.play(), {
-					once: true
-				});
+				window.addEventListener('click', () => source.play());
 				texture = new THREE.VideoTexture(source);
 			}
 			if (source.tagName === 'IMG') {
