@@ -1,45 +1,29 @@
-// All from Ada's scripts
+'use strict';
+/* global HTMLElementPlus */
+
 // Polyfill!
 // <script src="https://cdn.rawgit.com/webcomponents/webcomponentsjs/edf84e6e/webcomponents-sd-ce.js"></script>
 
-// Allow using ref to find an element
-// class HTMLElementWithRefs extends HTMLElement {
-
-//   constructor () {
-//     super();
-//     this.refs = new Proxy({}, {
-//       get: this.__getFromShadowRoot.bind(this)
-//     });
-//   }
-
-//   __getFromShadowRoot (target, name) {
-//     return this.shadowRoot.querySelector('[ref="' + name + '"]');
-//   }
-// }
-
-// <my-el><span>here</span></my-el>
-
 const containerTemplate = document.createElement('template');
-
 containerTemplate.innerHTML = `
   <style>
-  .midi-control__group {
+  :host .midi-control__group {
     outline: 0;
     padding: 2vmin;
     display: grid;
     grid-template-columns: 20% 80%;
     align-items: center;
   }
-  .midi-control__label {
+  :host .midi-control__label {
     outline: 0;
     justify-self: center;
     display: inline-block;
     box-sizing: border-box;
   }
-  .midi-control__input--slider,
-  .midi-control__input--slider::-webkit-slider-thumblider-runnable-track,
-  .midi-control__input--slider::-moz-range-track,
-  .midi-control__input--slider::-ms-track {
+  :host .midi-control__input--slider,
+  :host .midi-control__input--slider::-webkit-slider-thumblider-runnable-track,
+  :host .midi-control__input--slider::-moz-range-track,
+  :host .midi-control__input--slider::-ms-track {
     outline: 0;
     display: inline-block;
     margin: 21px auto;
@@ -55,9 +39,9 @@ containerTemplate.innerHTML = `
       1px 1px 1px #fff;
     -webkit-appearance: none;
   }
-  .midi-control__input--slider::-webkit-slider-thumb,
-  .midi-control__input--slider::-moz-range-thumb,
-  .midi-control__input--slider::-ms-thumb {
+  :host .midi-control__input--slider::-webkit-slider-thumb,
+  :host .midi-control__input--slider::-moz-range-thumb,
+  :host .midi-control__input--slider::-ms-thumb {
     -webkit-appearance: none;
     box-sizing: border-box;
     height: 42px;
@@ -79,6 +63,10 @@ containerTemplate.innerHTML = `
     <input class="midi-control__input--slider" id="sliderEx" type="range" min="0" max="127" step="1" value="64" ref="input" />
   </div>
 `;
+
+if (window.ShadyCSS) {
+	window.ShadyCSS.prepareTemplate(containerTemplate, 'midi-cc');
+}
 
 class MidiCCController extends HTMLElementPlus {
 	constructor() {

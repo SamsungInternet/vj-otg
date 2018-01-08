@@ -1,4 +1,3 @@
-
 import VJOTGFilter from '../prototype.js';
 
 const filterTemplate = document.createElement('template');

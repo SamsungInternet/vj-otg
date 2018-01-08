@@ -1,29 +1,14 @@
-// All from Ada's scripts
+'use strict';
+/* global HTMLElementPlus */
+
 // Polyfill!
 // <script src="https://cdn.rawgit.com/webcomponents/webcomponentsjs/edf84e6e/webcomponents-sd-ce.js"></script>
-
-// Allow using ref to find an element
-// class HTMLElementWithRefs extends HTMLElement {
-
-//   constructor () {
-//     super();
-//     this.refs = new Proxy({}, {
-//       get: this.__getFromShadowRoot.bind(this)
-//     });
-//   }
-
-//   __getFromShadowRoot (target, name) {
-//     return this.shadowRoot.querySelector('[ref="' + name + '"]');
-//   }
-// }
-
-// <my-el><span>here</span></my-el>
 
 const padTemplate = document.createElement('template');
 
 padTemplate.innerHTML = `
 	<style>
-	.midi-control__group {
+	:host .midi-control__group {
 		outline: 0;
 		display: flex; box-sizing: border-box;
 		flex-direction: column;
@@ -31,12 +16,12 @@ padTemplate.innerHTML = `
 		width: 100%; height: 100%;
 		padding: 1vw;
 	}
-	.midi-control__label {
+	:host .midi-control__label {
 		outline: 0;
 		display: block; box-sizing: border-box;
 		padding-bottom: 0.5em;
 	}
-	.midi-control__button--pad {
+	:host .midi-control__button--pad {
 		outline: 0;
 		display: block; box-sizing: border-box;
 		flex: auto;
@@ -56,13 +41,17 @@ padTemplate.innerHTML = `
 			inset -2px -2px 0px 2px hsla(210, 25%, 98%, 1.0)
 		;
 	}
-	.midi-control__button--pad[data-state="on"] {border-image: linear-gradient(120deg, hsla(272, 94%, 70%, 1.0), hsla(194, 89%, 56%, 1.0), hsla(150, 92%, 54%, 1.0)) 10;}
+	:host .midi-control__button--pad[data-state="on"] {border-image: linear-gradient(120deg, hsla(272, 94%, 70%, 1.0), hsla(194, 89%, 56%, 1.0), hsla(150, 92%, 54%, 1.0)) 10;}
 	</style>
 	<div class="midi-control__group">
 		<label class="midi-control__label" for="padEx" ref="label"><slot></slot></label>
 		<button id="padEx" class="midi-control__button--pad" ref="input"></button>
 	</div>
 `;
+
+if (window.ShadyCSS) {
+	window.ShadyCSS.prepareTemplate(padTemplate, 'midi-pad');
+}
 
 class MidiPadController extends HTMLElementPlus {
 	constructor() {
