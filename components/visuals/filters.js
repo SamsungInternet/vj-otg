@@ -167,6 +167,7 @@ class VJOTGVisuals extends HTMLElementPlus {
 		const sourceFn = `
 vec4 getSource(int i, vec2 uv) {
 	${source}
+	return noopVec4;
 }
 		`;
 		const uniforms = chunks
