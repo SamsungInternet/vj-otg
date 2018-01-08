@@ -16,7 +16,9 @@ import './effects/staticTexture.js'; // vj-otg-static-texture
 import './effects/splitx.js'; // vj-otg-splitx
 import './effects/gradient.js'; // vj-otg-gradient
 import './effects/main.js'; // vj-otg-main
+import './effects/graph1.js'; // vj-otg-main (relies on analyser uniform)
 
 import './distorts/rotate.js'; // vj-otg-rotate
 import './distorts/wave.js'; // vj-otg-wave
 import './distorts/zoom.js'; // vj-otg-zoom
+import './distorts/mirror.js'; // vj-otg-mirror
