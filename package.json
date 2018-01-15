@@ -5,7 +5,8 @@
 	"main": "",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"build": "rollup -c -i components/visuals/filters.es6.js -o components/visuals/filters.js;"
+		"build": "rollup -c -i components/visuals/filters.es6.js -o components/visuals/filters.js;",
+		"docs": "jsdoc -c ./jsdoc-config.json"
 	},
 	"repository": {
 		"type": "git",
