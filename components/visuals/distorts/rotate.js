@@ -6,6 +6,19 @@
 
 import VJOTGFilter from '../prototype.js';
 
+/**
+ * @customelement vj-otg-rotate
+ * @description Custom element for rotating the current corrdinate.
+ * @property angle {number} value from 360 degrees to zero for how much it is rotated
+ * @example <caption>Normal Usage, rotate by 30 degrees.</caption>
+ * <vj-otg-rotate angle="30"></vj-otg-rotate>
+ * @example <caption>Spiral an image</caption>
+ * <!-- calculate the distance from the center -->
+ * <vj-otg-main>float distanceFromCenter = length(centerCoord - newUV);</vj-otg-main>
+ *
+ * <!-- rotate more when we are far from the center of the image. -->
+ * <vj-otg-rotate angle="[distanceFromCenter * 1000.0]"></vj-otg-rotate>
+ */
 class VJOTGRotate extends VJOTGFilter {
 	constructor() {
 		super();

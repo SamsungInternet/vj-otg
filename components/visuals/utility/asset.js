@@ -1,13 +1,11 @@
 /* global HTMLElementPlus */
 
-/**
- * Used for storing images and videos to be referenced later
- */
-
 const assetTemplate = document.createElement('template');
 assetTemplate.innerHTML = '<slot></slot>';
 
 /**
+ * @customelement vj-otg-assets
+ * @description Used for storing images and videos to be referenced later
  * Just hides the contents.
  */
 const assetsTemplate = document.createElement('template');

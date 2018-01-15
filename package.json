@@ -61,6 +61,7 @@
 		"bracketSpacing": true
 	},
 	"devDependencies": {
+		"jsdoc": "^3.5.5",
 		"rollup": "^0.52.2"
 	}
 }

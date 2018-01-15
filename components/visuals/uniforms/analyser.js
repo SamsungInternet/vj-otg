@@ -9,6 +9,47 @@
  * Required params: Threshold
  */
 
+/**
+ * @customelement vj-otg-audio-uniform
+ * @description Makes two uniforms in the shader:
+ * - `beat`, float is set to one whenever a beat is detected, it then continuously decays.
+ * - `analyser`, an Array of floats, filled with the current audio analysis data per frequency.
+ * - `noAnalyserBins`, a constant float for the number of bins in the analyser array.
+ * @property threshold {number} Number between 1 and 256 how sensitive to trigger a beat event.
+ * @example <caption>Access a Midi Control</caption>
+ * <vj-otg-audio-uniform threshold="80"></vj-otg-audio-uniform>
+ * @example <caption>GLSL code for rendering a graph</caption>
+ * // Get the current column and it's value
+* int column = int(newUV.x * noAnalyserBins);
+* float columnValue = (
+* 	(float(column == 0) * analyser[0]) +
+* 	(float(column == 1) * analyser[1]) +
+* 	(float(column == 2) * analyser[2]) +
+* 	(float(column == 3) * analyser[3]) +
+* 	(float(column == 4) * analyser[4]) +
+* 	(float(column == 5) * analyser[5]) +
+* 	(float(column == 6) * analyser[6]) +
+* 	(float(column == 7) * analyser[7]) +
+* 	(float(column == 8) * analyser[8]) +
+* 	(float(column == 9) * analyser[9]) +
+* 	(float(column == 10) * analyser[10]) +
+* 	(float(column == 11) * analyser[11]) +
+* 	(float(column == 12) * analyser[12]) +
+* 	(float(column == 13) * analyser[13]) +
+* 	(float(column == 14) * analyser[14]) +
+* 	(float(column == 15) * analyser[15]) +
+* 	(float(column == 16) * analyser[16]) +
+* 	(float(column == 17) * analyser[17]) +
+* 	(float(column == 18) * analyser[18]) +
+* 	(float(column == 19) * analyser[19])
+* );
+* 
+* // Each column is coloured using hsl
+* vec3 rgbColumnColor = hsl2rgb(float(column)/noAnalyserBins, 1.0 , 0.5);
+*
+* // Be opaque if the y coordinate of the pixel to be coloured is lower than the value of the column.
+* gl_FragColor = vec4(rgbColumnColor, float(newUV.y <= columnValue))
+*/
 class VJOTAnalyserUniform extends HTMLElementPlus {
 	constructor() {
 		super();
