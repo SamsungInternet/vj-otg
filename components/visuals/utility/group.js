@@ -1,13 +1,13 @@
 /* global HTMLElementPlus */
 
-/**
- * Provides VJ-OTG-Group used for changing what vj-otg-filter is applied to
- * Allowing us to effectively group effects.
- */
-
 const groupTemplate = document.createElement('template');
 groupTemplate.innerHTML = '<slot></slot>';
 
+/**
+ * @customelement vj-otg-group
+ * @description Provides VJ-OTG-Group used for changing what vj-otg-filter is applied to
+ * Allowing us to effectively group effects.
+ */
 class VJOTGGroup extends HTMLElementPlus {
 	constructor() {
 		super();

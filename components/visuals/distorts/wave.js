@@ -6,6 +6,17 @@
 
 import VJOTGFilter from '../prototype.js';
 
+/**
+ * @customelement vj-otg-wave
+ * @description Custom element for distorting the coordinate using a wave pattern.
+ * @property t {number} time offset increase this to move the wave.
+ * @property speed {number} how fast the waves travel affects `t`.
+ * @property frequency {number} the amount of waves
+ * @property amplitude {number} the size of the waves.
+ * @example <caption>Create a continuous moving wave by using the time uniform in the t property.</caption>
+ * <vj-otg-time-uniform></vj-otg-time-uniform>
+ * <vj-otg-wave t="[time]" frequency="3.0" amplitude="0.05" speed="0.5"></vj-otg-wave>
+ */
 class VJOTGWave extends VJOTGFilter {
 	constructor() {
 		super();

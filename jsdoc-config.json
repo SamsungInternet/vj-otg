@@ -1,0 +1,31 @@
+{
+    "tags": {
+        "allowUnknownTags": false,
+        "dictionaries": ["jsdoc"]
+    },
+
+    "source": {
+        "include": [
+            "components/"
+            ],
+        "exclude": [
+			"./components/visuals/filters.js"
+		],
+        "includePattern": ".+\\.js(doc|x)?$",
+        "excludePattern": "(^|\\/|\\\\)_"
+    },
+    "plugins": [
+		"jsdoc/custom-elements.js",
+		"plugins/markdown"
+		
+    ],
+    "templates": {
+        "cleverLinks": false,
+        "monospaceLinks": false
+    },
+    "opts": {
+        "destination": "./docs",
+        "recurse": true,
+        "encoding": "utf8"
+    }
+}

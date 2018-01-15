@@ -6,6 +6,14 @@
 
 import VJOTGFilter from '../prototype.js';
 
+/**
+ * @customelement vj-otg-zoom
+ * @description Used to zoom and pan the current coordinate.
+ * @property factor {number} how far to zoom in, 1.0 is normal, 0.5 is zoomed out 2.0 is zoomed in.
+ * @property position {vector2} The place to zoom on, 0.5 0.5 is the center.
+ * @example <caption>Zoom in 2x</caption>
+ * <vj-otg-zoom factor="2" position="0.5, 0.5"></vj-otg-zoom>
+ */
 class VJOTGZoom extends VJOTGFilter {
 	constructor() {
 		super();

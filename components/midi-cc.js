@@ -68,6 +68,17 @@ if (window.ShadyCSS) {
 	window.ShadyCSS.prepareTemplate(containerTemplate, 'midi-cc');
 }
 
+/**
+ * @customelement midi-cc
+ * @description Used to access a midi channel
+ * @property channel {number} Midi channel to access
+ * @property note {number} Midi note the value is from
+ * @property value {number} The default value, gets updated if that controller is changed.
+ * @example <caption>Access a Midi Control</caption>
+ * <midi-controller>
+ * 	<midi-cc channel="176" note="1" value="0">CC1</midi-cc>
+ * </midi-controller>
+ */
 class MidiCCController extends HTMLElementPlus {
 	constructor() {
 		super();

@@ -1,22 +1,30 @@
-'use strict';
 /* global HTMLElementPlus, THREE */
 
 /**
+ * @customelement vj-otg-source
+ * @description 
  * Used for defining a special type of uniforms. Textures. 
  * These can be accessed using the texture sampler in the glsl code.
+ * @property name {number} name of the variable in glsl
+ * @property src {querySelector} element to use as texture, can be &lt;img&gt; or &lt;video&gt;
+ * @property index {number} index for retrieving texture using getSource(index, coordinate); in the glsl code
+ * @example <caption>Import an image, give it the name minnie.</caption>
+ * <vj-otg-source-uniform src="#minnie" name="minnie" index="1"></vj-otg-source-uniform>
+ * @example <caption>Use it in GLSL for a static texture.</caption>
+ * gl_FragColor = texture2D(minnie, newUV);
+ * @example <caption>Use it in GLSL for a dynamic texture.</caption>
+ * gl_FragColor = getSource(1, newUV);
  */
-
 class VJOTGSource extends HTMLElementPlus {
 	constructor() {
 		super();
 	}
 	static get observedAttributes() {
-		return ['type', 'src', 'index', 'name'];
+		return ['src', 'index', 'name'];
 	}
 	allAttributesChangedCallback(glAttributes) {
 
 		if (
-			glAttributes.type === 'texture' &&
 			glAttributes.src &&
 			glAttributes.index &&
 			glAttributes.name

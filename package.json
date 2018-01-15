@@ -5,7 +5,8 @@
 	"main": "",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"build": "rollup -c -i components/visuals/filters.es6.js -o components/visuals/filters.js;"
+		"build": "rollup -c -i components/visuals/filters.es6.js -o components/visuals/filters.js;",
+		"docs": "jsdoc -c ./jsdoc-config.json"
 	},
 	"repository": {
 		"type": "git",
@@ -61,6 +62,7 @@
 		"bracketSpacing": true
 	},
 	"devDependencies": {
+		"jsdoc": "^3.5.5",
 		"rollup": "^0.52.2"
 	}
 }
