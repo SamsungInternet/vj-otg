@@ -344,14 +344,12 @@ customElements.define('vj-otg-visuals', VJOTGVisuals);
 
 /* global HTMLElementPlus */
 
-/**
- * Used for storing images and videos to be referenced later
- */
-
 const assetTemplate = document.createElement('template');
 assetTemplate.innerHTML = '<slot></slot>';
 
 /**
+ * @customelement vj-otg-assets
+ * @description Used for storing images and videos to be referenced later
  * Just hides the contents.
  */
 const assetsTemplate = document.createElement('template');
@@ -368,14 +366,14 @@ customElements.define('vj-otg-assets', VJOTGAssets);
 
 /* global HTMLElementPlus */
 
-/**
- * Provides VJ-OTG-Group used for changing what vj-otg-filter is applied to
- * Allowing us to effectively group effects.
- */
-
 const groupTemplate = document.createElement('template');
 groupTemplate.innerHTML = '<slot></slot>';
 
+/**
+ * @customelement vj-otg-group
+ * @description Provides VJ-OTG-Group used for changing what vj-otg-filter is applied to
+ * Allowing us to effectively group effects.
+ */
 class VJOTGGroup extends HTMLElementPlus {
 	constructor() {
 		super();
@@ -400,21 +398,30 @@ customElements.define('vj-otg-group', VJOTGGroup);
 /* global HTMLElementPlus, THREE */
 
 /**
+ * @customelement vj-otg-source
+ * @description 
  * Used for defining a special type of uniforms. Textures. 
  * These can be accessed using the texture sampler in the glsl code.
+ * @property name {number} name of the variable in glsl
+ * @property src {querySelector} element to use as texture, can be &lt;img&gt; or &lt;video&gt;
+ * @property index {number} index for retrieving texture using getSource(index, coordinate); in the glsl code
+ * @example <caption>Import an image, give it the name minnie.</caption>
+ * <vj-otg-source-uniform src="#minnie" name="minnie" index="1"></vj-otg-source-uniform>
+ * @example <caption>Use it in GLSL for a static texture.</caption>
+ * gl_FragColor = texture2D(minnie, newUV);
+ * @example <caption>Use it in GLSL for a dynamic texture.</caption>
+ * gl_FragColor = getSource(1, newUV);
  */
-
 class VJOTGSource extends HTMLElementPlus {
 	constructor() {
 		super();
 	}
 	static get observedAttributes() {
-		return ['type', 'src', 'index', 'name'];
+		return ['src', 'index', 'name'];
 	}
 	allAttributesChangedCallback(glAttributes) {
 
 		if (
-			glAttributes.type === 'texture' &&
 			glAttributes.src &&
 			glAttributes.index &&
 			glAttributes.name
@@ -528,6 +535,47 @@ customElements.define('vj-otg-time-uniform', VJOTGUniformTime);
  * Required params: Threshold
  */
 
+/**
+ * @customelement vj-otg-audio-uniform
+ * @description Makes two uniforms in the shader:
+ * - `beat`, float is set to one whenever a beat is detected, it then continuously decays.
+ * - `analyser`, an Array of floats, filled with the current audio analysis data per frequency.
+ * - `noAnalyserBins`, a constant float for the number of bins in the analyser array.
+ * @property threshold {number} Number between 1 and 256 how sensitive to trigger a beat event.
+ * @example <caption>Access a Midi Control</caption>
+ * <vj-otg-audio-uniform threshold="80"></vj-otg-audio-uniform>
+ * @example <caption>GLSL code for rendering a graph</caption>
+ * // Get the current column and it's value
+* int column = int(newUV.x * noAnalyserBins);
+* float columnValue = (
+* 	(float(column == 0) * analyser[0]) +
+* 	(float(column == 1) * analyser[1]) +
+* 	(float(column == 2) * analyser[2]) +
+* 	(float(column == 3) * analyser[3]) +
+* 	(float(column == 4) * analyser[4]) +
+* 	(float(column == 5) * analyser[5]) +
+* 	(float(column == 6) * analyser[6]) +
+* 	(float(column == 7) * analyser[7]) +
+* 	(float(column == 8) * analyser[8]) +
+* 	(float(column == 9) * analyser[9]) +
+* 	(float(column == 10) * analyser[10]) +
+* 	(float(column == 11) * analyser[11]) +
+* 	(float(column == 12) * analyser[12]) +
+* 	(float(column == 13) * analyser[13]) +
+* 	(float(column == 14) * analyser[14]) +
+* 	(float(column == 15) * analyser[15]) +
+* 	(float(column == 16) * analyser[16]) +
+* 	(float(column == 17) * analyser[17]) +
+* 	(float(column == 18) * analyser[18]) +
+* 	(float(column == 19) * analyser[19])
+* );
+* 
+* // Each column is coloured using hsl
+* vec3 rgbColumnColor = hsl2rgb(float(column)/noAnalyserBins, 1.0 , 0.5);
+*
+* // Be opaque if the y coordinate of the pixel to be coloured is lower than the value of the column.
+* gl_FragColor = vec4(rgbColumnColor, float(newUV.y <= columnValue))
+*/
 class VJOTAnalyserUniform extends HTMLElementPlus {
 	constructor() {
 		super();
@@ -1136,6 +1184,19 @@ customElements.define('vj-otg-graph1', VJOTGGraph1);
  */
 
 
+/**
+ * @customelement vj-otg-rotate
+ * @description Custom element for rotating the current corrdinate.
+ * @property angle {number} value from 360 degrees to zero for how much it is rotated
+ * @example <caption>Normal Usage, rotate by 30 degrees.</caption>
+ * <vj-otg-rotate angle="30"></vj-otg-rotate>
+ * @example <caption>Spiral an image</caption>
+ * <!-- calculate the distance from the center -->
+ * <vj-otg-main>float distanceFromCenter = length(centerCoord - newUV);</vj-otg-main>
+ *
+ * <!-- rotate more when we are far from the center of the image. -->
+ * <vj-otg-rotate angle="[distanceFromCenter * 1000.0]"></vj-otg-rotate>
+ */
 class VJOTGRotate extends VJOTGFilter {
 	constructor() {
 		super();
@@ -1175,6 +1236,17 @@ customElements.define('vj-otg-rotate', VJOTGRotate);
  */
 
 
+/**
+ * @customelement vj-otg-wave
+ * @description Custom element for distorting the coordinate using a wave pattern.
+ * @property t {number} time offset increase this to move the wave.
+ * @property speed {number} how fast the waves travel affects `t`.
+ * @property frequency {number} the amount of waves
+ * @property amplitude {number} the size of the waves.
+ * @example <caption>Create a continuous moving wave by using the time uniform in the t property.</caption>
+ * <vj-otg-time-uniform></vj-otg-time-uniform>
+ * <vj-otg-wave t="[time]" frequency="3.0" amplitude="0.05" speed="0.5"></vj-otg-wave>
+ */
 class VJOTGWave extends VJOTGFilter {
 	constructor() {
 		super();
@@ -1223,6 +1295,14 @@ customElements.define('vj-otg-wave', VJOTGWave);
  */
 
 
+/**
+ * @customelement vj-otg-zoom
+ * @description Used to zoom and pan the current coordinate.
+ * @property factor {number} how far to zoom in, 1.0 is normal, 0.5 is zoomed out 2.0 is zoomed in.
+ * @property position {vector2} The place to zoom on, 0.5 0.5 is the center.
+ * @example <caption>Zoom in 2x</caption>
+ * <vj-otg-zoom factor="2" position="0.5, 0.5"></vj-otg-zoom>
+ */
 class VJOTGZoom extends VJOTGFilter {
 	constructor() {
 		super();
@@ -1258,11 +1338,16 @@ class VJOTGZoom extends VJOTGFilter {
 customElements.define('vj-otg-zoom', VJOTGZoom);
 
 /**
- * This distorts the current coordinate, newUV (vec2) so that
- * when it reads from a texture it gets a different position distorting the image
+ * @customelement vj-otg-mirror
+ * @description Custom element for mirroring the current corrdinate.
+ * @property mode {number} value from 0-3 describing how the mirror is done
+ * - 0, No mirror
+ * - 1, Left to Right
+ * - 2, Top to Bottom
+ * - 3, Left to Right and Top to Bottom
+ * @example
+ * <vj-otg-mirror mode="1"></vj-otg-mirror>
  */
-
-
 class VJOTGMirror extends VJOTGFilter {
 	constructor() {
 		super();
