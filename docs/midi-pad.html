@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: External: vj-otg-rotate</title>
+    <title>JSDoc: External: midi-pad</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">External: vj-otg-rotate</h1>
+    <h1 class="page-title">External: midi-pad</h1>
 
     
 
@@ -28,7 +28,7 @@
 
 <header>
     
-        <h2>vj-otg-rotate</h2>
+        <h2>midi-pad</h2>
         
     
 </header>
@@ -37,7 +37,7 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>Custom element for rotating the current corrdinate.<pre><code>&lt;vj-otg-rotate angle=&quot;[number]&quot;&gt;</code></pre></p></div>
+            <div class="description"><p>Used to read or emulate a midi pad.<pre><code>&lt;midi-pad channel-press=&quot;[number]&quot; channel-release=&quot;[number]&quot; note=&quot;[number]&quot; value=&quot;[number]&quot;&gt;</code></pre></p></div>
         
 
         
@@ -69,7 +69,7 @@
 
         <tr>
             
-                <td class="name"><code>angle</code></td>
+                <td class="name"><code>channel-press</code></td>
             
 
             <td class="type">
@@ -85,7 +85,76 @@
 
             
 
-            <td class="description last"><p>value from 360 degrees to zero for how much it is rotated</p></td>
+            <td class="description last"><p>Channel press events are emitted on</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>channel-release</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Channel release events are emitted on, usually 16 lower</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>note</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The note to listen to.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The value emited if the emulated pad is clicked</p></td>
         </tr>
 
     
@@ -124,7 +193,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visuals_distorts_rotate.js.html">visuals/distorts/rotate.js</a>, <a href="visuals_distorts_rotate.js.html#line22">line 22</a>
+        <a href="midi-pad.js.html">midi-pad.js</a>, <a href="midi-pad.js.html#line68">line 68</a>
     </li></ul></dd>
     
 
@@ -137,19 +206,13 @@
 
 
         
-            <h3>Examples</h3>
+            <h3>Example</h3>
             
-        <p class="code-caption">Normal Usage, rotate by 30 degrees.</p>
+        <p class="code-caption">Access a Midi Pad</p>
     
-    <pre class="prettyprint"><code>&lt;vj-otg-rotate angle="30">&lt;/vj-otg-rotate></code></pre>
-
-        <p class="code-caption">Spiral an image</p>
-    
-    <pre class="prettyprint"><code>&lt;!-- calculate the distance from the center -->
-&lt;vj-otg-main>float distanceFromCenter = length(centerCoord - newUV);&lt;/vj-otg-main>
-
-&lt;!-- rotate more when we are far from the center of the image. -->
-&lt;vj-otg-rotate angle="[distanceFromCenter * 1000.0]">&lt;/vj-otg-rotate></code></pre>
+    <pre class="prettyprint"><code>&lt;midi-controller>
+	&lt;midi-pad channel-press="144" channel-release="128" note="36" value="127" id="pad1">PAD1&lt;/midi-pad>
+&lt;/midi-controller></code></pre>
 
         
     

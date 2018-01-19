@@ -1,7 +1,7 @@
 /* global HTMLElementPlus, THREE */
 
 /**
- * @customelement vj-otg-source
+ * @customelement vj-otg-source-uniform
  * @description 
  * Used for defining a special type of uniforms. Textures. 
  * These can be accessed using the texture sampler in the glsl code.

@@ -70,7 +70,7 @@ if (window.ShadyCSS) {
 
 /**
  * @customelement midi-cc
- * @description Used to access a midi channel
+ * @description Used to access or emulate a midi channel
  * @property channel {number} Midi channel to access
  * @property note {number} Midi note the value is from
  * @property value {number} The default value, gets updated if that controller is changed.
