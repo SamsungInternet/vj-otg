@@ -28,7 +28,7 @@ class MidiController extends HTMLElement {
 		// loop over all available inputs and listen for any MIDI input
 		for (const input of inputs) {
 			// each time there is a midi message call the onMIDIMessage function
-			input.onmidimessage = this.onMIDIMessage.bind(this);
+			input.onmidimessage = message => this.onMIDIMessage.bind(this)(message, input);
 		}
 	}
 
@@ -40,8 +40,10 @@ class MidiController extends HTMLElement {
 		);
 	}
 
-	onMIDIMessage(message) {
-		const detail = {};
+	onMIDIMessage(message, input) {
+		const detail = {
+			device: (input.manufacturer ? input.manufacturer + ', ' || '') + (input.name ? input.name : 'unnamed device')
+		};
 
 		detail.data = message.data;
 		detail.type = 'cc';
@@ -80,6 +82,8 @@ class MidiController extends HTMLElement {
 				el.setAttribute('value', detail.data[2]);
 			}
 			el.dispatchEvent(new CustomEvent('midiMsg', { detail: detail, bubbles: true }));
+		} else {
+			this.dispatchEvent(new CustomEvent('midiMsg', { detail: detail, bubbles: true }));
 		}
 	}
 
