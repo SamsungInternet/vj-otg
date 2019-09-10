@@ -44,8 +44,8 @@ padTemplate.innerHTML = `
 	:host .midi-control__button--pad[data-state="on"] {border-image: linear-gradient(120deg, hsla(272, 94%, 70%, 1.0), hsla(194, 89%, 56%, 1.0), hsla(150, 92%, 54%, 1.0)) 10;}
 	</style>
 	<div class="midi-control__group">
-		<label class="midi-control__label" for="padEx" ref="label"><slot></slot></label>
-		<button id="padEx" class="midi-control__button--pad" ref="input"></button>
+		<label class="midi-control__label" for="padEx" ref="label"><slot name="title"></slot></label>
+		<button id="padEx" class="midi-control__button--pad" ref="input"><slot name="face"></slot></button>
 	</div>
 `;
 
