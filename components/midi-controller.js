@@ -42,7 +42,7 @@ class MidiController extends HTMLElement {
 
 	onMIDIMessage(message, input) {
 		const detail = {
-			device: (input.manufacturer ? input.manufacturer + ', ' || '') + (input.name ? input.name : 'unnamed device')
+			device: (input.manufacturer ? input.manufacturer + ', ' : '') + (input.name ? input.name : 'unnamed device')
 		};
 
 		detail.data = message.data;
