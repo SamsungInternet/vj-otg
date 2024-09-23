@@ -63,6 +63,6 @@
 	},
 	"devDependencies": {
 		"jsdoc": "^3.5.5",
-		"rollup": "^0.52.2"
+		"rollup": "^3.29.5"
 	}
 }
